@@ -1,0 +1,3229 @@
+{
+  "test_id": "DIRECT-02-NATIVE-FSA-RUNNER",
+  "runner_version": "1.1.9-postcall-gates-baseline-pinned",
+  "approval_state": "CANDIDATE_UNDER_TEST — runtime minimum passed; independent reference review and human authorization pending",
+  "validation_classification": "UNVALIDATED_HARNESS",
+  "authorization_status": "NOT_AUTHORIZED",
+  "reference_run_status": "NOT_EXECUTED",
+  "native_fsa_status": "NOT_ATTESTED",
+  "inspection_record_count": 9,
+  "inspection_verdict": "RECORDED",
+  "direct02_status": "OPEN",
+  "closure_authorized": false,
+  "approval_note": "لا يعلن المشغّل الإغلاق آليًا؛ يلزم تدقيق بشري للأدلة والبصمات ونتائج التشغيل.",
+  "report_schema": "direct-02-runner-report/1.1.9",
+  "browser": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Mobile Safari/537.36",
+  "origin": "http://localhost:2435",
+  "secureContext": true,
+  "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+  "exportedAt": "2026-11-10T14:21:21.459Z",
+  "test_limitations": [
+    "partial-write-abort (DIRECT-RACE-07) verifies a resolved partial stream write followed by a successful native abort; commit to target is not implied.",
+    "close-after-commit-fail (DIRECT-RACE-08) verifies native close resolution, independent readback, and readback SHA-256/size agreement with RC3 output evidence before rollback; it does not test recovery from arbitrary pre-existing corruption.",
+    "UI mode proves the observed disabled state of seven required controls, or a trusted picker click plus its guard toast; it does not individually exercise every independent event handler.",
+    "RC3 fetch bytes are pinned to the reviewed SHA-256; this does not constitute cryptographic attestation of the iframe's executed in-memory bytes if the resource changes between iframe navigation and fingerprint fetch.",
+    "Evidence correlation is scoped to caseRunId captured by runner wrappers and also checks target name, raw token, raw size, raw SHA-256, and timestamp.",
+    "Code inspection and runner PASS do not alone close DIRECT-02; human review of the exported report and repository evidence is required.",
+    "The RC3 SHA-256 pin is intentionally fixed; any RC3 change requires a new review and an explicit pin update.",
+    "Runner fingerprint is a fetch-response hash and must be compared externally with the sidecar SHA-256 file.",
+    "Readwrite permission prompt/denial/unknown is classified as BLOCKED_PERMISSION, not an application failure.",
+    "write-pending and close-pending gates are entered only after the matching native write()/close() call has been invoked and returned a promise; the report separately records whether that native promise had settled at the instant B was forced while the application wrapper remained awaiting the gate.",
+    "A native promise that already settled before the swap is not described as an OS/native operation still pending; applicationAwaitHeldAtSwap records only that the application wrapper remained blocked at the runner gate.",
+    "Approval state reflects the latest result per case/mode; prior attempts and failures remain in attemptHistory/history_notes.",
+    "Version 1.1.9 requires every one of the eight latest forced-case results to include its own A_before/B_before fingerprints and requires one identical baselineSetId across all eight."
+  ],
+  "fingerprints": {
+    "runner": {
+      "label": "runner",
+      "requestedUrl": "http://localhost:2435/storage/emulated/0/Download/%D8%B1%D9%82%D9%8A%D8%B9+%D8%A7%D9%84%D9%85%D8%B7%D9%88%D8%B1/%D9%85%D9%84%D9%81%D8%A7%D8%AA+%D8%B1%D9%82%D9%8A%D8%B9/DIRECT-02-NATIVE-FSA-RUNNER-v1.1.9-PACKAGE/%D8%A5%D8%B9%D8%A7%D8%AF%D8%A9+%D8%A7%D9%84%D8%A7%D8%AE%D8%AA%D8%A8%D8%A7%D8%B1/DIRECT-02-native-fsa-runner-v1.1.9.html",
+      "responseUrl": "http://localhost:2435/storage/emulated/0/Download/%D8%B1%D9%82%D9%8A%D8%B9+%D8%A7%D9%84%D9%85%D8%B7%D9%88%D8%B1/%D9%85%D9%84%D9%81%D8%A7%D8%AA+%D8%B1%D9%82%D9%8A%D8%B9/DIRECT-02-NATIVE-FSA-RUNNER-v1.1.9-PACKAGE/%D8%A5%D8%B9%D8%A7%D8%AF%D8%A9+%D8%A7%D9%84%D8%A7%D8%AE%D8%AA%D8%A8%D8%A7%D8%B1/DIRECT-02-native-fsa-runner-v1.1.9.html",
+      "httpStatus": 200,
+      "byteLength": 115298,
+      "sha256": "a0e6e361498776b5c05e465b3680a84f3eb9ff1c1bbe0b379da83ec9a9dfe718",
+      "checkedAt": "2026-11-10T13:55:56.627Z",
+      "source": "fetch-response-bytes",
+      "limitation": "بصمة بايتات استجابة fetch؛ لا تثبت وحدها أن iframe نفّذ البايتات نفسها دون تعديل."
+    },
+    "targetResource": {
+      "label": "target-rc3",
+      "requestedUrl": "http://localhost:2435/storage/emulated/0/Download/%D8%B1%D9%82%D9%8A%D8%B9+%D8%A7%D9%84%D9%85%D8%B7%D9%88%D8%B1/%D9%85%D9%84%D9%81%D8%A7%D8%AA+%D8%B1%D9%82%D9%8A%D8%B9/DIRECT-02-NATIVE-FSA-RUNNER-v1.1.9-PACKAGE/%D8%A5%D8%B9%D8%A7%D8%AF%D8%A9+%D8%A7%D9%84%D8%A7%D8%AE%D8%AA%D8%A8%D8%A7%D8%B1/raqee3-v8.0.0-rc3-dev-racefix2.html",
+      "responseUrl": "http://localhost:2435/storage/emulated/0/Download/%D8%B1%D9%82%D9%8A%D8%B9+%D8%A7%D9%84%D9%85%D8%B7%D9%88%D8%B1/%D9%85%D9%84%D9%81%D8%A7%D8%AA+%D8%B1%D9%82%D9%8A%D8%B9/DIRECT-02-NATIVE-FSA-RUNNER-v1.1.9-PACKAGE/%D8%A5%D8%B9%D8%A7%D8%AF%D8%A9+%D8%A7%D9%84%D8%A7%D8%AE%D8%AA%D8%A8%D8%A7%D8%B1/raqee3-v8.0.0-rc3-dev-racefix2.html",
+      "httpStatus": 200,
+      "byteLength": 495312,
+      "sha256": "6e41866ff757518f641546083e5441e19f153c3585a6b43799fd2daa66561c13",
+      "checkedAt": "2026-11-10T13:55:56.639Z",
+      "source": "fetch-response-bytes",
+      "limitation": "بصمة بايتات استجابة fetch؛ لا تثبت وحدها أن iframe نفّذ البايتات نفسها دون تعديل.",
+      "loadedDocumentUrl": "http://localhost:2435/storage/emulated/0/Download/%D8%B1%D9%82%D9%8A%D8%B9+%D8%A7%D9%84%D9%85%D8%B7%D9%88%D8%B1/%D9%85%D9%84%D9%81%D8%A7%D8%AA+%D8%B1%D9%82%D9%8A%D8%B9/DIRECT-02-NATIVE-FSA-RUNNER-v1.1.9-PACKAGE/%D8%A5%D8%B9%D8%A7%D8%AF%D8%A9+%D8%A7%D9%84%D8%A7%D8%AE%D8%AA%D8%A8%D8%A7%D8%B1/raqee3-v8.0.0-rc3-dev-racefix2.html",
+      "frameSrc": "raqee3-v8.0.0-rc3-dev-racefix2.html"
+    }
+  },
+  "ui_control_inventory": [
+    {
+      "id": "openForDirectBtn",
+      "present": true,
+      "elementType": "BUTTON"
+    },
+    {
+      "id": "targetFile",
+      "present": true,
+      "elementType": "INPUT"
+    },
+    {
+      "id": "applyBtn",
+      "present": true,
+      "elementType": "BUTTON"
+    },
+    {
+      "id": "dryBtn",
+      "present": true,
+      "elementType": "BUTTON"
+    },
+    {
+      "id": "clearBtn",
+      "present": true,
+      "elementType": "BUTTON"
+    },
+    {
+      "id": "cleanTargetBtn",
+      "present": true,
+      "elementType": "BUTTON"
+    },
+    {
+      "id": "undoTargetBtn",
+      "present": true,
+      "elementType": "BUTTON"
+    }
+  ],
+  "provenance": {
+    "AandBDistinctByNativeIsSameEntry": true,
+    "nativePickerCallCountTotal": 14,
+    "nativePickerCalls": [
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 1,
+        "reselectAttempt": false,
+        "reselectExpectedCallNo": null,
+        "startedAt": "2026-11-10T13:56:03.422Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 1
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794318966894
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 2,
+        "reselectAttempt": false,
+        "reselectExpectedCallNo": null,
+        "startedAt": "2026-11-10T13:56:12.899Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "B.txt",
+            "kind": "file",
+            "pickerCallNo": 2
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794318974067
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 3,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 3,
+        "startedAt": "2026-11-10T13:56:22.490Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 3
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794318984224
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 4,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 4,
+        "startedAt": "2026-11-10T14:14:56.762Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 4
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320099838
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 5,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 5,
+        "startedAt": "2026-11-10T14:15:34.876Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 5
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320136596
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 6,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 6,
+        "startedAt": "2026-11-10T14:16:03.659Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 6
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320165202
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 7,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 7,
+        "startedAt": "2026-11-10T14:16:34.414Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 7
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320195868
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 8,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 8,
+        "startedAt": "2026-11-10T14:17:08.514Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 8
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320230288
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 9,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 9,
+        "startedAt": "2026-11-10T14:18:08.582Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 9
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320291131
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 10,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 10,
+        "startedAt": "2026-11-10T14:18:33.129Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 10
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320314858
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 11,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 11,
+        "startedAt": "2026-11-10T14:19:14.871Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 11
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320356632
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 12,
+        "reselectAttempt": false,
+        "reselectExpectedCallNo": null,
+        "startedAt": "2026-11-10T14:20:07.029Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 12
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320408514
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 13,
+        "reselectAttempt": false,
+        "reselectExpectedCallNo": null,
+        "startedAt": "2026-11-10T14:20:15.338Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "B.txt",
+            "kind": "file",
+            "pickerCallNo": 13
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320416813
+      },
+      {
+        "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+        "callNo": 14,
+        "reselectAttempt": true,
+        "reselectExpectedCallNo": 14,
+        "startedAt": "2026-11-10T14:20:25.981Z",
+        "options": {
+          "multiple": false
+        },
+        "outcome": "selected",
+        "selected": [
+          {
+            "name": "index.html",
+            "kind": "file",
+            "pickerCallNo": 14
+          }
+        ],
+        "terminalResult": "selected",
+        "errorName": "",
+        "errorMessage": "",
+        "completedAt": 1794320427519
+      }
+    ],
+    "selectedHandleRecords": [
+      {
+        "role": "A",
+        "name": "index.html",
+        "pickerCallNo": 1,
+        "permissionAtCapture": "prompt",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "recordedAt": "2026-11-10T13:56:11.041Z"
+      },
+      {
+        "role": "B",
+        "name": "B.txt",
+        "pickerCallNo": 2,
+        "permissionAtCapture": "prompt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "recordedAt": "2026-11-10T13:56:19.819Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 3,
+        "permissionAtCapture": "prompt",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T13:56:24.853Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 4,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T14:15:00.226Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 5,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T14:15:37.010Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 6,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T14:16:05.841Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 7,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T14:16:36.280Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 8,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T14:17:10.744Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 9,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T14:18:11.478Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 10,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T14:18:35.256Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 11,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T14:19:16.969Z"
+      },
+      {
+        "role": "A",
+        "name": "index.html",
+        "pickerCallNo": 12,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "recordedAt": "2026-11-10T14:20:13.196Z"
+      },
+      {
+        "role": "B",
+        "name": "B.txt",
+        "pickerCallNo": 13,
+        "permissionAtCapture": "prompt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "recordedAt": "2026-11-10T14:20:22.946Z"
+      },
+      {
+        "role": "A-reselect",
+        "name": "index.html",
+        "pickerCallNo": 14,
+        "permissionAtCapture": "granted",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "isSameEntry": true,
+        "recordedAt": "2026-11-10T14:20:28.165Z"
+      }
+    ],
+    "injectionEvents": [
+      {
+        "caseId": "write-fail",
+        "caseRunId": "e80b7c91-4813-4642-9399-add7526a8cd3",
+        "kind": "write",
+        "phase": "after-native-partial-write-resolved-before-close",
+        "nativeWriteResolved": true,
+        "partialBytesWritten": 606,
+        "totalExpectedBytes": 1213,
+        "abortOutcome": "resolved",
+        "recordedAt": "2026-11-10T14:18:56.875Z",
+        "classification": "partial-write-abort; one-shot injection consumed; partial write promise resolved; commit to target not implied"
+      },
+      {
+        "caseId": "close-after-commit-fail",
+        "caseRunId": "062c291a-85fb-4463-a35b-59454f442a20",
+        "kind": "close",
+        "phase": "after-native-close-resolved-before-error",
+        "nativeCloseResolved": true,
+        "probeSucceeded": true,
+        "probeFailed": false,
+        "probeError": null,
+        "committedPreRollbackSize": 1213,
+        "committedPreRollbackSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "differsFromOriginal": true,
+        "recordedAt": "2026-11-10T14:19:34.067Z",
+        "classification": "committed-write-rollback; native close resolved; independent readback must prove changed content before injected error"
+      }
+    ],
+    "abortEvents": [],
+    "A": {
+      "name": "index.html",
+      "kind": "file",
+      "pickerCallNo": 14,
+      "permissionAtCapture": "granted",
+      "size": 1213,
+      "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+    },
+    "B": {
+      "name": "B.txt",
+      "kind": "file",
+      "pickerCallNo": 13,
+      "permissionAtCapture": "prompt",
+      "size": 51,
+      "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+    }
+  },
+  "coverage": {
+    "requiredForcedCases": [
+      "freshness-buffer",
+      "backup-buffer",
+      "createWritable",
+      "postwrite-buffer",
+      "write-pending",
+      "close-pending",
+      "write-fail",
+      "close-after-commit-fail"
+    ],
+    "forcedPassedCaseIds": [
+      "backup-buffer",
+      "freshness-buffer",
+      "createWritable",
+      "postwrite-buffer",
+      "write-pending",
+      "close-pending",
+      "write-fail",
+      "close-after-commit-fail"
+    ],
+    "forcedPassedCount": 8,
+    "baselineSetIds": [
+      "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+    ],
+    "baselineConsistent": true,
+    "baselinePolicy": "All 8 latest forced cases must carry A_before/B_before and share one identical A/B SHA-256 fingerprint pair.",
+    "forcedFailedCaseIds": [],
+    "forcedFailedCount": 0,
+    "forcedBlockedCaseIds": [],
+    "forcedBlockedCount": 0,
+    "forcedMissingCaseIds": [],
+    "forcedMissingCount": 0,
+    "uiPassedCount": 1,
+    "uiFailedCount": 0,
+    "uiBlockedCount": 0,
+    "blocked": [],
+    "activeCasePending": false,
+    "maintenanceInProgress": false,
+    "targetStateInvalidated": false,
+    "minimumPlanPassed": true,
+    "minimumPlanDescription": "8 unique FORCED PASS + at least 1 representative UI PASS; zero failed, blocked, or missing cases; all 8 latest forced cases share one identical pinned A/B baseline pair; no active case or maintenance or target invalidation"
+  },
+  "permissionEvents": [
+    {
+      "file": "A",
+      "permission": "granted",
+      "handleMatchesBound": true,
+      "recordedAt": "2026-11-10T13:56:28.492Z",
+      "source": "explicit-user-gesture"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "backup-buffer",
+      "swap_mode": "forced",
+      "recordedAt": "2026-11-10T13:59:23.910Z"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "freshness-buffer",
+      "swap_mode": "forced",
+      "recordedAt": "2026-11-10T14:15:07.176Z"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "createWritable",
+      "swap_mode": "forced",
+      "recordedAt": "2026-11-10T14:15:41.341Z"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "postwrite-buffer",
+      "swap_mode": "forced",
+      "recordedAt": "2026-11-10T14:16:08.823Z"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "write-pending",
+      "swap_mode": "forced",
+      "recordedAt": "2026-11-10T14:16:39.835Z"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "write-pending",
+      "swap_mode": "forced",
+      "recordedAt": "2026-11-10T14:17:14.310Z"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "close-pending",
+      "swap_mode": "forced",
+      "recordedAt": "2026-11-10T14:18:15.009Z"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "write-fail",
+      "swap_mode": "forced",
+      "recordedAt": "2026-11-10T14:18:44.380Z"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "close-after-commit-fail",
+      "swap_mode": "forced",
+      "recordedAt": "2026-11-10T14:19:22.273Z"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "handleMatchesBound": true,
+      "recordedAt": "2026-11-10T14:20:33.217Z",
+      "source": "explicit-user-gesture"
+    },
+    {
+      "file": "A",
+      "permission": "granted",
+      "error": null,
+      "case_id": "freshness-buffer",
+      "swap_mode": "ui",
+      "recordedAt": "2026-11-10T14:20:44.249Z"
+    }
+  ],
+  "lastPermissionCheck": {
+    "file": "A",
+    "permission": "granted",
+    "error": null,
+    "case_id": "freshness-buffer",
+    "swap_mode": "ui",
+    "recordedAt": "2026-11-10T14:20:44.249Z"
+  },
+  "attemptHistory": [
+    {
+      "case_id": "backup-buffer",
+      "caseRunId": "df69366a-8253-4093-b646-6afa69159cef",
+      "gate": "before-backup-buffer-read",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (cancel before first byte)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء تجهيز النسخة الاحتياطية. لم يُمس أي ملف؛ رابط التنزيل البديل جاهز فقط.",
+        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف. رابط التنزيل البديل جاهز.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarbl0a-1",
+        "runnerCaseRunId": "df69366a-8253-4093-b646-6afa69159cef",
+        "recordedAt": "2026-11-10T13:59:56.698Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "rawTargetToken": 3,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": "لم تبدأ الكتابة؛ تغيّرت هوية الهدف أثناء تجهيز النسخة الاحتياطية، فأُلغيت المعاملة."
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "df69366a-8253-4093-b646-6afa69159cef",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 3,
+          "rawToken": 3,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 3,
+          "capturedAt": "2026-11-10T13:59:24.190Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 3,
+        "pickerCallsAfter": 3,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T13:59:45.446Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "prewrite-cancel=true; summary=true; disk-original=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:00:26.477Z"
+    },
+    {
+      "case_id": "freshness-buffer",
+      "caseRunId": "289b4cbb-5610-4c1d-bb34-2fd05252abfd",
+      "gate": "before-freshness-buffer-read",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (cancel before first byte)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء المعاملة. لم يُمس أي ملف؛ رابط التنزيل البديل جاهز فقط.",
+        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف. رابط التنزيل البديل جاهز.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarvbac-2",
+        "runnerCaseRunId": "289b4cbb-5610-4c1d-bb34-2fd05252abfd",
+        "recordedAt": "2026-11-10T14:15:17.220Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "rawTargetToken": 5,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": "لم تبدأ الكتابة؛ تغيّرت هوية الهدف قبل أول بايت، فأُلغيت المعاملة."
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "289b4cbb-5610-4c1d-bb34-2fd05252abfd",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 5,
+          "rawToken": 5,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 4,
+          "capturedAt": "2026-11-10T14:15:07.667Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 4,
+        "pickerCallsAfter": 4,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:15:12.452Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "prewrite-cancel=true; summary=true; disk-original=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:15:21.527Z"
+    },
+    {
+      "case_id": "createWritable",
+      "caseRunId": "d0034d58-b308-46dc-b4e5-37590396065f",
+      "gate": "before-createWritable-call",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (cancel before first byte)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء المعاملة. لم يُمس أي ملف؛ رابط التنزيل البديل جاهز فقط.",
+        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف. رابط التنزيل البديل جاهز.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarw3az-3",
+        "runnerCaseRunId": "d0034d58-b308-46dc-b4e5-37590396065f",
+        "recordedAt": "2026-11-10T14:15:53.531Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "rawTargetToken": 7,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": "لم تبدأ الكتابة؛ تغيّرت هوية الهدف قبل أول بايت، فأُلغيت المعاملة."
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "d0034d58-b308-46dc-b4e5-37590396065f",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 7,
+          "rawToken": 7,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 5,
+          "capturedAt": "2026-11-10T14:15:41.640Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 5,
+        "pickerCallsAfter": 5,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:15:52.602Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "prewrite-cancel=true; summary=true; disk-original=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:15:55.457Z"
+    },
+    {
+      "case_id": "postwrite-buffer",
+      "caseRunId": "2c37f9c6-dcea-4756-868a-a843d7f6a2c0",
+      "gate": "before-postwrite-buffer-read",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "state": "EXPECTED_PATCHED",
+        "originalHashMatch": false,
+        "expectedOutputHashMatch": true
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت index.html",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarwonp-4",
+        "runnerCaseRunId": "2c37f9c6-dcea-4756-868a-a843d7f6a2c0",
+        "recordedAt": "2026-11-10T14:16:21.205Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "rawTargetToken": 9,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": 1213,
+        "actualFileSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "notes": "الكتابة المباشرة انتهت على المقبض المثبّت index.html؛ مستوى تحقق الأداة: full-byte-compare"
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "2c37f9c6-dcea-4756-868a-a843d7f6a2c0",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 9,
+          "rawToken": 9,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 6,
+          "capturedAt": "2026-11-10T14:16:09.356Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 6,
+        "pickerCallsAfter": 6,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:16:18.976Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "direct-write-success=true; full-byte-compare=true; hashes-and-sizes-match-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:16:23.636Z"
+    },
+    {
+      "case_id": "write-pending",
+      "caseRunId": "4a9bccf6-37b7-47e8-a0a8-55cd281a629a",
+      "gate": "after-native-write-started",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "state": "EXPECTED_PATCHED",
+        "originalHashMatch": false,
+        "expectedOutputHashMatch": true
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت index.html",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarx9tx-5",
+        "runnerCaseRunId": "4a9bccf6-37b7-47e8-a0a8-55cd281a629a",
+        "recordedAt": "2026-11-10T14:16:48.645Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "rawTargetToken": 11,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": 1213,
+        "actualFileSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "notes": "الكتابة المباشرة انتهت على المقبض المثبّت index.html؛ مستوى تحقق الأداة: full-byte-compare"
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "4a9bccf6-37b7-47e8-a0a8-55cd281a629a",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 11,
+          "rawToken": 11,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 7,
+          "capturedAt": "2026-11-10T14:16:40.222Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": {
+        "caseRunId": "4a9bccf6-37b7-47e8-a0a8-55cd281a629a",
+        "kind": "write",
+        "nativeCallInvoked": true,
+        "callReturnedPromise": true,
+        "settled": true,
+        "outcome": "resolved",
+        "nativeStartedAt": "2026-11-10T14:16:46.056Z",
+        "settledAt": "2026-11-10T14:16:46.061Z",
+        "applicationAwaitHeldAtSwap": true,
+        "swapObservedAt": "2026-11-10T14:16:47.286Z",
+        "nativePromiseSettledAtSwap": true,
+        "nativePromiseOutcomeAtSwap": "resolved"
+      },
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 7,
+        "pickerCallsAfter": 7,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:16:47.428Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": true,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "direct-write-success=true; full-byte-compare=true; hashes-and-sizes-match-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:16:54.258Z"
+    },
+    {
+      "case_id": "write-pending",
+      "caseRunId": "1b6a6104-ea31-4d46-92aa-dd2a6ee80ed5",
+      "gate": "after-native-write-started",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "state": "EXPECTED_PATCHED",
+        "originalHashMatch": false,
+        "expectedOutputHashMatch": true
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت index.html",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwary94c-6",
+        "runnerCaseRunId": "1b6a6104-ea31-4d46-92aa-dd2a6ee80ed5",
+        "recordedAt": "2026-11-10T14:17:34.380Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "rawTargetToken": 13,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": 1213,
+        "actualFileSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "notes": "الكتابة المباشرة انتهت على المقبض المثبّت index.html؛ مستوى تحقق الأداة: full-byte-compare"
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "1b6a6104-ea31-4d46-92aa-dd2a6ee80ed5",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 13,
+          "rawToken": 13,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 8,
+          "capturedAt": "2026-11-10T14:17:14.847Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": {
+        "caseRunId": "1b6a6104-ea31-4d46-92aa-dd2a6ee80ed5",
+        "kind": "write",
+        "nativeCallInvoked": true,
+        "callReturnedPromise": true,
+        "settled": true,
+        "outcome": "resolved",
+        "nativeStartedAt": "2026-11-10T14:17:26.552Z",
+        "settledAt": "2026-11-10T14:17:26.557Z",
+        "applicationAwaitHeldAtSwap": true,
+        "swapObservedAt": "2026-11-10T14:17:32.053Z",
+        "nativePromiseSettledAtSwap": true,
+        "nativePromiseOutcomeAtSwap": "resolved"
+      },
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 8,
+        "pickerCallsAfter": 8,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:17:32.224Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": true,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "direct-write-success=true; full-byte-compare=true; hashes-and-sizes-match-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:17:37.249Z"
+    },
+    {
+      "case_id": "close-pending",
+      "caseRunId": "b79af09f-5ec7-4b23-a6c1-c38c990824e7",
+      "gate": "after-native-close-started",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "state": "EXPECTED_PATCHED",
+        "originalHashMatch": false,
+        "expectedOutputHashMatch": true
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت index.html",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarzbmc-7",
+        "runnerCaseRunId": "b79af09f-5ec7-4b23-a6c1-c38c990824e7",
+        "recordedAt": "2026-11-10T14:18:24.276Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "rawTargetToken": 15,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": 1213,
+        "actualFileSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "notes": "الكتابة المباشرة انتهت على المقبض المثبّت index.html؛ مستوى تحقق الأداة: full-byte-compare"
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "b79af09f-5ec7-4b23-a6c1-c38c990824e7",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 15,
+          "rawToken": 15,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 9,
+          "capturedAt": "2026-11-10T14:18:15.426Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": {
+        "caseRunId": "b79af09f-5ec7-4b23-a6c1-c38c990824e7",
+        "kind": "close",
+        "nativeCallInvoked": true,
+        "callReturnedPromise": true,
+        "settled": true,
+        "outcome": "resolved",
+        "nativeStartedAt": "2026-11-10T14:18:21.011Z",
+        "settledAt": "2026-11-10T14:18:21.239Z",
+        "applicationAwaitHeldAtSwap": true,
+        "swapObservedAt": "2026-11-10T14:18:23.021Z",
+        "nativePromiseSettledAtSwap": true,
+        "nativePromiseOutcomeAtSwap": "resolved"
+      },
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 9,
+        "pickerCallsAfter": 9,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:18:23.163Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": true,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "direct-write-success=true; full-byte-compare=true; hashes-and-sizes-match-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:18:26.367Z"
+    },
+    {
+      "case_id": "write-fail",
+      "caseRunId": "e80b7c91-4813-4642-9399-add7526a8cd3",
+      "gate": "before-native-write-call",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (rollback verified)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ فشل الحفظ المباشر (فشل أثناء الكتابة المباشرة: INJECTED_WRITE_FAILURE_AFTER_PARTIAL_STREAM_WRITE — استُعيد الأصل وتم التحقق من بايتاته). استُعيد الأصل وتم التحقق من بايتاته؛ أُنشئ رابط تنزيل بديل، لكن التنزيل الفعلي غير مؤكد.",
+        "toast": "⚠️ فشل الحفظ المباشر: فشل أثناء الكتابة المباشرة: INJECTED_WRITE_FAILURE_AFTER_PARTIAL_STREAM_WRITE — استُعيد الأصل وتم التحقق من بايتاته — رابط تنزيل بديل فقط؛ التنزيل غير مؤكد.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwas00x4-8",
+        "runnerCaseRunId": "e80b7c91-4813-4642-9399-add7526a8cd3",
+        "recordedAt": "2026-11-10T14:18:57.064Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-failed; _verifyLevel=rollback-verified; fallback download link will be offered (download not confirmed)",
+        "rawTargetToken": 17,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": null
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "e80b7c91-4813-4642-9399-add7526a8cd3",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 17,
+          "rawToken": 17,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 10,
+          "capturedAt": "2026-11-10T14:18:44.895Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 10,
+        "pickerCallsAfter": 10,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:18:56.175Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": {
+        "caseId": "write-fail",
+        "caseRunId": "e80b7c91-4813-4642-9399-add7526a8cd3",
+        "kind": "write",
+        "phase": "after-native-partial-write-resolved-before-close",
+        "nativeWriteResolved": true,
+        "partialBytesWritten": 606,
+        "totalExpectedBytes": 1213,
+        "abortOutcome": "resolved",
+        "recordedAt": "2026-11-10T14:18:56.875Z",
+        "classification": "partial-write-abort; one-shot injection consumed; partial write promise resolved; commit to target not implied"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "injection-proven=true; failure-evidence=true; marker-seen=true; rollback-message=true; disk-original=true; committed-readback-matches-output=null; abortOutcome=resolved"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:18:59.502Z"
+    },
+    {
+      "case_id": "close-after-commit-fail",
+      "caseRunId": "062c291a-85fb-4463-a35b-59454f442a20",
+      "gate": "before-native-close-call",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (rollback verified)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ فشل الحفظ المباشر (فشل أثناء الكتابة المباشرة: INJECTED_ERROR_AFTER_NATIVE_CLOSE_RESOLVED — استُعيد الأصل وتم التحقق من بايتاته). استُعيد الأصل وتم التحقق من بايتاته؛ أُنشئ رابط تنزيل بديل، لكن التنزيل الفعلي غير مؤكد.",
+        "toast": "⚠️ فشل الحفظ المباشر: فشل أثناء الكتابة المباشرة: INJECTED_ERROR_AFTER_NATIVE_CLOSE_RESOLVED — استُعيد الأصل وتم التحقق من بايتاته — رابط تنزيل بديل فقط؛ التنزيل غير مؤكد.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwas0twf-9",
+        "runnerCaseRunId": "062c291a-85fb-4463-a35b-59454f442a20",
+        "recordedAt": "2026-11-10T14:19:34.623Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-failed; _verifyLevel=rollback-verified; fallback download link will be offered (download not confirmed)",
+        "rawTargetToken": 19,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": null
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "062c291a-85fb-4463-a35b-59454f442a20",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 19,
+          "rawToken": 19,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 11,
+          "capturedAt": "2026-11-10T14:19:22.804Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 11,
+        "pickerCallsAfter": 11,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:19:32.831Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": {
+        "caseId": "close-after-commit-fail",
+        "caseRunId": "062c291a-85fb-4463-a35b-59454f442a20",
+        "kind": "close",
+        "phase": "after-native-close-resolved-before-error",
+        "nativeCloseResolved": true,
+        "probeSucceeded": true,
+        "probeFailed": false,
+        "probeError": null,
+        "committedPreRollbackSize": 1213,
+        "committedPreRollbackSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "differsFromOriginal": true,
+        "recordedAt": "2026-11-10T14:19:34.067Z",
+        "classification": "committed-write-rollback; native close resolved; independent readback must prove changed content before injected error"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "injection-proven=true; failure-evidence=true; marker-seen=true; rollback-message=true; disk-original=true; committed-readback-matches-output=true; abortOutcome=not-applicable"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:19:35.755Z"
+    },
+    {
+      "case_id": "freshness-buffer",
+      "caseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+      "gate": "before-freshness-buffer-read",
+      "swap_mode": "ui",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "state": "EXPECTED_PATCHED",
+        "originalHashMatch": false,
+        "expectedOutputHashMatch": true
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات)",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "index.html"
+      },
+      "evidence": {
+        "id": "ev-mwas2wl6-a",
+        "runnerCaseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+        "recordedAt": "2026-11-10T14:21:11.418Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "rawTargetToken": 23,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": 1213,
+        "actualFileSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "notes": "الكتابة المباشرة انتهت على المقبض المثبّت index.html؛ مستوى تحقق الأداة: full-byte-compare"
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 23,
+          "rawToken": 23,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 14,
+          "capturedAt": "2026-11-10T14:20:44.996Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "ui",
+        "caseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+        "mechanism": "native-disabled-control; all seven controls remained disabled",
+        "disabledBefore": {
+          "openForDirectBtn": true,
+          "targetFile": true,
+          "applyBtn": true,
+          "dryBtn": true,
+          "clearBtn": true,
+          "cleanTargetBtn": true,
+          "undoTargetBtn": true
+        },
+        "disabledAfter": {
+          "openForDirectBtn": true,
+          "targetFile": true,
+          "applyBtn": true,
+          "dryBtn": true,
+          "clearBtn": true,
+          "cleanTargetBtn": true,
+          "undoTargetBtn": true
+        },
+        "trustedHumanClick": false,
+        "guardToastSeen": false,
+        "noDisabledControlReenabled": true,
+        "guardToasts": [],
+        "pickerCallsBefore": 14,
+        "pickerCallsAfter": 14,
+        "handleUnchanged": true,
+        "directNameUnchanged": true,
+        "currentNameUnchanged": true,
+        "loadTokenUnchanged": true,
+        "rawTokenUnchanged": true,
+        "transactionStillBusy": true,
+        "verdict": "ui-disabled-controls-pass",
+        "passed": true,
+        "recordedAt": "2026-11-10T14:21:06.219Z"
+      },
+      "uiAttempt": {
+        "mode": "ui",
+        "caseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+        "mechanism": "native-disabled-control; all seven controls remained disabled",
+        "disabledBefore": {
+          "openForDirectBtn": true,
+          "targetFile": true,
+          "applyBtn": true,
+          "dryBtn": true,
+          "clearBtn": true,
+          "cleanTargetBtn": true,
+          "undoTargetBtn": true
+        },
+        "disabledAfter": {
+          "openForDirectBtn": true,
+          "targetFile": true,
+          "applyBtn": true,
+          "dryBtn": true,
+          "clearBtn": true,
+          "cleanTargetBtn": true,
+          "undoTargetBtn": true
+        },
+        "trustedHumanClick": false,
+        "guardToastSeen": false,
+        "noDisabledControlReenabled": true,
+        "guardToasts": [],
+        "pickerCallsBefore": 14,
+        "pickerCallsAfter": 14,
+        "handleUnchanged": true,
+        "directNameUnchanged": true,
+        "currentNameUnchanged": true,
+        "loadTokenUnchanged": true,
+        "rawTokenUnchanged": true,
+        "transactionStillBusy": true,
+        "verdict": "ui-disabled-controls-pass",
+        "passed": true,
+        "recordedAt": "2026-11-10T14:21:06.219Z"
+      },
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "direct-write-success=true; full-byte-compare=true; hashes-and-sizes-match-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:21:12.885Z"
+    }
+  ],
+  "history_notes": {
+    "latestResultPolicy": "S.results stores the latest result per (case_id, swap_mode); all prior attempts remain in attemptHistory.",
+    "priorNonPassAttempts": []
+  },
+  "maintenance": {
+    "inProgress": false,
+    "reason": null,
+    "armingInProgress": false,
+    "setupOperationInProgress": false,
+    "reselectStateInvalidated": false,
+    "reselectInvalidationReason": null,
+    "reselectAttemptState": {
+      "sessionId": "sess-1794318956418-efc2c72bb2d4d",
+      "expectedCallNo": 14,
+      "status": "completed",
+      "recoveryOwner": false,
+      "startedAt": "2026-11-10T14:20:24.653Z",
+      "completedAt": "2026-11-10T14:20:28.167Z",
+      "error": null
+    },
+    "reselectTimedOutPendingCallNo": null
+  },
+  "activeCase": null,
+  "A_before": {
+    "name": "index.html",
+    "size": 1213,
+    "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+  },
+  "B_before": {
+    "name": "B.txt",
+    "size": 51,
+    "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+  },
+  "results": [
+    {
+      "case_id": "backup-buffer",
+      "caseRunId": "df69366a-8253-4093-b646-6afa69159cef",
+      "gate": "before-backup-buffer-read",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (cancel before first byte)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء تجهيز النسخة الاحتياطية. لم يُمس أي ملف؛ رابط التنزيل البديل جاهز فقط.",
+        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف. رابط التنزيل البديل جاهز.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarbl0a-1",
+        "runnerCaseRunId": "df69366a-8253-4093-b646-6afa69159cef",
+        "recordedAt": "2026-11-10T13:59:56.698Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "rawTargetToken": 3,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": "لم تبدأ الكتابة؛ تغيّرت هوية الهدف أثناء تجهيز النسخة الاحتياطية، فأُلغيت المعاملة."
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "df69366a-8253-4093-b646-6afa69159cef",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 3,
+          "rawToken": 3,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 3,
+          "capturedAt": "2026-11-10T13:59:24.190Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 3,
+        "pickerCallsAfter": 3,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T13:59:45.446Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "prewrite-cancel=true; summary=true; disk-original=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:00:26.477Z"
+    },
+    {
+      "case_id": "freshness-buffer",
+      "caseRunId": "289b4cbb-5610-4c1d-bb34-2fd05252abfd",
+      "gate": "before-freshness-buffer-read",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (cancel before first byte)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء المعاملة. لم يُمس أي ملف؛ رابط التنزيل البديل جاهز فقط.",
+        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف. رابط التنزيل البديل جاهز.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarvbac-2",
+        "runnerCaseRunId": "289b4cbb-5610-4c1d-bb34-2fd05252abfd",
+        "recordedAt": "2026-11-10T14:15:17.220Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "rawTargetToken": 5,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": "لم تبدأ الكتابة؛ تغيّرت هوية الهدف قبل أول بايت، فأُلغيت المعاملة."
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "289b4cbb-5610-4c1d-bb34-2fd05252abfd",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 5,
+          "rawToken": 5,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 4,
+          "capturedAt": "2026-11-10T14:15:07.667Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 4,
+        "pickerCallsAfter": 4,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:15:12.452Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "prewrite-cancel=true; summary=true; disk-original=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:15:21.527Z"
+    },
+    {
+      "case_id": "createWritable",
+      "caseRunId": "d0034d58-b308-46dc-b4e5-37590396065f",
+      "gate": "before-createWritable-call",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (cancel before first byte)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء المعاملة. لم يُمس أي ملف؛ رابط التنزيل البديل جاهز فقط.",
+        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف. رابط التنزيل البديل جاهز.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarw3az-3",
+        "runnerCaseRunId": "d0034d58-b308-46dc-b4e5-37590396065f",
+        "recordedAt": "2026-11-10T14:15:53.531Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "rawTargetToken": 7,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": "لم تبدأ الكتابة؛ تغيّرت هوية الهدف قبل أول بايت، فأُلغيت المعاملة."
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "d0034d58-b308-46dc-b4e5-37590396065f",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 7,
+          "rawToken": 7,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 5,
+          "capturedAt": "2026-11-10T14:15:41.640Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 5,
+        "pickerCallsAfter": 5,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:15:52.602Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "prewrite-cancel=true; summary=true; disk-original=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:15:55.457Z"
+    },
+    {
+      "case_id": "postwrite-buffer",
+      "caseRunId": "2c37f9c6-dcea-4756-868a-a843d7f6a2c0",
+      "gate": "before-postwrite-buffer-read",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "state": "EXPECTED_PATCHED",
+        "originalHashMatch": false,
+        "expectedOutputHashMatch": true
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت index.html",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarwonp-4",
+        "runnerCaseRunId": "2c37f9c6-dcea-4756-868a-a843d7f6a2c0",
+        "recordedAt": "2026-11-10T14:16:21.205Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "rawTargetToken": 9,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": 1213,
+        "actualFileSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "notes": "الكتابة المباشرة انتهت على المقبض المثبّت index.html؛ مستوى تحقق الأداة: full-byte-compare"
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "2c37f9c6-dcea-4756-868a-a843d7f6a2c0",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 9,
+          "rawToken": 9,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 6,
+          "capturedAt": "2026-11-10T14:16:09.356Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 6,
+        "pickerCallsAfter": 6,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:16:18.976Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "direct-write-success=true; full-byte-compare=true; hashes-and-sizes-match-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:16:23.636Z"
+    },
+    {
+      "case_id": "write-pending",
+      "caseRunId": "1b6a6104-ea31-4d46-92aa-dd2a6ee80ed5",
+      "gate": "after-native-write-started",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "state": "EXPECTED_PATCHED",
+        "originalHashMatch": false,
+        "expectedOutputHashMatch": true
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت index.html",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwary94c-6",
+        "runnerCaseRunId": "1b6a6104-ea31-4d46-92aa-dd2a6ee80ed5",
+        "recordedAt": "2026-11-10T14:17:34.380Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "rawTargetToken": 13,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": 1213,
+        "actualFileSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "notes": "الكتابة المباشرة انتهت على المقبض المثبّت index.html؛ مستوى تحقق الأداة: full-byte-compare"
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "1b6a6104-ea31-4d46-92aa-dd2a6ee80ed5",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 13,
+          "rawToken": 13,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 8,
+          "capturedAt": "2026-11-10T14:17:14.847Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": {
+        "caseRunId": "1b6a6104-ea31-4d46-92aa-dd2a6ee80ed5",
+        "kind": "write",
+        "nativeCallInvoked": true,
+        "callReturnedPromise": true,
+        "settled": true,
+        "outcome": "resolved",
+        "nativeStartedAt": "2026-11-10T14:17:26.552Z",
+        "settledAt": "2026-11-10T14:17:26.557Z",
+        "applicationAwaitHeldAtSwap": true,
+        "swapObservedAt": "2026-11-10T14:17:32.053Z",
+        "nativePromiseSettledAtSwap": true,
+        "nativePromiseOutcomeAtSwap": "resolved"
+      },
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 8,
+        "pickerCallsAfter": 8,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:17:32.224Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": true,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "direct-write-success=true; full-byte-compare=true; hashes-and-sizes-match-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:17:37.249Z"
+    },
+    {
+      "case_id": "close-pending",
+      "caseRunId": "b79af09f-5ec7-4b23-a6c1-c38c990824e7",
+      "gate": "after-native-close-started",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "state": "EXPECTED_PATCHED",
+        "originalHashMatch": false,
+        "expectedOutputHashMatch": true
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت index.html",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwarzbmc-7",
+        "runnerCaseRunId": "b79af09f-5ec7-4b23-a6c1-c38c990824e7",
+        "recordedAt": "2026-11-10T14:18:24.276Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "rawTargetToken": 15,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": 1213,
+        "actualFileSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "notes": "الكتابة المباشرة انتهت على المقبض المثبّت index.html؛ مستوى تحقق الأداة: full-byte-compare"
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "b79af09f-5ec7-4b23-a6c1-c38c990824e7",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 15,
+          "rawToken": 15,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 9,
+          "capturedAt": "2026-11-10T14:18:15.426Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": {
+        "caseRunId": "b79af09f-5ec7-4b23-a6c1-c38c990824e7",
+        "kind": "close",
+        "nativeCallInvoked": true,
+        "callReturnedPromise": true,
+        "settled": true,
+        "outcome": "resolved",
+        "nativeStartedAt": "2026-11-10T14:18:21.011Z",
+        "settledAt": "2026-11-10T14:18:21.239Z",
+        "applicationAwaitHeldAtSwap": true,
+        "swapObservedAt": "2026-11-10T14:18:23.021Z",
+        "nativePromiseSettledAtSwap": true,
+        "nativePromiseOutcomeAtSwap": "resolved"
+      },
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 9,
+        "pickerCallsAfter": 9,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:18:23.163Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": true,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "direct-write-success=true; full-byte-compare=true; hashes-and-sizes-match-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:18:26.367Z"
+    },
+    {
+      "case_id": "write-fail",
+      "caseRunId": "e80b7c91-4813-4642-9399-add7526a8cd3",
+      "gate": "before-native-write-call",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (rollback verified)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ فشل الحفظ المباشر (فشل أثناء الكتابة المباشرة: INJECTED_WRITE_FAILURE_AFTER_PARTIAL_STREAM_WRITE — استُعيد الأصل وتم التحقق من بايتاته). استُعيد الأصل وتم التحقق من بايتاته؛ أُنشئ رابط تنزيل بديل، لكن التنزيل الفعلي غير مؤكد.",
+        "toast": "⚠️ فشل الحفظ المباشر: فشل أثناء الكتابة المباشرة: INJECTED_WRITE_FAILURE_AFTER_PARTIAL_STREAM_WRITE — استُعيد الأصل وتم التحقق من بايتاته — رابط تنزيل بديل فقط؛ التنزيل غير مؤكد.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwas00x4-8",
+        "runnerCaseRunId": "e80b7c91-4813-4642-9399-add7526a8cd3",
+        "recordedAt": "2026-11-10T14:18:57.064Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-failed; _verifyLevel=rollback-verified; fallback download link will be offered (download not confirmed)",
+        "rawTargetToken": 17,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": null
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "e80b7c91-4813-4642-9399-add7526a8cd3",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 17,
+          "rawToken": 17,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 10,
+          "capturedAt": "2026-11-10T14:18:44.895Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 10,
+        "pickerCallsAfter": 10,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:18:56.175Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": {
+        "caseId": "write-fail",
+        "caseRunId": "e80b7c91-4813-4642-9399-add7526a8cd3",
+        "kind": "write",
+        "phase": "after-native-partial-write-resolved-before-close",
+        "nativeWriteResolved": true,
+        "partialBytesWritten": 606,
+        "totalExpectedBytes": 1213,
+        "abortOutcome": "resolved",
+        "recordedAt": "2026-11-10T14:18:56.875Z",
+        "classification": "partial-write-abort; one-shot injection consumed; partial write promise resolved; commit to target not implied"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "injection-proven=true; failure-evidence=true; marker-seen=true; rollback-message=true; disk-original=true; committed-readback-matches-output=null; abortOutcome=resolved"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:18:59.502Z"
+    },
+    {
+      "case_id": "close-after-commit-fail",
+      "caseRunId": "062c291a-85fb-4463-a35b-59454f442a20",
+      "gate": "before-native-close-call",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (rollback verified)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "ORIGINAL",
+        "originalHashMatch": true,
+        "expectedOutputHashMatch": false
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ فشل الحفظ المباشر (فشل أثناء الكتابة المباشرة: INJECTED_ERROR_AFTER_NATIVE_CLOSE_RESOLVED — استُعيد الأصل وتم التحقق من بايتاته). استُعيد الأصل وتم التحقق من بايتاته؛ أُنشئ رابط تنزيل بديل، لكن التنزيل الفعلي غير مؤكد.",
+        "toast": "⚠️ فشل الحفظ المباشر: فشل أثناء الكتابة المباشرة: INJECTED_ERROR_AFTER_NATIVE_CLOSE_RESOLVED — استُعيد الأصل وتم التحقق من بايتاته — رابط تنزيل بديل فقط؛ التنزيل غير مؤكد.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mwas0twf-9",
+        "runnerCaseRunId": "062c291a-85fb-4463-a35b-59454f442a20",
+        "recordedAt": "2026-11-10T14:19:34.623Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-failed; _verifyLevel=rollback-verified; fallback download link will be offered (download not confirmed)",
+        "rawTargetToken": 19,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": null,
+        "actualFileSha256": null,
+        "notes": null
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "062c291a-85fb-4463-a35b-59454f442a20",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 19,
+          "rawToken": 19,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 11,
+          "capturedAt": "2026-11-10T14:19:22.804Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "forced",
+        "from": "A",
+        "to": "B",
+        "pickerCallsBefore": 11,
+        "pickerCallsAfter": 11,
+        "verdict": "globals-replaced-with-B",
+        "method": "synthetic-global-state-mutation; no native picker interaction",
+        "recordedAt": "2026-11-10T14:19:32.831Z"
+      },
+      "uiAttempt": null,
+      "injectedFailure": {
+        "caseId": "close-after-commit-fail",
+        "caseRunId": "062c291a-85fb-4463-a35b-59454f442a20",
+        "kind": "close",
+        "phase": "after-native-close-resolved-before-error",
+        "nativeCloseResolved": true,
+        "probeSucceeded": true,
+        "probeFailed": false,
+        "probeError": null,
+        "committedPreRollbackSize": 1213,
+        "committedPreRollbackSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "differsFromOriginal": true,
+        "recordedAt": "2026-11-10T14:19:34.067Z",
+        "classification": "committed-write-rollback; native close resolved; independent readback must prove changed content before injected error"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "injection-proven=true; failure-evidence=true; marker-seen=true; rollback-message=true; disk-original=true; committed-readback-matches-output=true; abortOutcome=not-applicable"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:19:35.755Z"
+    },
+    {
+      "case_id": "freshness-buffer",
+      "caseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+      "gate": "before-freshness-buffer-read",
+      "swap_mode": "ui",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "state": "EXPECTED_PATCHED",
+        "originalHashMatch": false,
+        "expectedOutputHashMatch": true
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات)",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "index.html"
+      },
+      "evidence": {
+        "id": "ev-mwas2wl6-a",
+        "runnerCaseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+        "recordedAt": "2026-11-10T14:21:11.418Z",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "rawTargetToken": 23,
+        "rawTargetSize": 1213,
+        "rawTargetSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "outputSize": 1213,
+        "outputSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "actualFileSize": 1213,
+        "actualFileSha256": "745cb6a964e578279ee34f4b63e8fb9e382b5a1da81d2c2c5105227d287d9656",
+        "notes": "الكتابة المباشرة انتهت على المقبض المثبّت index.html؛ مستوى تحقق الأداة: full-byte-compare"
+      },
+      "evidenceCorrelation": {
+        "baseline": {
+          "caseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+          "targetName": "index.html",
+          "directFileName": "index.html",
+          "loadToken": 23,
+          "rawToken": 23,
+          "rawSize": 1213,
+          "rawSha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+          "selectedHandleName": "index.html",
+          "pickerCallNo": 14,
+          "capturedAt": "2026-11-10T14:20:44.996Z",
+          "permissionAtArm": "granted",
+          "A_before": {
+            "name": "index.html",
+            "size": 1213,
+            "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+          },
+          "B_before": {
+            "name": "B.txt",
+            "size": 51,
+            "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+          },
+          "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+        },
+        "candidateCount": 1,
+        "exactCorrelatedCount": 1,
+        "uniqueExactMatch": true
+      },
+      "baselineSetId": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a:2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583",
+      "A_before": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+      },
+      "B_before": {
+        "name": "B.txt",
+        "size": 51,
+        "sha256": "2e29ee092d94c0df07fb4c7f2410de92089dc7f24521f80431a2bab283de9583"
+      },
+      "pendingNativeOperation": null,
+      "swapEvidence": {
+        "mode": "ui",
+        "caseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+        "mechanism": "native-disabled-control; all seven controls remained disabled",
+        "disabledBefore": {
+          "openForDirectBtn": true,
+          "targetFile": true,
+          "applyBtn": true,
+          "dryBtn": true,
+          "clearBtn": true,
+          "cleanTargetBtn": true,
+          "undoTargetBtn": true
+        },
+        "disabledAfter": {
+          "openForDirectBtn": true,
+          "targetFile": true,
+          "applyBtn": true,
+          "dryBtn": true,
+          "clearBtn": true,
+          "cleanTargetBtn": true,
+          "undoTargetBtn": true
+        },
+        "trustedHumanClick": false,
+        "guardToastSeen": false,
+        "noDisabledControlReenabled": true,
+        "guardToasts": [],
+        "pickerCallsBefore": 14,
+        "pickerCallsAfter": 14,
+        "handleUnchanged": true,
+        "directNameUnchanged": true,
+        "currentNameUnchanged": true,
+        "loadTokenUnchanged": true,
+        "rawTokenUnchanged": true,
+        "transactionStillBusy": true,
+        "verdict": "ui-disabled-controls-pass",
+        "passed": true,
+        "recordedAt": "2026-11-10T14:21:06.219Z"
+      },
+      "uiAttempt": {
+        "mode": "ui",
+        "caseRunId": "c5bffd2e-3341-4452-b56d-38b8d045702c",
+        "mechanism": "native-disabled-control; all seven controls remained disabled",
+        "disabledBefore": {
+          "openForDirectBtn": true,
+          "targetFile": true,
+          "applyBtn": true,
+          "dryBtn": true,
+          "clearBtn": true,
+          "cleanTargetBtn": true,
+          "undoTargetBtn": true
+        },
+        "disabledAfter": {
+          "openForDirectBtn": true,
+          "targetFile": true,
+          "applyBtn": true,
+          "dryBtn": true,
+          "clearBtn": true,
+          "cleanTargetBtn": true,
+          "undoTargetBtn": true
+        },
+        "trustedHumanClick": false,
+        "guardToastSeen": false,
+        "noDisabledControlReenabled": true,
+        "guardToasts": [],
+        "pickerCallsBefore": 14,
+        "pickerCallsAfter": 14,
+        "handleUnchanged": true,
+        "directNameUnchanged": true,
+        "currentNameUnchanged": true,
+        "loadTokenUnchanged": true,
+        "rawTokenUnchanged": true,
+        "transactionStillBusy": true,
+        "verdict": "ui-disabled-controls-pass",
+        "passed": true,
+        "recordedAt": "2026-11-10T14:21:06.219Z"
+      },
+      "injectedFailure": null,
+      "checks": {
+        "swapActionProven": true,
+        "pickerCallsStableDuringCase": true,
+        "A_matches_exact_expected_state": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "pendingNativeOperationRequired": false,
+        "pendingNativeOperationProven": true,
+        "evidenceUniquelyCorrelated": true,
+        "evidenceWrapperIntegrity": {
+          "ok": true,
+          "error": null
+        },
+        "correlationCandidateCount": 1,
+        "details": "direct-write-success=true; full-byte-compare=true; hashes-and-sizes-match-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-10T14:21:12.885Z"
+    }
+  ]
+}
