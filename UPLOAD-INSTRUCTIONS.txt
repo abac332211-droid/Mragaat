@@ -1,0 +1,11 @@
+P0 DOCUMENTATION PACK — 2026-11-12
+
+Contents and target repository paths:
+1) BASELINE-MANIFEST.json -> docs/BASELINE-MANIFEST.json
+2) ARCHIVE-INVENTORY.md -> docs/ARCHIVE-INVENTORY.md
+3) STATUS.md -> replace docs/STATUS.md
+4) EXECUTION-LOG-APPEND.md -> append its contents to the end of docs/EXECUTION-LOG.md (do not replace the existing log)
+5) P0-BASELINE-REPORT-2026-11-12.md -> docs/P0-BASELINE-REPORT-2026-11-12.md
+
+Do not replace docs/MASTER-DEVELOPMENT-PLAN.md; the existing copy matches the root plan.
+Do not treat this pack as P0 acceptance. The report intentionally leaves P0 IN_PROGRESS pending the listed archive binary comparison and review items.
