@@ -1,0 +1,417 @@
+--- a/raqee3-v8.0.0-rc3-dev.html
++++ b/raqee3-v8.0.0-rc3-dev-racefix.html
+@@ -1246,6 +1246,7 @@
+ document.querySelectorAll('[data-undo-for]').forEach(function(btn){
+   btn.addEventListener('click', function(){
+     var id = btn.dataset.undoFor;
++    if (id === '_targetHtml' && directWriteBusy) { toast('⚠️ لا يمكن التراجع عن الهدف أثناء معاملة الحفظ المباشر.', false); return; }
+     if (id === '_targetHtml') {
+       if (undoLast('_targetHtml')) {
+         var h = snapshots['_targetHtml'];
+@@ -5130,6 +5131,7 @@
+ }
+ 
+ fileInput.addEventListener('change',function(e){
++  if(directWriteBusy){ e.target.value = ''; toast('⚠️ لا يمكن تبديل الملف أثناء معاملة الحفظ المباشر.', false); return; }
+   var file = e.target.files[0];
+   if(!file) return;
+   var loadToken = ++currentTargetLoadToken;
+@@ -5517,6 +5519,7 @@
+ 
+ /* Fix 1: cleanTargetBtn snapshot AFTER edit */
+ document.getElementById('cleanTargetBtn').addEventListener('click',function(){
++  if(directWriteBusy){ toast('⚠️ لا يمكن تعديل الهدف أثناء معاملة الحفظ المباشر.', false); return; }
+   if(!requireLoaded(currentHtml)) return;
+   var r = sanitize(currentHtml, {hidden:true, tashkeel:false, spaces:false, nb:true, alef:false, yah:false, teh:false});
+   var removed = r.stats.hidden + r.stats.nb;
+@@ -5874,6 +5877,7 @@
+ }
+ function evidenceSerializeRun(kind, res, extra){
+   extra = extra || {};
++  var targetIdentity = extra.targetIdentity || null;
+   var now = new Date();
+   var id = 'ev-' + now.getTime().toString(36) + '-' + (++evidenceEventCounter).toString(36);
+   var run = res || {};
+@@ -5898,11 +5902,11 @@
+     operation:String(kind || 'patch-run'),
+     engineVersion:String(ENGINE_VERSION || 'unknown'),
+     patchFormatVersion:String(PATCH_FORMAT_VERSION || 'unknown'),
+-    targetName:currentFileName || null,
+-    rawTargetToken:currentTargetRawEvidence ? currentTargetRawEvidence.token : null,
+-    rawTargetSize:currentTargetRawEvidence ? currentTargetRawEvidence.size : null,
+-    rawTargetSha256:currentTargetRawEvidence && currentTargetRawEvidence.sha256 ? currentTargetRawEvidence.sha256 : null,
+-    memorySize:currentHtml == null ? null : currentHtml.length,
++    targetName:targetIdentity ? targetIdentity.name : (currentFileName || null),
++    rawTargetToken:targetIdentity ? targetIdentity.rawToken : (currentTargetRawEvidence ? currentTargetRawEvidence.token : null),
++    rawTargetSize:targetIdentity ? targetIdentity.rawSize : (currentTargetRawEvidence ? currentTargetRawEvidence.size : null),
++    rawTargetSha256:targetIdentity ? (targetIdentity.rawSha256 || null) : (currentTargetRawEvidence && currentTargetRawEvidence.sha256 ? currentTargetRawEvidence.sha256 : null),
++    memorySize:targetIdentity && typeof targetIdentity.memorySize === 'number' ? targetIdentity.memorySize : (currentHtml == null ? null : currentHtml.length),
+     patchedMemorySize:(run && run.outputAccepted && typeof run.html === 'string') ? run.html.length : null,
+     ok:Number(run.ok || 0), applied:Number(run.applied || 0), skip:Number(run.skip || 0), fail:Number(run.fail || 0),
+     verifyFailed:!!run.verifyFailed,
+@@ -5926,7 +5930,7 @@
+   var outputBytes = null, actualBytes = null;
+   try {
+     if(extra.outputBytes) outputBytes = extra.outputBytes instanceof Uint8Array ? extra.outputBytes : new Uint8Array(extra.outputBytes);
+-    else if(extra.outputText !== undefined && extra.outputText !== null) outputBytes = encodeTextForFile(extra.outputText, currentEncoding, currentHasBOM);
++    else if(extra.outputText !== undefined && extra.outputText !== null) outputBytes = encodeTextForFile(extra.outputText, targetIdentity ? targetIdentity.encoding : currentEncoding, targetIdentity ? targetIdentity.hasBOM : currentHasBOM);
+   } catch(_oe) { outputBytes = null; }
+   try { if(extra.actualBytes) actualBytes = extra.actualBytes instanceof Uint8Array ? extra.actualBytes : new Uint8Array(extra.actualBytes); } catch(_ae) { actualBytes = null; }
+   if(outputBytes){
+@@ -6060,15 +6064,17 @@
+   var queuePersisted = evidenceSaveQueue(queue);
+   if(queuePersisted) evidenceSetStatus('تم تسجيل التشغيل محليًا — ' + queue.length + ' سجل بانتظار/قيد المزامنة.', false);
+   var token = record.rawTargetToken;
+-  if(token && currentTargetRawHashPromise && !record.rawTargetSha256){
+-    Promise.resolve(currentTargetRawHashPromise).then(function(hash){
++  var targetHashPromise = extra && extra.targetIdentity && extra.targetIdentity.hashPromise
++    ? extra.targetIdentity.hashPromise : currentTargetRawHashPromise;
++  if(token && targetHashPromise && !record.rawTargetSha256){
++    Promise.resolve(targetHashPromise).then(function(hash){
+       var latest = evidenceGetQueue();
+       var changed = false;
+       latest.forEach(function(item){
+         if(item.rawTargetToken === token && !item.rawTargetSha256 && hash){ item.rawTargetSha256 = hash; changed = true; }
+       });
+       if(changed) evidenceSaveQueue(latest);
+-      if(hash) evidenceUpdateIdentityFromTarget();
++      if(hash && currentTargetRawEvidence && currentTargetRawEvidence.token === token) evidenceUpdateIdentityFromTarget();
+     }).catch(function(){}).finally(function(){ evidenceFlushQueue(); });
+   } else {
+     evidenceFlushQueue();
+@@ -6237,18 +6243,21 @@
+   var saveModeEl = document.querySelector('input[name="saveMode"]:checked');
+   var saveMode = saveModeEl ? saveModeEl.value : 'download';
+   var evidenceApplyRecorded = false;
++  var evidenceTargetIdentity = null;
+   var evidenceSaveStatus = saveMode === 'direct' ? 'direct-write-pending; not verified yet' : 'download-link-not-yet-created';
+   var recordApplyEvidenceOnce = function(status, actualBytes, notes){
+     if(evidenceApplyRecorded) return;
+     evidenceApplyRecorded = true;
+-    queueEvidenceRun('apply', res, {
++    var _evidenceExtra = {
+       saveMode:saveMode,
+       saveStatus:status || evidenceSaveStatus,
+       outputName:out,
+       outputText:outputText,
+       actualBytes:actualBytes || null,
+       notes:notes || null
+-    });
++    };
++    if(evidenceTargetIdentity) _evidenceExtra.targetIdentity = evidenceTargetIdentity;
++    queueEvidenceRun('apply', res, _evidenceExtra);
+   };
+   _remapFidelityLost = false;
+   var outputText = (currentLineEndings && currentLineEndings.length > 0)
+@@ -6288,15 +6297,60 @@
+       doDownload();
+       return;
+     }
++    var _directTxn = {
++      handle: directFileHandle,
++      name: directFileName,
++      targetName: currentFileName,
++      loadToken: currentTargetLoadToken,
++      rawToken: currentTargetRawEvidence ? currentTargetRawEvidence.token : currentTargetRawToken,
++      rawSize: currentTargetRawEvidence ? currentTargetRawEvidence.size : null,
++      rawSha256: currentTargetRawEvidence ? currentTargetRawEvidence.sha256 : null,
++      rawHashPromise: currentTargetRawHashPromise,
++      encoding: currentEncoding,
++      hasBOM: currentHasBOM,
++      openedSnapshot: directOpenedSnapshot,
++      sourceHtml: sourceHtmlForSave,
++      patchSnapshot: patchSnapshotForSave,
++      enabledSnapshot: enabledSnapshotForSave
++    };
++    if(!_directTxn.handle || _directTxn.name !== _directTxn.targetName || !directTransactionIsCurrent(_directTxn)){
++      evidenceSaveStatus = 'direct-write-cancelled: target identity changed before transaction start';
++      recordApplyEvidenceOnce(evidenceSaveStatus, null, 'أُلغيت المعاملة قبل أي كتابة لأن هوية الهدف لم تكن مستقرة.');
++      setSummary('warn', '⚠️ أُلغيت الكتابة المباشرة: تغيّرت هوية الملف المستهدف قبل البدء.');
++      doDownload();
++      return;
++    }
++    evidenceTargetIdentity = {
++      name: _directTxn.name, rawToken: _directTxn.rawToken, rawSize: _directTxn.rawSize,
++      rawSha256: _directTxn.rawSha256, memorySize: _directTxn.sourceHtml.length,
++      encoding: _directTxn.encoding, hasBOM: _directTxn.hasBOM, hashPromise: _directTxn.rawHashPromise
++    };
+     var _prevApplyDisabled = applyBtn.disabled;
+     var _prevDryDisabled = dryBtn.disabled;
++    var _pickerBtn = document.getElementById('openForDirectBtn');
++    var _clearTargetBtn = clearBtn;
++    var _cleanTargetBtn = document.getElementById('cleanTargetBtn');
++    var _undoTargetBtn = document.getElementById('undoTargetBtn');
++    var _prevPickerDisabled = _pickerBtn ? _pickerBtn.disabled : true;
++    var _prevFileInputDisabled = fileInput.disabled;
++    var _prevClearDisabled = _clearTargetBtn.disabled;
++    var _prevCleanDisabled = _cleanTargetBtn ? _cleanTargetBtn.disabled : true;
++    var _prevUndoDisabled = _undoTargetBtn ? _undoTargetBtn.disabled : true;
+     directWriteBusy = true;
+     applyBtn.disabled = true;
+     dryBtn.disabled = true;
++    if(_pickerBtn) _pickerBtn.disabled = true;
++    fileInput.disabled = true;
++    _clearTargetBtn.disabled = true;
++    if(_cleanTargetBtn) _cleanTargetBtn.disabled = true;
++    if(_undoTargetBtn) _undoTargetBtn.disabled = true;
+     try {
+       await (async function(){
++      var _verifyLevel = 'not-written';
++      var _writeAttempted = false;
+       try {
+-        var latestBuf = await (await directFileHandle.getFile()).arrayBuffer();
++        var latestBuf = await (await _directTxn.handle.getFile()).arrayBuffer();
++        assertDirectTransactionCurrent(_directTxn, 'freshness-read');
+         var latestBytes = new Uint8Array(latestBuf);
+         var latestEnc = 'utf-8';
+         var latestHasBOM = latestBytes.length >= 3 && latestBytes[0] === 0xEF && latestBytes[1] === 0xBB && latestBytes[2] === 0xBF;
+@@ -6304,7 +6358,7 @@
+         else if(latestBytes.length >= 2 && latestBytes[0] === 0xFE && latestBytes[1] === 0xFF){ latestEnc = 'utf-16be'; latestHasBOM = true; }
+         // Compare raw decoded text, not normalized text, so line-ending-only changes are detected too.
+         var latestText = new TextDecoder(latestEnc).decode(latestBuf);
+-        if(directOpenedSnapshot !== null && (latestText !== directOpenedSnapshot || latestEnc !== currentEncoding || latestHasBOM !== currentHasBOM)){
++        if(_directTxn.openedSnapshot !== null && (latestText !== _directTxn.openedSnapshot || latestEnc !== _directTxn.encoding || latestHasBOM !== _directTxn.hasBOM)){
+           if(!confirm('⚠️ تغيّر الملف على القرص منذ فتحه.\n\nالكتابة الآن ستستبدل التعديلات الخارجية بلا رجعة.\n\nهل تريد المتابعة؟')){
+             evidenceSaveStatus = 'cancelled by user after external-change freshness warning';
+             recordApplyEvidenceOnce(evidenceSaveStatus);
+@@ -6313,7 +6367,7 @@
+             return;
+           }
+         }
+-        if(!confirm('تأكيد الكتابة المباشرة على:\n' + directFileName + ' ؟')){
++        if(!confirm('تأكيد الكتابة المباشرة على:\n' + _directTxn.name + ' ؟')){
+           evidenceSaveStatus = 'cancelled by user before direct write';
+           recordApplyEvidenceOnce(evidenceSaveStatus);
+           toast('أُلغي الحفظ');
+@@ -6321,20 +6375,18 @@
+           return;
+         }
+         // v7.0.9-write-verify-unified-final: unified write, verification, and rollback
+-        var _verifyLevel = 'none';
+         var _originalFileBeforeWrite = null;
+         var _originalBytesForRollback = null;
+         var _doRollback = false;
+         var _rollbackReason = 'backup-not-prepared';
+-        var _writeAttempted = false;
+         var _writeHandle = null;
+         var _rollbackVerify = async function() {
+           if (!_doRollback || !_originalBytesForRollback) return 'rollback-skipped';
+           try {
+-            var _rbw = await directFileHandle.createWritable();
++            var _rbw = await _directTxn.handle.createWritable();
+             await _rbw.write(_originalBytesForRollback);
+             await _rbw.close();
+-            var _rbCheck = new Uint8Array(await (await directFileHandle.getFile()).arrayBuffer());
++            var _rbCheck = new Uint8Array(await (await _directTxn.handle.getFile()).arrayBuffer());
+             if (_rbCheck.length !== _originalBytesForRollback.length) {
+               _rollbackReason = 'rollback-content-mismatch';
+               return 'rollback-failed';
+@@ -6362,9 +6414,12 @@
+             return 'لم يُسترجع الأصل: لا توجد نسخة احتياطية متاحة';
+           }
+           if (_level === 'none') return 'لم يكتمل التحقق من الكتابة';
++          if (_level === 'not-written') return 'لم تبدأ الكتابة؛ أُلغيت المعاملة قبل أول بايت';
+           return 'مستوى التحقق: ' + _level;
+         };
+-        _originalFileBeforeWrite = await directFileHandle.getFile();
++        assertDirectTransactionCurrent(_directTxn, 'before-backup');
++        _originalFileBeforeWrite = await _directTxn.handle.getFile();
++        assertDirectTransactionCurrent(_directTxn, 'backup-file-read');
+         if (_originalFileBeforeWrite.size > 10 * 1024 * 1024) {
+           _doRollback = false;
+           _rollbackReason = 'original-too-large';
+@@ -6377,23 +6432,40 @@
+         }
+         try {
+           _originalBytesForRollback = new Uint8Array(await _originalFileBeforeWrite.arrayBuffer());
++          assertDirectTransactionCurrent(_directTxn, 'backup-buffer-read');
+           _doRollback = _originalBytesForRollback.length === _originalFileBeforeWrite.size;
+           if(!_doRollback) throw new Error('backup-size-mismatch');
+           _rollbackReason = 'backup-ready';
+         } catch(_backupErr) {
+           _doRollback = false;
++          if(!directTransactionIsCurrent(_directTxn)) {
++            _rollbackReason = 'target-identity-changed';
++            evidenceSaveStatus = 'direct-write-cancelled: target identity changed before first write';
++            recordApplyEvidenceOnce(evidenceSaveStatus, null, 'لم تبدأ الكتابة؛ تغيّرت هوية الهدف أثناء تجهيز النسخة الاحتياطية، فأُلغيت المعاملة.');
++            doDownload();
++            setSummary('warn', '⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء تجهيز النسخة الاحتياطية.');
++            toast('⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف.', false);
++            return;
++          }
+           _rollbackReason = 'backup-read-failed';
+           evidenceSaveStatus = 'direct-write-blocked: rollback backup unavailable';
+           recordApplyEvidenceOnce(evidenceSaveStatus, null, 'لم تبدأ الكتابة؛ فشلت قراءة نسخة الاسترجاع الكاملة.');
++          doDownload();
+           setSummary('warn', '⚠️ لم تبدأ الكتابة المباشرة: تعذّرت قراءة نسخة الاسترجاع. استخدم التنزيل البديل.');
+           toast('⚠️ حُظرت الكتابة المباشرة لعدم توفر نسخة استرجاع قابلة للتحقق.', false);
+-          doDownload();
+           return;
+         }
+-        var _expectedBytes = encodeTextForFile(outputText, currentEncoding, currentHasBOM);
++        var _expectedBytes = encodeTextForFile(outputText, _directTxn.encoding, _directTxn.hasBOM);
++        assertDirectTransactionCurrent(_directTxn, 'immediately-before-primary-write');
+         try {
++          _writeHandle = await _directTxn.handle.createWritable();
++          try { assertDirectTransactionCurrent(_directTxn, 'writer-created-before-write'); }
++          catch(_staleTxnErr) {
++            if(_writeHandle && typeof _writeHandle.abort === 'function') { try { await _writeHandle.abort(); } catch(_staleAbortErr) {} }
++            _writeHandle = null;
++            throw _staleTxnErr;
++          }
+           _writeAttempted = true;
+-          _writeHandle = await directFileHandle.createWritable();
+           await _writeHandle.write(_expectedBytes);
+           await _writeHandle.close();
+           _writeHandle = null;
+@@ -6404,10 +6476,10 @@
+             }
+           }
+           _writeHandle = null;
+-          _verifyLevel = await _rollbackVerify();
++          _verifyLevel = _writeAttempted ? await _rollbackVerify() : 'not-written';
+           throw new Error('فشل أثناء الكتابة المباشرة: ' + (_writeErr && _writeErr.message ? _writeErr.message : 'خطأ غير معروف') + ' — ' + _rollbackLabel(_verifyLevel));
+         }
+-        var _postWriteFile = await directFileHandle.getFile();
++        var _postWriteFile = await _directTxn.handle.getFile();
+         var _postWriteBytes;
+         try { _postWriteBytes = new Uint8Array(await _postWriteFile.arrayBuffer()); }
+         catch(_readbackErr) {
+@@ -6427,35 +6499,39 @@
+           throw new Error('فشل التطابق البايتي الكامل بعد الكتابة — ' + _rollbackLabel(_verifyLevel));
+         }
+         _verifyLevel = 'full-byte-compare';
+-        currentHtml = res.html;
+-        currentLineEndings = extractLineEndings(outputText);
+-        directOpenedSnapshot = outputText;
+-        snapshotNow('_targetHtml', currentHtml);
+-        markTargetChanged();
+-        targetInfo.innerHTML = '📄 <b>' + escHtml(currentFileName) + '</b> — ' + currentHtml.length.toLocaleString() + ' حرف (' + byteSize(currentHtml).toLocaleString() + ' بايت) [تم الحفظ مباشرة]';
++        var _txnStillSelected = directTransactionIsCurrent(_directTxn);
++        if(_txnStillSelected){
++          currentHtml = res.html;
++          currentLineEndings = extractLineEndings(outputText);
++          directOpenedSnapshot = outputText;
++          snapshotNow('_targetHtml', currentHtml);
++          markTargetChanged();
++          targetInfo.innerHTML = '📄 <b>' + escHtml(_directTxn.name) + '</b> — ' + currentHtml.length.toLocaleString() + ' حرف (' + byteSize(currentHtml).toLocaleString() + ' بايت) [تم الحفظ مباشرة]';
++        }
+         var _verifyLabel = _verifyLevel === 'full-byte-compare' ? 'تحقق كامل (الحجم + مقارنة جميع البايتات)' : 'مستوى تحقق غير متوقع: ' + _verifyLevel;
++        var _selectionNote = _txnStillSelected ? '' : ' — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت ' + _directTxn.name;
+         if (_remapFidelityLost) {
+-          setSummary('warn', '⚠️ حُفظ الملف مباشرة — ' + _verifyLabel + '. لكن تعذّر الحفاظ على نهايات الأسطر المختلطة (CRLF/LF).');
+-          addHistory('skip', 'تحذير: تعذّر الحفاظ على نهايات الأسطر؛ ' + _verifyLabel);
++          setSummary('warn', '⚠️ حُفظ الملف مباشرة — ' + _verifyLabel + '. لكن تعذّر الحفاظ على نهايات الأسطر المختلطة (CRLF/LF).' + _selectionNote);
++          addHistory('skip', 'تحذير: تعذّر الحفاظ على نهايات الأسطر؛ ' + _verifyLabel + ' — الهدف ' + _directTxn.name);
+         } else {
+-          setSummary('ok', '✅ تم التعديل مباشرة على: ' + directFileName + ' — ' + _verifyLabel);
+-          addHistory('ok', 'تعديل مباشر: '+res.ok+' رقعة على ' + directFileName + ' — ' + _verifyLabel);
++          setSummary('ok', '✅ تم التعديل مباشرة على: ' + _directTxn.name + ' — ' + _verifyLabel + _selectionNote);
++          addHistory('ok', 'تعديل مباشر: '+res.ok+' رقعة على ' + _directTxn.name + ' — ' + _verifyLabel);
+         }
+-        toast('✅ تم حفظ التعديل على الملف الأصلي');
++        toast('✅ تم حفظ التعديل على الملف الأصلي: ' + _directTxn.name);
+         var _evidencePostBytes = null;
+-        try { _evidencePostBytes = new Uint8Array(await (await directFileHandle.getFile()).arrayBuffer()); } catch(_evidenceReadErr) {}
++        try { _evidencePostBytes = new Uint8Array(await (await _directTxn.handle.getFile()).arrayBuffer()); } catch(_evidenceReadErr) {}
+         evidenceSaveStatus = 'direct-write-success; _verifyLevel=' + _verifyLevel;
+-        recordApplyEvidenceOnce(evidenceSaveStatus, _evidencePostBytes, 'الكتابة المباشرة انتهت؛ مستوى تحقق الأداة: ' + _verifyLevel);
+-        if(_evidencePostBytes){
++        recordApplyEvidenceOnce(evidenceSaveStatus, _evidencePostBytes, 'الكتابة المباشرة انتهت على المقبض المثبّت ' + _directTxn.name + '؛ مستوى تحقق الأداة: ' + _verifyLevel);
++        if(_evidencePostBytes && _txnStillSelected && directTransactionIsCurrent(_directTxn)){
+           var _actualPostHash = sha256HexPure(_evidencePostBytes);
+           currentTargetRawToken++;
+-          currentTargetRawEvidence = {name:directFileName, size:_evidencePostBytes.length, sha256:_actualPostHash, token:currentTargetRawToken, targetEngineVersion:ENGINE_VERSION};
++          currentTargetRawEvidence = {name:_directTxn.name, size:_evidencePostBytes.length, sha256:_actualPostHash, token:currentTargetRawToken, targetEngineVersion:ENGINE_VERSION};
+           currentTargetRawHashPromise = Promise.resolve(_actualPostHash);
+           evidenceUpdateIdentityFromTarget();
+         }
+       } catch(e) {
+         if (typeof _verifyLevel === 'undefined') _verifyLevel = 'none';
+-        if (_verifyLevel === 'none' && _writeAttempted) {
++        if ((_verifyLevel === 'none' || _verifyLevel === 'not-written') && _writeAttempted) {
+           if (typeof _rollbackVerify === 'function') {
+             try { _verifyLevel = await _rollbackVerify(); }
+             catch(_ce) { _verifyLevel = 'rollback-failed'; }
+@@ -6463,7 +6539,16 @@
+             _verifyLevel = 'rollback-skipped';
+           }
+         }
+-        var _catchLabel = _verifyLevel === 'rollback-verified' ? 'استُعيد الأصل وتم التحقق من بايتاته' : (_verifyLevel === 'rollback-failed' ? 'تعذر تأكيد الاسترجاع — راجع الملف يدويًا واستعد النسخة الخارجية' : (_verifyLevel === 'rollback-skipped' ? (_rollbackReason === 'original-too-large' ? 'لم توجد نسخة استرجاع لأن الأصل أكبر من 10 MiB' : (_rollbackReason === 'backup-read-failed' ? 'تعذرت قراءة نسخة الاسترجاع' : 'لم تتوفر نسخة استرجاع')) : (_verifyLevel === 'none' ? 'فشل قبل بدء التحقق من الكتابة' : ('مستوى التحقق: ' + _verifyLevel))));
++        var _catchLabel = _verifyLevel === 'rollback-verified' ? 'استُعيد الأصل وتم التحقق من بايتاته' : (_verifyLevel === 'rollback-failed' ? 'تعذر تأكيد الاسترجاع — راجع الملف يدويًا واستعد النسخة الخارجية' : (_verifyLevel === 'rollback-skipped' ? (_rollbackReason === 'original-too-large' ? 'لم توجد نسخة استرجاع لأن الأصل أكبر من 10 MiB' : (_rollbackReason === 'backup-read-failed' ? 'تعذرت قراءة نسخة الاسترجاع' : 'لم تتوفر نسخة استرجاع')) : (_verifyLevel === 'not-written' ? 'لم تبدأ الكتابة؛ أُلغيت المعاملة قبل أول بايت' : (_verifyLevel === 'none' ? 'فشل قبل بدء التحقق من الكتابة' : ('مستوى التحقق: ' + _verifyLevel)))));
++        if(!_writeAttempted && _directTxn && !directTransactionIsCurrent(_directTxn)) {
++          evidenceSaveStatus = 'direct-write-cancelled: target identity changed before first write';
++          recordApplyEvidenceOnce(evidenceSaveStatus, null, 'لم تبدأ الكتابة؛ تغيّرت هوية الهدف قبل أول بايت، فأُلغيت المعاملة.');
++          doDownload();
++          setSummary('warn', '⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء المعاملة.');
++          toast('⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف.', false);
++          addHistory('skip', 'إلغاء معاملة الحفظ المباشر قبل الكتابة — تغيّرت هوية الهدف المثبّت.');
++          return;
++        }
+         var _fallbackDownloadRequested = false;
+         evidenceSaveStatus = 'direct-write-failed; _verifyLevel=' + _verifyLevel + '; fallback download link will be offered (download not confirmed)';
+         try { doDownload(); _fallbackDownloadRequested = true; }
+@@ -6481,6 +6566,11 @@
+       directWriteBusy = false;
+       applyBtn.disabled = _prevApplyDisabled;
+       dryBtn.disabled = _prevDryDisabled;
++      if(_pickerBtn) _pickerBtn.disabled = _prevPickerDisabled;
++      fileInput.disabled = _prevFileInputDisabled;
++      _clearTargetBtn.disabled = _prevClearDisabled;
++      if(_cleanTargetBtn) _cleanTargetBtn.disabled = _prevCleanDisabled;
++      if(_undoTargetBtn) _undoTargetBtn.disabled = _prevUndoDisabled;
+     }
+   } else {
+     doDownload();
+@@ -6606,6 +6696,7 @@
+ })();
+ 
+ clearBtn.addEventListener('click',function(){
++  if(directWriteBusy){ toast('⚠️ لا يمكن مسح الهدف أثناء معاملة الحفظ المباشر.', false); return; }
+   fileInput.value = '';
+   currentHtml = null;
+   currentFileName = '';
+@@ -7342,6 +7433,21 @@
+ var directTargetMatches = false;
+ var directOpenedSnapshot = null;
+ var directWriteBusy = false;
++function directTransactionIsCurrent(txn){
++  return !!(txn && directFileHandle === txn.handle && directFileName === txn.name &&
++    currentFileName === txn.targetName && currentTargetLoadToken === txn.loadToken &&
++    currentTargetRawToken === txn.rawToken && directTargetMatches === true &&
++    currentEncoding === txn.encoding && currentHasBOM === txn.hasBOM &&
++    directOpenedSnapshot === txn.openedSnapshot &&
++    currentTargetRawEvidence && currentTargetRawEvidence.token === txn.rawToken &&
++    currentTargetRawEvidence.name === txn.name);
++}
++function assertDirectTransactionCurrent(txn, stage){
++  if(!directTransactionIsCurrent(txn) || currentHtml !== txn.sourceHtml ||
++     JSON.stringify(PATCHES) !== txn.patchSnapshot || JSON.stringify(patchEnabled) !== txn.enabledSnapshot){
++    throw new Error('تغيّرت هوية الهدف أو بيانات المعاملة قبل الكتابة (' + stage + ')؛ أُلغيت الكتابة المباشرة.');
++  }
++}
+ 
+ document.querySelectorAll('input[name="saveMode"]').forEach(function(radio){
+   radio.addEventListener('change', function(){
+@@ -7359,17 +7465,19 @@
+     return;
+   }
+   btn.addEventListener('click', async function(){
++    if(directWriteBusy){ toast('⚠️ اختيار ملف آخر غير متاح أثناء معاملة الحفظ المباشر.', false); return; }
+     var _directLoadToken;
+     try {
+       var handles = await window.showOpenFilePicker({multiple: false});
++      if(directWriteBusy){ toast('⚠️ أُهمل اختيار الملف لأن معاملة حفظ مباشرة بدأت أثناء فتح المنتقي.', false); return; }
+       // Reserve the load generation only after the picker returns a file; cancel must not invalidate an existing selection.
+       _directLoadToken = ++currentTargetLoadToken;
+       var nextDirectFileHandle = handles[0];
+       var file = await nextDirectFileHandle.getFile();
+-      if(_directLoadToken !== currentTargetLoadToken) return;
++      if(directWriteBusy || _directLoadToken !== currentTargetLoadToken) return;
+       if(file.size > LIMITS.targetFileBytes) throw new Error('حجم الملف يتجاوز الحد (' + (LIMITS.targetFileBytes/1024/1024).toFixed(0) + ' MB)');
+       var rawBuffer = await file.arrayBuffer();
+-      if(_directLoadToken !== currentTargetLoadToken) return;
++      if(directWriteBusy || _directLoadToken !== currentTargetLoadToken) return;
+       directFileHandle = nextDirectFileHandle;
+       var _directRawToken = ++currentTargetRawToken;
+       var rawBytes = new Uint8Array(rawBuffer), directEncoding = 'utf-8', directBOM = rawBytes.length >= 3 && rawBytes[0] === 0xEF && rawBytes[1] === 0xBB && rawBytes[2] === 0xBF;

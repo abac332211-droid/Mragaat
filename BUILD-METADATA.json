@@ -1,0 +1,77 @@
+{
+  "artifact": "DIRECT-RACE-01-04-RACEFIX-RC3-DEV",
+  "built_at_utc": "2026-11-06T15:18:30Z",
+  "base_source": {
+    "file": "raqee3-v8.0.0-rc3-dev.html",
+    "size_bytes": 483593,
+    "sha256": "ebdb9c9f34f09c094d394bda897555758efe7aad9f30e43b41f1bd5fb7b873ed",
+    "git_blob_sha1": "0ec3926eb43315be86085e0cc275c525ea5ac845",
+    "baseline_verified_unchanged_after_build": true
+  },
+  "fixed_source": {
+    "file": "raqee3-v8.0.0-rc3-dev-racefix.html",
+    "size_bytes": 492397,
+    "sha256": "29f454fbf77a3e78336a8ca82ec01843ed8e2dff42a27cd911b5879e85573632",
+    "git_blob_sha1": "48d8379c8fad38cb7d839b3a8369f252b56a4eeb"
+  },
+  "rc2_reference": {
+    "file": "raqee3-v8.0.0-rc2-candidate.html",
+    "size_bytes": 483360,
+    "sha256": "8b7357295f333a44b861d03d555b86b475df53bc1227b9cb5f195026bd4fda9c",
+    "git_blob_sha1": "914dc7e394b9d87d555852c3faeffb13c6bcfb8f",
+    "baseline_reference_unchanged": true
+  },
+  "scope": {
+    "source_work_copy_only": true,
+    "rc3_dev_baseline_modified": false,
+    "rc2_modified": false,
+    "repository_write_performed": false,
+    "archive_upload_performed": false
+  },
+  "patch": {
+    "file": "RC3-DEV-to-RACEFIX.patch",
+    "bytes": 28431,
+    "application_check": "PASS",
+    "applied_output_byte_for_byte_matches_fixed_source": true
+  },
+  "tests": {
+    "browser": "Chromium 144.0.7559.96",
+    "separate_browser_processes": 3,
+    "race_windows": 4,
+    "swap_modes": [
+      "UI event attempt",
+      "forced mutable-global replacement"
+    ],
+    "case_executions": 24,
+    "safe_outcomes": 24,
+    "assertions_passed": 288,
+    "assertions_total": 288,
+    "behaviorally_repeatable": true,
+    "all_B_bytes_preserved": true,
+    "inline_script_blocks": 2,
+    "node_check": [
+      {
+        "script_block": 1,
+        "node_check_exit": 0,
+        "stderr": ""
+      },
+      {
+        "script_block": 2,
+        "node_check_exit": 0,
+        "stderr": ""
+      }
+    ],
+    "python_harness_py_compile": "PASS"
+  },
+  "limits": {
+    "native_file_system_access": "NOT_TESTED",
+    "physical_disk_write": "NOT_TESTED",
+    "production_reachability": "UNPROVEN",
+    "browser_test_uses": "actual HTML and DOM/event handlers in Chromium with deterministic in-memory FileSystemFileHandle-like fixtures"
+  },
+  "finding_status": {
+    "DIRECT_RACE": "VERIFIED_AT_CHROMIUM_MOCK_LEVEL_AFTER_FIX",
+    "DIRECT_02": "OPEN — native FSA and production reachability pending",
+    "FOLDER_LOG_01": "OPEN"
+  }
+}
