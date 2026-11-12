@@ -1,0 +1,20 @@
+--- raqee3-v8.0.0-rc2-candidate.html
++++ raqee3-v8.0.0-rc3-dev.html
+@@ -7992,7 +7992,8 @@
+       }
+     });
+     log.entries.sort(function(x, y) { return plan.items.findIndex(function(i) { return i.path === x.path; }) - plan.items.findIndex(function(i) { return i.path === y.path; }); });
+-    if (log.rollbackFailures === 0) log.status = 'recovered';
++    if (attempted.length === 0 && failedItem) log.status = 'no_writes_attempted';
++    else if (log.rollbackFailures === 0) log.status = 'recovered';
+     else if (log.rollbackFailures < log.rollbackAttempts) log.status = 'recovery_partial';
+     else log.status = 'recovery_failed';
+     return log;
+@@ -8696,6 +8697,7 @@
+     var labels = {
+       verified: '✅ اكتملت الكتابة وتحقّق تطابق بايتات كل ملف',
+       recovered: '↩️ حدث فشل؛ تم التحقق من استعادة كل الملفات التي بدأت الكتابة عليها',
++      no_writes_attempted: '⛔ فشل التنفيذ قبل بدء أي كتابة؛ لم تحدث كتابة أو محاولة استرجاع',
+       recovery_partial: '⚠️ فشل التنفيذ والاستعادة جزئية؛ استخدم نسخة ZIP للتعافي اليدوي',
+       recovery_failed: '🚨 تعذر تأكيد الاستعادة؛ أوقف العمل واستخدم نسخة ZIP الأصلية',
+       stale_preflight: '⛔ تغيّر محتوى ملف بعد تجهيز النسخة الاحتياطية؛ لم تبدأ الدفعة',

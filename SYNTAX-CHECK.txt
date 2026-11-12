@@ -1,0 +1,5 @@
+Syntax checks performed with Node.js v22.16.0:
+- node --check FOLDER-LOG-01-RC3-DEV-AE-harness.node.js : PASS
+- Extract both inline <script> blocks from raqee3-v8.0.0-rc3-dev.html, concatenate them, then node --check : PASS
+
+These checks establish JavaScript parse validity only. They are not browser execution or application integration tests.

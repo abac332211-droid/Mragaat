@@ -1,0 +1,66 @@
+{
+  "baseline": {
+    "bytes": 483360,
+    "sha256": "8b7357295f333a44b861d03d555b86b475df53bc1227b9cb5f195026bd4fda9c",
+    "git_blob_sha1": "914dc7e394b9d87d555852c3faeffb13c6bcfb8f"
+  },
+  "candidate": {
+    "file": "raqee3-v8.0.0-rc3-dev.html",
+    "bytes": 483593,
+    "sha256": "ebdb9c9f34f09c094d394bda897555758efe7aad9f30e43b41f1bd5fb7b873ed",
+    "git_blob_sha1": "0ec3926eb43315be86085e0cc275c525ea5ac845"
+  },
+  "change": {
+    "finding": "FOLDER-LOG-01",
+    "scope": "single status-classification branch in folderRunWriteBatch()",
+    "old": [
+      "    if (log.rollbackFailures === 0) log.status = 'recovered';",
+      "    else if (log.rollbackFailures < log.rollbackAttempts) log.status = 'recovery_partial';",
+      "    else log.status = 'recovery_failed';"
+    ],
+    "new": [
+      "    if (attempted.length === 0 && failedItem) log.status = 'no_writes_attempted';",
+      "    else if (log.rollbackFailures === 0) log.status = 'recovered';",
+      "    else if (log.rollbackFailures < log.rollbackAttempts) log.status = 'recovery_partial';",
+      "    else log.status = 'recovery_failed';"
+    ],
+    "other_source_changes": 1,
+    "ui_label_added_for_new_status": true,
+    "rc2_modified": false
+  },
+  "harness": {
+    "filename": "FOLDER-LOG-01-RC3-DEV-AE-harness.node.js",
+    "source_functions_extracted_from_candidate": [
+      "norm",
+      "LIMITS",
+      "folderCreateMockFromFiles",
+      "folderResolvePath",
+      "folderBytesEqual",
+      "folderReadRawBytes",
+      "folderRunWriteBatch"
+    ],
+    "cases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ]
+  },
+  "repository_state": {
+    "repository_state_at_build": "unchanged",
+    "repository_state_after_archive_upload": "modified",
+    "rc2_source_modified": false,
+    "rc3_dev_standalone_committed": false,
+    "rc3_dev_embedded_in_uploaded_archive": true,
+    "audit_archive_uploaded_to_main": true,
+    "archive_commit": "58ff0172bad87669002c95dc28fd019e8e7b3534",
+    "archive_commit_verification_status": "COMMIT_AND_MAIN_HEAD_VERIFIED",
+    "archive_commit_signature_verification": "NOT_CHECKED",
+    "archive_deleted_from_current_main": true,
+    "delete_commit": "04d9814c08b5cabc14f2ee48ed88ea02a55701f2",
+    "delete_commit_timestamp_utc": "2026-11-06T13:25:23Z",
+    "current_main_archive_state": "ABSENT_404",
+    "repository_history_preserves_add_and_delete_commits": true
+  }
+}
