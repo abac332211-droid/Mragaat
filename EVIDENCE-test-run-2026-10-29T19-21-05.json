@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 2,
+  "createdAt": "2026-10-29T18:34:37.058Z",
+  "harness": "browser-test-harness-v2.1",
+  "application": {
+    "file": "index.html",
+    "bytes": 437963,
+    "sha256": "008e240d6a64ebfc07dfeff6afe1b464f971bb7dc7b0392e19ac3b649e5c3377",
+    "textLength": 405782,
+    "hasUtf8BOM": false,
+    "encodingNote": "SHA-256 على بايتات الملف الأصلية"
+  },
+  "appTests": {
+    "tests": [
+      {
+        "test": "inline-script-syntax-check-only",
+        "status": "PASS",
+        "scriptBlocks": 3,
+        "note": "فحص صياغة JavaScript فقط؛ لا يتحقق من صحة HTML ولا من تنفيذ التطبيق في المتصفح"
+      },
+      {
+        "test": "sha256-known-vectors",
+        "status": "PASS",
+        "empty": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "abc": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+      },
+      {
+        "test": "balanced-scanner-isolated-regression",
+        "status": "PASS",
+        "resultFragments": 2,
+        "contentAfterNestedTagPreserved": true,
+        "textareaTitleApparentTagsDoNotCreateExtraResults": true,
+        "followingSiblingPreserved": true
+      },
+      {
+        "test": "balanced-scanner-tricky-attributes-and-scripts",
+        "status": "PASS",
+        "attributeWithGtHandled": true,
+        "scriptContainingClosingTagHandled": true,
+        "totalArticlesExtracted": 2
+      },
+      {
+        "test": "evidence-filehandle-mock-integration",
+        "status": "PASS",
+        "appendedRecords": 2,
+        "duplicateOnSecondFlush": false,
+        "identityUpdated": true,
+        "perPatchResultsIncluded": true,
+        "perPatchVerifyDetailsIncluded": true,
+        "candidateAndActualHashComparisonRecorded": true,
+        "pendingQueueAfterSuccess": 0,
+        "sha256Path": "crypto.subtle",
+        "mockEnvironmentMatchesProduction": true
+      },
+      {
+        "test": "source-artifact-identity",
+        "status": "PASS",
+        "file": "index.html",
+        "bytes": 437963,
+        "sha256": "008e240d6a64ebfc07dfeff6afe1b464f971bb7dc7b0392e19ac3b649e5c3377",
+        "hasUtf8BOM": false
+      }
+    ],
+    "passed": 6,
+    "failed": 0,
+    "result": "PASS"
+  },
+  "harnessCapability": {
+    "ran": true,
+    "result": "PASS",
+    "expectedFailureTest": "balanced-scanner-tricky-attributes-and-scripts",
+    "expectedFailureReason": "الحالة B",
+    "actualFailure": "الحالة B: فُقد المحتوى بعد script يحتوي </article>",
+    "baseTestStillPassed": true,
+    "otherTestsStillPassed": true,
+    "note": "المحك يكشف العطل المحدد دون كسر اختبارات أخرى"
+  },
+  "overallAssessment": {
+    "readyForAcceptance": false,
+    "reason": "الاعتماد يتطلب R1/R2 في متصفح حقيقي + مراجعة بشرية",
+    "tested": [
+      "صياغة JavaScript لكل كتلة script (فحص صياغة فقط، لا تنفيذ)",
+      "sha256HexPure مقابل قيم قياسية",
+      "extractHtmlSection — الحالة الأساسية",
+      "extractHtmlSection — الحالة الحرجة (script يحتوي </article>)",
+      "سجل الأدلة عبر FileSystemFileHandle وهمي",
+      "هوية الملف: بايتات أصلية + SHA-256"
+    ],
+    "notTested": [
+      "File System Access API في متصفح حقيقي",
+      "الكتابة الفعلية إلى EVIDENCE.md",
+      "R1 — rollback",
+      "R2 — freshness_check",
+      "crypto.subtle وبدائله (حسب المسار المسجل)",
+      "Clipboard API",
+      "Service Worker",
+      "ملفات UTF-16"
+    ]
+  }
+}

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اختبار رقيع المطور v2.1</title>
+<style>
+  body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;padding:12px;max-width:900px;margin:auto;line-height:1.6}
+  h1{font-size:18px;color:#34d399;margin:8px 0}
+  h2{font-size:15px;color:#6ee7b7;margin:18px 0 8px;border-bottom:1px solid #334155;padding-bottom:4px}
+  input[type=file]{padding:8px;background:#1e293b;border:2px dashed #475569;border-radius:8px;color:#cbd5e1;width:100%;box-sizing:border-box;margin:6px 0}
+  button{padding:10px 14px;border-radius:8px;border:0;background:#059669;color:#fff;font-weight:700;cursor:pointer;margin:4px 4px 4px 0;font-family:inherit}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  button.ghost{background:#334155}
+  button.danger{background:#b91c1c}
+  .test{padding:8px 10px;margin:4px 0;border-left:4px solid;border-radius:5px;font-size:13px}
+  .test.pass{border-color:#22c55e;background:#052e16}
+  .test.fail{border-color:#ef4444;background:#450a0a}
+  .test .name{font-weight:700}
+  .test .detail{color:#94a3b8;font-size:11px;margin-top:3px;font-family:monospace;white-space:pre-wrap;word-break:break-all}
+  .summary{padding:12px;border-radius:8px;font-weight:700;text-align:center;margin:10px 0;font-size:14px}
+  .summary.pass{background:#052e16;color:#86efac;border:1px solid #14532d}
+  .summary.fail{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d}
+  .summary.warn{background:#78350f;color:#fcd34d;border:1px solid #92400e}
+  .info{background:#0c4a6e;color:#bae6fd;border:1px solid #075985;padding:10px;border-radius:8px;margin:8px 0;font-size:13px}
+  .info.boundary{background:#1c1917;color:#d6d3d1;border-color:#57534e}
+  .info.boundary ul{margin:6px 0;padding-right:20px}
+  .info.boundary li{margin:3px 0}
+  pre{background:#020617;padding:10px;border-radius:6px;font-size:11px;overflow:auto;max-height:400px;font-family:monospace}
+  .file-meta{font-size:12px;color:#94a3b8;margin-top:4px;font-family:monospace;word-break:break-all}
+  .meta-ok{color:#86efac}
+  .meta-warn{color:#fcd34d}
+  details{margin:8px 0}
+  details summary{cursor:pointer;color:#93c5fd;font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+
+<h1>🔬 اختبار رقيع المطور — v2.1</h1>
+<div class="info">
+  <b>يعمل بالكامل في المتصفح.</b> لا يحتاج Node.js ولا سطر أوامر.<br>
+  <b>1.</b> اختر ملف <code>index-*.html</code> &nbsp;
+  <b>2.</b> اضغط «تشغيل الاختبارات» &nbsp;
+  <b>3.</b> اضغط «اختبار جودة المحك» (مرة واحدة) &nbsp;
+  <b>4.</b> نزّل JSON كدليل
+</div>
+
+<input type="file" id="targetInput" accept=".html">
+<div class="file-meta" id="fileMeta"></div>
+
+<div style="margin:10px 0">
+  <button id="runBtn" disabled>▶️ تشغيل الاختبارات</button>
+  <button id="brokenBtn" class="danger" disabled>🧪 اختبار جودة المحك</button>
+  <button id="downloadBtn" class="ghost" disabled>📥 تنزيل JSON</button>
+  <button id="compareBtn" class="ghost">📊 مقارنة</button>
+    <input type="file" id="prevInput" accept=".json" hidden>
+</div>
+
+<div style="margin:10px 0">
+  <button type="button" id="saveEvidenceBtn" class="ghost" disabled>💾 حفظ في EVIDENCE.md</button>
+  <span id="saveEvidenceStatus" role="status" aria-live="polite" style="display:block;font-size:12px;color:#94a3b8;margin-top:6px;"></span>
+</div>
+
+<div id="results"></div>
+
+<script>
+'use strict';
+
+const SHA256_EMPTY = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+const SHA256_ABC   = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';
+
+let state = {
+  fileName: null,
+  sourceText: null,
+  originalBytes: null,
+  originalHash: null,
+  hasBom: false,
+  appTests: null,
+  harnessCapability: null,
+  finalReport: null
+};
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function extractBetween(text, startMark, endMark) {
+  const s = text.indexOf(startMark);
+  if (s < 0) throw new Error('بداية غير موجودة: ' + startMark);
+  const e = text.indexOf(endMark, s);
+  if (e < 0) throw new Error('نهاية غير موجودة: ' + endMark);
+  return text.slice(s, e);
+}
+
+function getSha256Pure(sourceText) {
+  const block = extractBetween(sourceText,
+    'function evidenceBytesToHex(bytes){',
+    'function evidenceOpenDb(){'
+  );
+  return new Function(block + '\nreturn sha256HexPure;')();
+}
+
+async function runAppTests(sourceText) {
+  const results = [];
+  const pass = (name, details) => results.push({ test: name, status: 'PASS', ...details });
+  const fail = (name, err) => results.push({ test: name, status: 'FAIL', error: String(err && err.message || err) });
+
+  // 1. Inline script syntax — CHECK ONLY
+  try {
+    const blocks = [...sourceText.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi)].map(m => m[1]);
+    if (!blocks.length) throw new Error('لا توجد كتل script');
+    blocks.forEach((b, i) => {
+      try { new Function(b); }
+      catch (e) { throw new Error('كتلة #' + (i+1) + ': ' + e.message); }
+    });
+    pass('inline-script-syntax-check-only', {
+      scriptBlocks: blocks.length,
+      note: 'فحص صياغة JavaScript فقط؛ لا يتحقق من صحة HTML ولا من تنفيذ التطبيق في المتصفح'
+    });
+  } catch (e) { fail('inline-script-syntax-check-only', e); }
+
+  // 2. SHA-256 known vectors
+  try {
+    const sha = getSha256Pure(sourceText);
+    const empty = sha(new Uint8Array([]));
+    const abc = sha(new TextEncoder().encode('abc'));
+    if (empty !== SHA256_EMPTY) throw new Error('SHA-256("") خاطئ');
+    if (abc !== SHA256_ABC) throw new Error('SHA-256("abc") خاطئ');
+    pass('sha256-known-vectors', { empty, abc });
+  } catch (e) { fail('sha256-known-vectors', e); }
+
+  // 3. Scanner — base
+  let scannerFn = null;
+  try {
+    const block = extractBetween(sourceText,
+      'function extractHtmlSection(html, tag){',
+      'function computeHiddenStats(text){'
+    );
+    scannerFn = new Function(
+      'function lineOf(text,idx){return text.slice(0,Math.max(0,idx)).split("\\n").length;}\n' +
+      block + '\nreturn extractHtmlSection;'
+    )();
+
+    const input =
+      '<article id="outer"><textarea><article>not markup</article></textarea>' +
+      '<title><article>not markup either</article></title>' +
+      '<article id="inner"><p>inside</p></article>' +
+      '<p>after-nested</p></article><article id="second">second</article>';
+    const out = scannerFn(input, 'article');
+    const n = (out.match(/━━━ <article> #/g) || []).length;
+
+    if (!out.includes('<p>after-nested</p>')) throw new Error('فُقد محتوى بعد المتداخل');
+    if (!out.includes('<article id="inner">')) throw new Error('لم يُحفظ المتداخل');
+    if (!out.includes('<article id="second">')) throw new Error('فُقد الشقيق');
+    if (n !== 2) throw new Error('المتوقع 2، وجد ' + n);
+
+    pass('balanced-scanner-isolated-regression', {
+      resultFragments: n,
+      contentAfterNestedTagPreserved: true,
+      textareaTitleApparentTagsDoNotCreateExtraResults: true,
+      followingSiblingPreserved: true
+    });
+  } catch (e) { fail('balanced-scanner-isolated-regression', e); }
+
+  // 4. Scanner — critical (A: attr with >; B: closing tag inside script)
+  try {
+    if (!scannerFn) throw new Error('الماسح لم يُهيَّأ');
+    const tricky =
+      '<article title="a > b">محتوى-أ</article>' +
+      '<article><script>var s = "<\/article>";<\/script>بعد-ب</article>';
+    const out = scannerFn(tricky, 'article');
+    const n = (out.match(/━━━ <article> #/g) || []).length;
+
+    if (!out.includes('a > b')) throw new Error('الحالة A: > في سمة مقتبسة كسر الوسم');
+    if (!out.includes('محتوى-أ')) throw new Error('الحالة A: فُقد المحتوى');
+    if (!out.includes('بعد-ب')) throw new Error('الحالة B: فُقد المحتوى بعد script يحتوي </article>');
+    if (n !== 2) throw new Error('الحالة B: المتوقع 2، وجد ' + n);
+
+    pass('balanced-scanner-tricky-attributes-and-scripts', {
+      attributeWithGtHandled: true,
+      scriptContainingClosingTagHandled: true,
+      totalArticlesExtracted: n
+    });
+  } catch (e) { fail('balanced-scanner-tricky-attributes-and-scripts', e); }
+
+  // 5. Evidence ledger mock
+  try {
+    const mockInfo = await runEvidenceMock(sourceText);
+    pass('evidence-filehandle-mock-integration', {
+      appendedRecords: 2,
+      duplicateOnSecondFlush: false,
+      identityUpdated: true,
+      perPatchResultsIncluded: true,
+      perPatchVerifyDetailsIncluded: true,
+      candidateAndActualHashComparisonRecorded: true,
+      pendingQueueAfterSuccess: 0,
+      sha256Path: mockInfo.sha256Path,
+      mockEnvironmentMatchesProduction: mockInfo.mockEnvironmentMatchesProduction
+    });
+  } catch (e) { fail('evidence-filehandle-mock-integration', e); }
+
+  // 6. Source identity
+  try {
+    if (!state.originalHash) throw new Error('البصمة الأصلية غير محسوبة');
+    pass('source-artifact-identity', {
+      file: state.fileName,
+      bytes: state.originalBytes.length,
+      sha256: state.originalHash,
+      hasUtf8BOM: state.hasBom
+    });
+  } catch (e) { fail('source-artifact-identity', e); }
+
+  return results;
+}
+
+async function runEvidenceMock(sourceText) {
+  const block = extractBetween(sourceText,
+    '/* Evidence ledger:',
+    "dryBtn.addEventListener('click',function(){"
+  );
+
+  const mockStorage = Object.create(null);
+  const MOCK_NAME = 'index-mock.html';
+  const MOCK_HASH = '0'.repeat(64);
+
+  // تمرير crypto و window إن توفّرا — لإتاحة crypto.subtle داخل المحاكاة
+  const cryptoForMock = (typeof crypto !== 'undefined' && crypto && crypto.subtle) ? crypto : undefined;
+  const windowForMock = (typeof window !== 'undefined') ? window : undefined;
+
+  const factory = new Function(
+    'localStorage','document','ENGINE_VERSION','PATCH_FORMAT_VERSION',
+    'PATCHES','currentFileName','currentHtml','currentEncoding','currentHasBOM',
+    'currentTargetRawEvidence','currentTargetRawHashPromise','encodeTextForFile',
+    'TextEncoder','TextDecoder','Uint8Array','Uint32Array','Promise','Date',
+    'JSON','Math','Array','Object','String','Number','RegExp','Error','console',
+    'crypto','window',
+    block + '\nreturn {q:queueEvidenceRun,f:evidenceFlushQueue,g:evidenceGetQueue,u:evidenceUpdateIdentityFromTarget,c:function(){return evidenceTaskChain;},s:function(h){evidenceFileHandle=h;}};'
+  );
+
+  let mockText =
+    '# سجل الأدلة\n\n## هوية النسخة المرجعية\n\n' +
+    '- **اسم الملف المرجعي:** `PENDING`\n' +
+    '- **SHA-256 الكامل:** `PENDING`\n' +
+    '- **حجم الملف بالبايت:** `PENDING`\n' +
+    '- **إصدار المحرك في الملف:** `PENDING`\n' +
+    '- **تاريخ تثبيت النسخة المرجعية:** `PENDING`\n\n' +
+    '## حالات الأدلة\n';
+
+  const api = factory(
+    { getItem:k=>Object.prototype.hasOwnProperty.call(mockStorage,k)?mockStorage[k]:null,
+      setItem:(k,v)=>{mockStorage[k]=String(v);},
+      removeItem:k=>{delete mockStorage[k];} },
+    { getElementById:id=>id==='evidenceStatus'?{textContent:'',style:{}}:null },
+    '7.0.8', 1,
+    [{id:'p1',name:'PR-1 test'}],
+    MOCK_NAME, "var ENGINE_VERSION='7.0.8';", 'utf-8', false,
+    {name:MOCK_NAME,size:1000,sha256:MOCK_HASH,token:1},
+    Promise.resolve(MOCK_HASH),
+    (text,enc,bom)=>{
+      const b=new TextEncoder().encode(String(text));
+      if(!bom)return b;
+      const r=new Uint8Array(b.length+3);r.set([0xEF,0xBB,0xBF]);r.set(b,3);return r;
+    },
+    TextEncoder,TextDecoder,Uint8Array,Uint32Array,Promise,Date,
+    JSON,Math,Array,Object,String,Number,RegExp,Error,console,
+    cryptoForMock,
+    windowForMock
+  );
+
+  api.s({
+    name:'EVIDENCE.md',
+    queryPermission: async()=>'granted',
+    getFile: async()=>({text: async()=>mockText}),
+    createWritable: async()=>{
+      let pending='';
+      return {
+        write: async t=>{pending=String(t);},
+        close: async()=>{mockText=pending;}
+      };
+    }
+  });
+
+  const run = {
+    ok:1,applied:0,skip:0,fail:0,
+    verifyFailed:false,verificationPassed:true,
+    aborted:false,outputAccepted:true,allDisabled:false,
+    results:[{id:'p1',status:'ok'}],
+    lines:[
+      '<span class="verify">🔎 طبقة verify</span>',
+      '<span class="meta">الرقعة 1 (p1):</span>',
+      '<span class="verify">✔️ verify 1: exists (متوقع ≥1 — وجد 1)</span>'
+    ]
+  };
+
+  api.q('dry-run', run, {saveMode:'n/a',saveStatus:'dry-run only; no disk write'});
+  await new Promise(r=>setTimeout(r,100));
+  await api.c();
+
+  const c1=(mockText.match(/<!-- evidence-id:/g)||[]).length;
+  if(c1!==1)throw new Error('المتوقع 1 بلوك، وجد '+c1);
+
+  await api.f();
+  const c2=(mockText.match(/<!-- evidence-id:/g)||[]).length;
+  if(c2!==1)throw new Error('تكرار flush ضاعف السجل');
+
+  api.q('apply', run, {
+    saveMode:'direct',saveStatus:'direct-write-success; _verifyLevel=full',
+    outputName:'index-patched.html',outputText:'abc',
+    actualBytes:new TextEncoder().encode('abc')
+  });
+  await new Promise(r=>setTimeout(r,100));
+  await api.c();
+  await api.f();
+  await api.u();
+
+  const total=(mockText.match(/<!-- evidence-id:/g)||[]).length;
+  if(total!==2)throw new Error('المتوقع 2، وجد '+total);
+  if(api.g().length!==0)throw new Error('القائمة ليست فارغة');
+  if(!mockText.includes('**اسم الملف المرجعي:** `'+MOCK_NAME+'`'))throw new Error('الهوية لم تُملأ');
+  if(!mockText.includes(MOCK_HASH))throw new Error('بصمة المصدر مفقودة');
+  if(!mockText.includes('`p1` — PR-1 test — `ok`'))throw new Error('نتيجة الرقعة مفقودة');
+  if(!mockText.includes('verify 1: exists'))throw new Error('تفاصيل verify مفقودة');
+  if(!mockText.includes('actual disk SHA-256 matches candidate'))throw new Error('مقارنة البصمة الفعلية غير مسجلة');
+
+  return {
+    sha256Path: cryptoForMock ? 'crypto.subtle' : 'sha256HexPure',
+    mockEnvironmentMatchesProduction: !!cryptoForMock
+  };
+}
+
+async function runHarnessCapability(sourceText) {
+  const ORIGINAL = 'var rawLikeTags = {script:1, style:1, textarea:1, title:1};';
+  const BROKEN   = 'var rawLikeTags = {style:1, textarea:1, title:1}; // BROKEN: script omitted';
+
+  if (!sourceText.includes(ORIGINAL)) {
+    return { ran:true, result:'BLOCKED', reason:'السطر الأصلي غير موجود — الملف مُعدّل' };
+  }
+  const brokenText = sourceText.replace(ORIGINAL, BROKEN);
+  if (brokenText.includes(ORIGINAL)) {
+    return { ran:true, result:'BLOCKED', reason:'لم يُطبَّق التعديل' };
+  }
+
+  const brokenResults = await runAppTests(brokenText);
+  const base = brokenResults.find(t => t.test === 'balanced-scanner-isolated-regression');
+  const tricky = brokenResults.find(t => t.test === 'balanced-scanner-tricky-attributes-and-scripts');
+
+  const issues = [];
+  if (!base || base.status !== 'PASS') issues.push('الاختبار الأساسي فشل');
+  if (!tricky || tricky.status !== 'FAIL') issues.push('الاختبار الحرج لم يفشل');
+  const halaBHit = tricky && tricky.status === 'FAIL' && /الحالة B|بعد-ب/.test(tricky.error || '');
+  if (tricky && tricky.status === 'FAIL' && !halaBHit) issues.push('فشل لكن ليس من «الحالة B»');
+  const otherFailed = brokenResults.filter(t =>
+    t.test !== 'balanced-scanner-tricky-attributes-and-scripts' && t.status !== 'PASS'
+  );
+  if (otherFailed.length > 0) issues.push('اختبارات أخرى فشلت: ' + otherFailed.map(t => t.test).join(', '));
+
+  if (issues.length > 0) {
+    return { ran:true, result:'FAIL', reason:issues.join(' | '), details:brokenResults };
+  }
+
+  return {
+    ran: true,
+    result: 'PASS',
+    expectedFailureTest: 'balanced-scanner-tricky-attributes-and-scripts',
+    expectedFailureReason: 'الحالة B',
+    actualFailure: tricky.error,
+    baseTestStillPassed: true,
+    otherTestsStillPassed: true,
+    note: 'المحك يكشف العطل المحدد دون كسر اختبارات أخرى'
+  };
+}
+
+function validatePreviousReport(r) {
+  if (!r || typeof r !== 'object') return 'الملف ليس كائن JSON';
+  if (typeof r.schemaVersion !== 'number') return 'schemaVersion مفقود أو ليس رقمًا';
+  if (!r.application || typeof r.application !== 'object') return 'application مفقود';
+  if (typeof r.application.file !== 'string' || !r.application.file)
+    return 'application.file مفقود';
+  if (typeof r.application.sha256 !== 'string' || !/^[a-f0-9]{64}$/i.test(r.application.sha256))
+    return 'application.sha256 غير صالح (64 حرفًا hex مطلوب)';
+  if (typeof r.application.bytes !== 'number' || r.application.bytes <= 0)
+    return 'application.bytes غير صالح';
+
+  const appTests = r.appTests;
+  if (!appTests || !Array.isArray(appTests.tests)) return 'appTests.tests مفقود';
+  if (appTests.tests.length === 0) return 'appTests.tests فارغة';
+  if (typeof appTests.passed !== 'number' || typeof appTests.failed !== 'number')
+    return 'appTests.passed/failed غير صالح';
+
+  const computedFailed = appTests.tests.filter(t => t.status !== 'PASS').length;
+  if (appTests.passed !== appTests.tests.length - computedFailed)
+    return 'appTests.passed لا يطابق العدد الفعلي للناجحة';
+  if (appTests.failed !== computedFailed)
+    return 'appTests.failed لا يطابق العدد الفعلي للفاشلة';
+  if (appTests.result !== (computedFailed === 0 ? 'PASS' : 'FAIL'))
+    return 'appTests.result لا يطابق الحالة المحسوبة';
+
+  const names = new Set();
+  for (let i = 0; i < appTests.tests.length; i++) {
+    const t = appTests.tests[i];
+    if (!t || typeof t !== 'object') return 'اختبار [' + i + '] ليس كائنًا';
+    if (typeof t.test !== 'string' || !t.test) return 'اختبار [' + i + '] بلا اسم';
+    if (!['PASS','FAIL','BLOCKED'].includes(t.status)) return 'حالة غير صالحة: ' + t.status;
+    if (names.has(t.test)) return 'اسم مكرر: ' + t.test;
+    names.add(t.test);
+  }
+
+  const hc = r.harnessCapability;
+  if (hc && hc.ran && !['PASS','FAIL','BLOCKED'].includes(hc.result))
+    return 'harnessCapability.result غير صالح';
+
+  return null;
+}
+
+document.getElementById('targetInput').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const meta = document.getElementById('fileMeta');
+  meta.innerHTML = '⏳ قراءة وحساب البصمة…';
+
+  try {
+    const originalBytes = new Uint8Array(await file.arrayBuffer());
+    const sourceText = await file.text();
+    const sha = getSha256Pure(sourceText);
+    const originalHash = sha(originalBytes);
+    const hasBom = originalBytes.length >= 3 &&
+                   originalBytes[0] === 0xEF &&
+                   originalBytes[1] === 0xBB &&
+                   originalBytes[2] === 0xBF;
+
+    state = {
+      fileName: file.name, sourceText, originalBytes, originalHash, hasBom,
+      appTests: null, harnessCapability: null, finalReport: null
+    };
+
+    meta.innerHTML =
+      '📄 <b>' + esc(file.name) + '</b><br>' +
+      'الحجم الأصلي: <span class="meta-ok">' + originalBytes.length.toLocaleString() + ' بايت</span><br>' +
+      'طول النص: ' + sourceText.length.toLocaleString() + ' محرف' +
+      (hasBom ? ' <span class="meta-warn">(UTF-8 BOM)</span>' : '') + '<br>' +
+      'SHA-256: <code>' + originalHash + '</code>';
+
+    document.getElementById('runBtn').disabled = false;
+    document.getElementById('brokenBtn').disabled = false;
+    document.getElementById('downloadBtn').disabled = true;
+    document.getElementById('results').innerHTML = '';
+  } catch (err) {
+    meta.innerHTML = '<span style="color:#fca5a5">❌ ' + esc(err.message) + '</span>';
+  }
+});
+
+document.getElementById('runBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  document.getElementById('results').innerHTML = '<div class="info">⏳ تشغيل الاختبارات…</div>';
+  try {
+    state.appTests = await runAppTests(state.sourceText);
+    state.harnessCapability = state.harnessCapability || {ran:false, result:'NOT_RUN'};
+    buildReport();
+    renderAll();
+    document.getElementById('downloadBtn').disabled = false;
+  } catch (e) {
+    document.getElementById('results').innerHTML =
+      '<div class="test fail"><div class="name">❌ خطأ في المحك</div><div class="detail">' + esc(e.message) + '</div></div>';
+  } finally { btn.disabled = false; }
+});
+
+document.getElementById('brokenBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('brokenBtn');
+  btn.disabled = true;
+  document.getElementById('results').innerHTML = '<div class="info">⏳ توليد النسخة المعطوبة واختبارها…</div>';
+  try {
+    state.harnessCapability = await runHarnessCapability(state.sourceText);
+    if (!state.appTests) state.appTests = await runAppTests(state.sourceText);
+    buildReport();
+    renderAll();
+    document.getElementById('downloadBtn').disabled = false;
+  } catch (e) {
+    document.getElementById('results').innerHTML =
+      '<div class="test fail"><div class="name">❌ خطأ في اختبار الجودة</div><div class="detail">' + esc(e.message) + '</div></div>';
+  } finally { btn.disabled = false; }
+});
+
+function buildReport() {
+  const appPassed = state.appTests.filter(t => t.status === 'PASS').length;
+  const appFailed = state.appTests.length - appPassed;
+
+  state.finalReport = {
+    schemaVersion: 2,
+    createdAt: new Date().toISOString(),
+    harness: 'browser-test-harness-v2.1',
+    application: {
+      file: state.fileName,
+      bytes: state.originalBytes.length,
+      sha256: state.originalHash,
+      textLength: state.sourceText.length,
+      hasUtf8BOM: state.hasBom,
+      encodingNote: 'SHA-256 على بايتات الملف الأصلية'
+    },
+    appTests: {
+      tests: state.appTests,
+      passed: appPassed,
+      failed: appFailed,
+      result: appFailed === 0 ? 'PASS' : 'FAIL'
+    },
+    harnessCapability: state.harnessCapability || {ran:false, result:'NOT_RUN'},
+    overallAssessment: {
+      readyForAcceptance: false,
+      reason: 'الاعتماد يتطلب R1/R2 في متصفح حقيقي + مراجعة بشرية',
+      tested: [
+        'صياغة JavaScript لكل كتلة script (فحص صياغة فقط، لا تنفيذ)',
+        'sha256HexPure مقابل قيم قياسية',
+        'extractHtmlSection — الحالة الأساسية',
+        'extractHtmlSection — الحالة الحرجة (script يحتوي </article>)',
+        'سجل الأدلة عبر FileSystemFileHandle وهمي',
+        'هوية الملف: بايتات أصلية + SHA-256'
+      ],
+      notTested: [
+        'File System Access API في متصفح حقيقي',
+        'الكتابة الفعلية إلى EVIDENCE.md',
+        'R1 — rollback',
+        'R2 — freshness_check',
+        'crypto.subtle وبدائله (حسب المسار المسجل)',
+        'Clipboard API',
+        'Service Worker',
+                'ملفات UTF-16'
+      ]
+    }
+  };
+  syncEvidenceSaveButton();
+}
+
+function renderAll() {
+  const r = state.finalReport;
+  const appCls = r.appTests.result === 'PASS' ? 'pass' : 'fail';
+  const hc = r.harnessCapability;
+  const hcCls = hc.result === 'PASS' ? 'pass' : (hc.result === 'FAIL' ? 'fail' : 'warn');
+
+  let html = '';
+
+  html += '<h2>1. اختبارات التطبيق</h2>';
+  html += '<div class="summary ' + appCls + '">' +
+          (r.appTests.result === 'PASS' ? '✅' : '❌') + ' ' +
+          r.appTests.passed + ' / ' + r.appTests.tests.length + '</div>';
+  for (const t of r.appTests.tests) {
+    html += '<div class="test ' + (t.status === 'PASS' ? 'pass' : 'fail') + '">' +
+            '<div class="name">' + (t.status === 'PASS' ? '✅' : '❌') + ' ' + esc(t.test) + '</div>' +
+            '<div class="detail">' + esc(t.error || JSON.stringify(t, null, 2)) + '</div></div>';
+  }
+
+  html += '<h2>2. جودة المحك</h2>';
+  if (!hc.ran) {
+    html += '<div class="info">اضغط «اختبار جودة المحك» للتحقق.</div>';
+  } else {
+    html += '<div class="summary ' + hcCls + '">' +
+            (hc.result === 'PASS' ? '✅ المحك يكشف العطل' :
+             hc.result === 'FAIL' ? '❌ المحك لا يكشف' : '⛔ لم يُنفَّذ') + '</div>';
+    if (hc.result === 'PASS') {
+      html += '<div class="info">' +
+              '<b>الفشل المتوقع:</b> <code>' + esc(hc.expectedFailureTest) + '</code><br>' +
+              '<b>السبب:</b> ' + esc(hc.expectedFailureReason) + '<br>' +
+              '<b>الرسالة:</b> <code>' + esc(hc.actualFailure) + '</code></div>';
+    } else if (hc.reason) {
+      html += '<div class="info" style="background:#450a0a;border-color:#7f1d1d;color:#fca5a5">' +
+              esc(hc.reason) + '</div>';
+    }
+  }
+
+  html += '<h2>3. الحدود</h2>';
+  html += '<div class="info boundary">' +
+          '<b>⚠️ لا يُثبت جاهزية الاعتماد.</b><br><b>اختُبر:</b><ul>' +
+          r.overallAssessment.tested.map(t => '<li>' + esc(t) + '</li>').join('') +
+          '</ul><b>لم يُختبر:</b><ul>' +
+          r.overallAssessment.notTested.map(t => '<li>' + esc(t) + '</li>').join('') +
+          '</ul></div>';
+
+  html += '<h2>4. هوية الملف</h2>';
+  html += '<div class="info">' +
+          'الملف: <code>' + esc(r.application.file) + '</code><br>' +
+          'الحجم: ' + r.application.bytes.toLocaleString() + ' بايت<br>' +
+          'SHA-256: <code>' + esc(r.application.sha256) + '</code>' +
+          (r.application.hasUtf8BOM ? '<br><span class="meta-warn">⚠️ UTF-8 BOM</span>' : '') +
+          '</div>';
+
+  html += '<details><summary>JSON الكامل</summary><pre>' +
+          esc(JSON.stringify(r, null, 2)) + '</pre></details>';
+
+  document.getElementById('results').innerHTML = html;
+}
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  if (!state.finalReport) return;
+  const blob = new Blob([JSON.stringify(state.finalReport, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+  a.href = url;
+  a.download = 'EVIDENCE-test-run-' + stamp + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+document.getElementById('compareBtn').addEventListener('click', () => {
+  if (!state.finalReport) { alert('شغّل الاختبارات أولًا'); return; }
+  document.getElementById('prevInput').click();
+});
+
+document.getElementById('prevInput').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const prev = JSON.parse(await file.text());
+    const err = validatePreviousReport(prev);
+    if (err) { alert('التقرير السابق غير صالح: ' + err); return; }
+
+    const prevTests = (prev.appTests && prev.appTests.tests) ? prev.appTests.tests : prev.tests;
+    const curTests = state.finalReport.appTests.tests;
+
+    const stable = o => {
+      if (o === null || typeof o !== 'object') return JSON.stringify(o);
+      if (Array.isArray(o)) return '[' + o.map(stable).join(',') + ']';
+      const k = Object.keys(o).sort();
+      return '{' + k.map(x => JSON.stringify(x) + ':' + stable(o[x])).join(',') + '}';
+    };
+
+    const prevMap = Object.fromEntries(prevTests.map(t => [t.test, t]));
+    const curMap = Object.fromEntries(curTests.map(t => [t.test, t]));
+    const changes = [];
+
+    for (const name of new Set([...Object.keys(prevMap), ...Object.keys(curMap)])) {
+      if (!prevMap[name]) changes.push('+ ' + name);
+      else if (!curMap[name]) changes.push('- ' + name);
+      else if (stable(prevMap[name]) !== stable(curMap[name])) changes.push('~ ' + name);
+    }
+
+    // schemaVersion
+    if (prev.schemaVersion !== state.finalReport.schemaVersion) {
+      changes.push('~ schemaVersion: ' + prev.schemaVersion + ' → ' + state.finalReport.schemaVersion);
+    }
+
+    // application metadata
+    if (prev.application.bytes !== state.finalReport.application.bytes) {
+      changes.push('~ bytes: ' + prev.application.bytes + ' → ' + state.finalReport.application.bytes);
+    }
+    if (prev.application.hasUtf8BOM !== state.finalReport.application.hasUtf8BOM) {
+      changes.push('~ hasUtf8BOM: ' + prev.application.hasUtf8BOM + ' → ' + state.finalReport.application.hasUtf8BOM);
+    }
+
+    // harnessCapability
+    const prevHc = prev.harnessCapability || { ran: false, result: 'NOT_RUN' };
+    const curHc = state.finalReport.harnessCapability;
+    if (prevHc.ran !== curHc.ran) {
+      changes.push('~ harnessCapability.ran: ' + prevHc.ran + ' → ' + curHc.ran);
+    } else if (prevHc.result !== curHc.result) {
+      changes.push('~ harnessCapability.result: ' + prevHc.result + ' → ' + curHc.result);
+    }
+
+    // identity hash
+    const prevHash = prev.application ? prev.application.sha256 : '(غير معروف)';
+    const curHash = state.finalReport.application.sha256;
+    if (prevHash !== curHash) {
+      changes.push('~ هوية الملف تغيّرت: ' + prevHash.slice(0,12) + '… → ' + curHash.slice(0,12) + '…');
+    }
+
+    document.getElementById('results').innerHTML +=
+      '<h2>📊 المقارنة</h2>' +
+      '<div class="summary ' + (changes.length ? 'warn' : 'pass') + '">' +
+      (changes.length ? changes.length + ' تغيير' : '✅ لا تغيير') + '</div>' +
+      (changes.length ? '<div class="info">' + changes.map(c => esc(c)).join('<br>') + '</div>' : '');
+  } catch (e) {
+    alert('فشل قراءة الملف: ' + e.message);
+  }
+  e.target.value = '';
+});
+/* ============================================================
+   Evidence Writer — حفظ تقرير المحك في EVIDENCE.md
+   ============================================================ */
+
+let evidenceHandleForSave = null;
+
+const EVIDENCE_DB_NAME = 'browser-test-harness-evidence';
+const EVIDENCE_STORE_NAME = 'handles';
+const EVIDENCE_HANDLE_KEY = 'evidence-md';
+
+function currentEvidenceReport() {
+  return typeof state !== 'undefined' && state ? state.finalReport : null;
+}
+
+function syncEvidenceSaveButton() {
+  const btn = document.getElementById('saveEvidenceBtn');
+  if (btn) btn.disabled = !currentEvidenceReport();
+}
+
+function setEvidenceStatus(message) {
+  const el = document.getElementById('saveEvidenceStatus');
+  if (el) el.textContent = message;
+}
+
+function evidenceInlineCode(value) {
+  const text = String(value ?? 'غير متاح').replace(/[\r\n]+/g, ' ');
+  const runs = [...text.matchAll(/`+/g)].map(m => m[0].length);
+  const fence = '`'.repeat(Math.max(1, ...runs.map(l => l + 1)));
+  const pad = (text.startsWith('`') || text.endsWith('`') ||
+               (text.startsWith(' ') && text.endsWith(' '))) ? ' ' : '';
+  return fence + pad + text + pad + fence;
+}
+
+function evidenceTableCell(value) {
+  return String(value ?? '').replace(/\r?\n/g, ' ').replace(/\\/g, '\\\\').replace(/\|/g, '\\|');
+}
+
+function validateEvidenceReport(report) {
+  if (!report || typeof report !== 'object') throw new Error('لا يوجد تقرير صالح. شغّل الاختبارات أولًا.');
+  if (!report.application || !/^[a-f0-9]{64}$/i.test(String(report.application.sha256 ?? '')))
+    throw new Error('بصمة ملف التطبيق مفقودة أو غير صالحة.');
+  if (!report.createdAt) throw new Error('تاريخ التشغيل مفقود من التقرير.');
+  if (!report.appTests || !Array.isArray(report.appTests.tests))
+    throw new Error('قائمة اختبارات التطبيق غير صالحة.');
+}
+
+function buildEvidenceBlock(report) {
+  validateEvidenceReport(report);
+  const app = report.application;
+  const tests = report.appTests.tests;
+  const passed = tests.filter(t => String(t.status).toUpperCase() === 'PASS').length;
+  const sha256 = String(app.sha256).toLowerCase();
+  const runId = String(report.createdAt).replace(/[^a-zA-Z0-9]/g, '') + '-' + sha256;
+  const marker = '<!-- browser-test-run:' + runId + ' -->';
+
+  const lines = [
+    marker,
+    '### تشغيل محك المتصفح — ' + evidenceInlineCode(report.createdAt),
+    '',
+    '- **الملف كما اختير في المحك:** ' + evidenceInlineCode(app.file),
+    '- **SHA-256 المسجّل من المحك:** ' + evidenceInlineCode(sha256),
+    '- **الحجم المسجّل:** ' + Number(app.bytes).toLocaleString('en-US') + ' بايت',
+    '- **UTF-8 BOM:** ' + (app.hasUtf8BOM ? 'نعم' : 'لا'),
+    '- **المحك:** ' + evidenceInlineCode(report.harness || 'غير محدد'),
+    '- **تاريخ التشغيل:** ' + evidenceInlineCode(report.createdAt),
+    '- **الاختبارات الناجحة:** ' + passed + '/' + tests.length,
+    '- **نتيجة جودة المحك:** ' + evidenceInlineCode((report.harnessCapability && report.harnessCapability.result) || 'NOT_RUN'),
+    '',
+    '**نتائج اختبارات التطبيق:**',
+    '',
+    '| الاختبار | الحالة |',
+    '|---|---|'
+  ];
+  for (const t of tests) {
+    lines.push('| ' + evidenceInlineCode(t.test || 'غير مسمى') + ' | ' + evidenceTableCell(t.status || 'UNKNOWN') + ' |');
+  }
+  lines.push(
+    '',
+    '**حدود هذا التشغيل:**',
+    '- فحص صياغة JavaScript لا يثبت تنفيذ التطبيق كاملًا.',
+    '- أي تكامل يستخدم FileSystemFileHandle وهميًا يبقى اختبار محاكاة.',
+    '- هذه الإضافة تسجل التقرير، ولا تنفذ اختبارات R1 أو R2.',
+    '',
+    '**تصنيف الحالة:**',
+    '- PR-1: نتائج محك المتصفح مرتبطة بملف المصدر المسجّل؛ التحقق المستقل من البصمة يظل ممكنًا.',
+    '- تنفيذ التطبيق كاملًا: غير مثبت بهذا التقرير وحده.',
+    '- R1 — rollback: مفتوح.',
+    '- R2 — freshness_check: مفتوح.',
+    '- اعتماد v7.0.9: محجوب حتى إغلاق البوابات المطلوبة.'
+  );
+  return { marker, text: lines.join('\n') };
+}
+
+function openEvidenceHandleDB() {
+  return new Promise((resolve, reject) => {
+    if (!('indexedDB' in window)) { reject(new Error('IndexedDB غير متاح.')); return; }
+    const req = indexedDB.open(EVIDENCE_DB_NAME, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(EVIDENCE_STORE_NAME)) db.createObjectStore(EVIDENCE_STORE_NAME);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error || new Error('تعذر فتح IndexedDB.'));
+  });
+}
+
+async function loadEvidenceHandle() {
+  const db = await openEvidenceHandleDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(EVIDENCE_STORE_NAME, 'readonly');
+    const req = tx.objectStore(EVIDENCE_STORE_NAME).get(EVIDENCE_HANDLE_KEY);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error || new Error('تعذر استرجاع المقبض.'));
+    tx.oncomplete = () => db.close();
+    tx.onerror = () => { db.close(); reject(tx.error || new Error('فشل استرجاع المقبض.')); };
+  });
+}
+
+async function persistEvidenceHandle(handle) {
+  const db = await openEvidenceHandleDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(EVIDENCE_STORE_NAME, 'readwrite');
+    tx.objectStore(EVIDENCE_STORE_NAME).put(handle, EVIDENCE_HANDLE_KEY);
+    tx.oncomplete = () => { db.close(); resolve(true); };
+    tx.onerror = () => { db.close(); reject(tx.error || new Error('تعذر حفظ المقبض.')); };
+    tx.onabort = () => { db.close(); reject(tx.error || new Error('أُلغي حفظ المقبض.')); };
+  });
+}
+
+void loadEvidenceHandle().then(handle => {
+  if (handle && handle.kind === 'file') evidenceHandleForSave = handle;
+}).catch(() => {});
+
+async function ensureEvidenceWritePermission(handle) {
+  const options = { mode: 'readwrite' };
+  if (typeof handle.queryPermission === 'function') {
+    const cur = await handle.queryPermission(options);
+    if (cur === 'granted') return;
+  }
+  if (typeof handle.requestPermission === 'function') {
+    const res = await handle.requestPermission(options);
+    if (res === 'granted') return;
+    throw new Error('لم يُمنح إذن الكتابة إلى EVIDENCE.md.');
+  }
+  throw new Error('تعذر التحقق من إذن الكتابة.');
+}
+
+async function readEvidenceUtf8(handle) {
+  const file = await handle.getFile();
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  if ((bytes[0] === 0xff && bytes[1] === 0xfe) || (bytes[0] === 0xfe && bytes[1] === 0xff))
+    throw new Error('EVIDENCE.md يبدو UTF-16؛ أوقف الحفظ لتجنب إفساد الترميز.');
+  let text;
+  try {
+    text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
+  } catch {
+    throw new Error('تعذر قراءة EVIDENCE.md كـ UTF-8 صالح؛ لم يُكتب شيء.');
+  }
+  return { file, text };
+}
+
+async function chooseEvidenceFileIfNeeded() {
+  if (evidenceHandleForSave) return evidenceHandleForSave;
+  if (!window.isSecureContext || typeof window.showOpenFilePicker !== 'function')
+    throw new Error('الكتابة المباشرة غير متاحة. استخدم متصفحًا داعمًا وفي سياق آمن، أو نزّل التقرير وأضفه يدويًا.');
+  const handles = await window.showOpenFilePicker({
+    id: 'browser-test-evidence-md',
+    multiple: false,
+    types: [{ description: 'Markdown evidence', accept: { 'text/markdown': ['.md'] } }]
+  });
+  const handle = handles[0];
+  if (!handle) throw new Error('لم يُختَر ملف.');
+  evidenceHandleForSave = handle;
+  return handle;
+}
+
+document.getElementById('saveEvidenceBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('saveEvidenceBtn');
+  const report = currentEvidenceReport();
+  if (!report) { setEvidenceStatus('شغّل الاختبارات أولًا.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ جارٍ الحفظ…';
+  setEvidenceStatus('');
+
+  let writable = null;
+  try {
+    validateEvidenceReport(report);
+    const { marker, text: block } = buildEvidenceBlock(report);
+    const handle = await chooseEvidenceFileIfNeeded();
+
+    if (!handle || handle.kind !== 'file' || handle.name.toLowerCase() !== 'evidence.md') {
+      evidenceHandleForSave = null;
+      throw new Error('الملف المختار ليس باسم EVIDENCE.md. لم يُكتب شيء.');
+    }
+
+    await ensureEvidenceWritePermission(handle);
+    const before = await readEvidenceUtf8(handle);
+    let originalText = before.text;
+
+    if (originalText.includes(marker)) throw new Error('هذا التشغيل مسجّل بالفعل؛ لم يُكرر.');
+
+    const eol = originalText.includes('\r\n') ? '\r\n' : '\n';
+    if (!originalText) originalText = '# سجل الأدلة' + eol + eol;
+    const separator = originalText.endsWith(eol + eol) ? '' : originalText.endsWith(eol) ? eol : eol + eol;
+    const blockWithEol = block.split('\n').join(eol);
+    const expectedText = originalText + separator + blockWithEol + eol;
+
+    const latest = await readEvidenceUtf8(handle);
+    if (latest.text !== before.text)
+      throw new Error('تغيّر EVIDENCE.md أثناء العملية؛ أُوقف الحفظ.');
+
+    writable = await handle.createWritable();
+    await writable.write(expectedText);
+    await writable.close();
+    writable = null;
+
+    const verification = await readEvidenceUtf8(handle);
+    if (verification.text !== expectedText)
+      throw new Error('فشل التحقق بعد الكتابة. افحص الملف يدويًا.');
+
+    let persisted = false;
+    try { await persistEvidenceHandle(handle); persisted = true; } catch {}
+
+    btn.textContent = '✅ تم الحفظ والتحقق';
+    setEvidenceStatus(persisted
+      ? 'تمت الكتابة والتحقق. قد يطلب المتصفح الإذن مجددًا في جلسة لاحقة.'
+      : 'تمت الكتابة والتحقق. تعذر حفظ المقبض؛ قد تحتاج لاختيار الملف مجددًا.');
+  } catch (error) {
+    if (writable && typeof writable.abort === 'function') {
+      try { await writable.abort(); } catch {}
+    }
+    const msg = error && error.name === 'AbortError'
+      ? 'أُلغي اختيار الملف؛ لم يُضف التقرير.'
+      : (error && error.message) || String(error);
+    btn.textContent = '💾 حفظ في EVIDENCE.md';
+    setEvidenceStatus('❌ ' + msg);
+  } finally {
+    syncEvidenceSaveButton();
+    if (btn.disabled === false && btn.textContent !== '✅ تم الحفظ والتحقق') {
+      btn.textContent = '💾 حفظ في EVIDENCE.md';
+    }
+  }
+});
+
+syncEvidenceSaveButton();
+</script>
+</body>
+</html>

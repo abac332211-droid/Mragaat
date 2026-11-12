@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R2 — Freshness Check Test v4.5</title>
+<style>
+  body{font-family:system-ui;background:#0f172a;color:#e2e8f0;padding:16px;max-width:800px;margin:auto;line-height:1.7}
+  h1{color:#34d399;font-size:18px}
+  button{background:#059669;color:#fff;border:0;border-radius:8px;padding:12px 20px;font-weight:700;cursor:pointer;font-size:14px;font-family:inherit;margin:4px 4px 4px 0}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  button.ghost{background:#334155}
+  .result{padding:12px;border-radius:8px;margin:12px 0;font-weight:700;font-size:14px}
+  .pass{background:#052e16;color:#86efac;border:1px solid #14532d}
+  .fail{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d}
+  .warn-box{background:#78350f;color:#fcd34d;border:1px solid #92400e;padding:12px;border-radius:8px;font-size:13px;margin:8px 0}
+  .info{background:#0c4a6e;color:#bae6fd;border:1px solid #075985;padding:10px;border-radius:8px;font-size:13px;margin:8px 0}
+  .danger{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d;padding:12px;border-radius:8px;font-size:13px;margin:8px 0;font-weight:700}
+  pre{background:#020617;padding:12px;border-radius:6px;overflow:auto;font-size:11px;max-height:400px;word-break:break-all}
+  ul{font-size:13px}
+  .section{color:#fbbf24;font-size:12px;font-weight:700;margin-top:12px}
+  .hash{font-family:monospace;font-size:11px;word-break:break-all;color:#93c5fd}
+  #status{font-size:13px;margin:10px 0;padding:10px;background:#1e293b;border-radius:8px;border:1px solid #334155;min-height:40px}
+</style>
+</head>
+<body>
+<h1>R2 — Freshness Check Test v4.5</h1>
+
+<div class="danger">
+⚠️ <b>تنبيه:</b> يستخدم نفس مجلد R1 (`R1`). يعدّل الملفات داخله مؤقتًا. <b>لا تستخدم مجلد المشروع.</b>
+</div>
+
+<div class="info">
+<b>ما يُختبر:</b> إذا تغيّر ملف خارجيًا بين <code>freshness_check_1</code> و<code>freshness_check_2</code>، هل يكتشف <code>folderRunWriteBatch</code> ذلك ويمنع الكتابة؟<br>
+<b>كيف:</b> في القراءة الثانية لـ <code>a.txt</code> (وهي فحص fresh_check_2)، يعدّل الاختبار الملف على القرص إلى <code>EXTERNAL-CHANGE</code> قبل إرجاعه للمحرك. المحرك يقرأ البايتات، يجدها مختلفة، يجب أن يعيد <code>stale_preflight</code>.
+</div>
+
+<div style="margin:10px 0">
+  <button id="pickBtn">📂 1. اختر مجلد الاختبار</button>
+  <button id="appBtn" class="ghost" disabled>📄 2. اختر index.html</button>
+  <button id="runBtn" class="ghost" disabled>▶️ 3. تشغيل R2</button>
+</div>
+
+<div id="status">⏳ الخطوة الحالية: اختر المجلد.</div>
+<div id="result"></div>
+
+<script>
+'use strict';
+
+const ORIGINAL_HASH = '008e240d6a64ebfc07dfeff6afe1b464f971bb7dc7b0392e19ac3b649e5c3377';
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function extractBetween(text, start, end) {
+  const s = text.indexOf(start);
+  if (s < 0) throw new Error('لم يُعثر على البداية: ' + start);
+  const e = text.indexOf(end, s);
+  if (e < 0) throw new Error('لم يُعثر على النهاية: ' + end);
+  return text.slice(s, e);
+}
+
+async function sha256Hex(bytes) {
+  const buf = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function checkStructure(source) {
+  return {
+    'folderRunWriteBatch(dir, plan, confirmWrite)': source.includes('async function folderRunWriteBatch(dir, plan, confirmWrite)'),
+    'folderBytesEqual': source.includes('function folderBytesEqual(a, b) {'),
+    'folderResolvePath': source.includes('async function folderResolvePath(root, path) {'),
+    'freshness_check_1': source.includes("log.status = 'freshness_check_1'"),
+    'freshness_check_2': source.includes("log.status = 'freshness_check_2'"),
+    'stale_preflight': source.includes("stop('stale_preflight'"),
+    'رسالة «تغيّر محتوى الملف أثناء التأكيد»': source.includes('تغيّر محتوى الملف أثناء التأكيد')
+  };
+}
+
+async function ensureFile(dir, name, expectedContent) {
+  const expectedBytes = new TextEncoder().encode(expectedContent);
+  let handle;
+  try {
+    handle = await dir.getFileHandle(name);
+  } catch (e) {
+    if (e.name === 'NotFoundError') {
+      handle = await dir.getFileHandle(name, { create: true });
+      const w = await handle.createWritable();
+      await w.write(expectedBytes);
+      await w.close();
+      return { created: true, corrected: false, name };
+    }
+    throw e;
+  }
+  const currentBytes = new Uint8Array(await (await handle.getFile()).arrayBuffer());
+  const currentText = new TextDecoder().decode(currentBytes);
+  if (currentText === expectedContent) return { created: false, corrected: false, name };
+  const w = await handle.createWritable();
+  await w.write(expectedBytes);
+  await w.close();
+  return { created: false, corrected: true, name, previousText: currentText };
+}
+
+let realDir = null;
+let appSource = null;
+let appHash = null;
+let setupLog = [];
+
+const pickBtn = document.getElementById('pickBtn');
+const appBtn = document.getElementById('appBtn');
+const runBtn = document.getElementById('runBtn');
+const statusEl = document.getElementById('status');
+const resultEl = document.getElementById('result');
+
+pickBtn.addEventListener('click', async () => {
+  resultEl.innerHTML = '';
+  statusEl.textContent = '⏳ جارٍ اختيار المجلد...';
+  try {
+    if (!window.isSecureContext) throw new Error('سياق غير آمن');
+    if (typeof window.showDirectoryPicker !== 'function') throw new Error('showDirectoryPicker غير متاح');
+    if (!crypto.subtle) throw new Error('crypto.subtle غير متاح');
+
+    const dir = await window.showDirectoryPicker({mode: 'readwrite'});
+    const perm = await dir.queryPermission({mode: 'readwrite'});
+    if (perm !== 'granted') {
+      const req = await dir.requestPermission({mode: 'readwrite'});
+      if (req !== 'granted') throw new Error('إذن readwrite غير ممنوح');
+    }
+
+    statusEl.textContent = '⏳ جارٍ تجهيز a.txt و b.txt...';
+    setupLog = [];
+    setupLog.push(await ensureFile(dir, 'a.txt', 'HELLO-A'));
+    setupLog.push(await ensureFile(dir, 'b.txt', 'HELLO-B'));
+
+    const aFinal = new TextDecoder().decode(
+      new Uint8Array(await (await (await dir.getFileHandle('a.txt')).getFile()).arrayBuffer())
+    );
+    const bFinal = new TextDecoder().decode(
+      new Uint8Array(await (await (await dir.getFileHandle('b.txt')).getFile()).arrayBuffer())
+    );
+    if (aFinal !== 'HELLO-A' || bFinal !== 'HELLO-B') {
+      throw new Error('فشل تجهيز الملفين. a="' + aFinal + '" b="' + bFinal + '"');
+    }
+
+    realDir = dir;
+    appSource = null;
+    appHash = null;
+
+    let setupHtml = '';
+    for (const info of setupLog) {
+      if (info.created) setupHtml += '🆕 ' + info.name + ' أُنشئ. ';
+      else if (info.corrected) setupHtml += '🔧 ' + info.name + ' صُحّح. ';
+      else setupHtml += '✓ ' + info.name + ' جاهز. ';
+    }
+
+    statusEl.innerHTML =
+      '✅ <b>الخطوة 1:</b> المجلد «' + esc(dir.name) + '»<br>' +
+      esc(setupHtml) +
+      '<br><b>التالي:</b> اضغط «📄 2. اختر index.html».';
+
+    appBtn.disabled = false;
+    runBtn.disabled = true;
+  } catch (e) {
+    statusEl.innerHTML = '<span style="color:#fca5a5">❌ ' + esc(e.message).replace(/\n/g,'<br>') + '</span>';
+    appBtn.disabled = true;
+    runBtn.disabled = true;
+    realDir = null;
+  }
+});
+
+appBtn.addEventListener('click', () => {
+  if (!realDir) {
+    statusEl.innerHTML = '<span style="color:#fca5a5">❌ اختر المجلد أولًا</span>';
+    return;
+  }
+
+  statusEl.textContent = '⏳ جارٍ فتح نافذة اختيار index.html...';
+
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.html';
+  inp.style.display = 'none';
+  document.body.appendChild(inp);
+
+  inp.onchange = async () => {
+    document.body.removeChild(inp);
+    try {
+      if (!inp.files || !inp.files[0]) throw new Error('لم يُختَر أي ملف');
+      const appFile = inp.files[0];
+      appSource = await appFile.text();
+
+      const appBytes = new Uint8Array(await appFile.arrayBuffer());
+      appHash = await sha256Hex(appBytes);
+
+      const checks = checkStructure(appSource);
+      const missing = Object.entries(checks).filter(([k,v]) => !v).map(([k]) => k);
+
+      if (missing.length) {
+        throw new Error('فحوص بنية R2 غير مكتملة:\n' + missing.join('\n'));
+      }
+
+      const hashMatch = (appHash === ORIGINAL_HASH);
+      const hashHtml = hashMatch
+        ? '<span style="color:#86efac">يطابق الأصل</span>'
+        : '<span style="color:#fbbf24">مختلف عن الأصل، لكن البنية سليمة</span>';
+
+      statusEl.innerHTML =
+        '✅ <b>الخطوة 1:</b> المجلد «' + esc(realDir.name) + '» — جاهز<br>' +
+        '✅ <b>الخطوة 2:</b> index.html «' + esc(appFile.name) + '»<br>' +
+        '&nbsp;&nbsp;&nbsp;فحوص R2: ' +
+          Object.values(checks).filter(Boolean).length + '/' + Object.keys(checks).length +
+        '<br>&nbsp;&nbsp;&nbsp;SHA-256: <span class="hash">' + esc(appHash) + '</span><br>' +
+        '&nbsp;&nbsp;&nbsp;' + hashHtml +
+        '<br><b>التالي:</b> اضغط «▶️ 3. تشغيل R2».';
+
+      runBtn.disabled = false;
+    } catch (e) {
+      appSource = null;
+      appHash = null;
+      runBtn.disabled = true;
+      statusEl.innerHTML =
+        '✅ المجلد «' + esc(realDir.name) + '» جاهز<br>' +
+        '<span style="color:#fca5a5">❌ فشل اختيار index.html:<br>' + esc(e.message).replace(/\n/g,'<br>') + '</span>';
+    }
+  };
+
+  inp.click();
+});
+
+runBtn.addEventListener('click', async () => {
+  if (!realDir || !appSource) {
+    resultEl.innerHTML = '<div class="result fail">❌ أكمل الخطوتين 1 و 2 أولًا</div>';
+    return;
+  }
+
+  runBtn.disabled = true;
+  resultEl.innerHTML = '<div class="info">⏳ تشغيل R2 على قرص حقيقي...</div>';
+
+  try {
+    const resolveBlock = extractBetween(appSource,
+      'async function folderResolvePath(root, path) {',
+      'function folderApplyPatchToHtml(html, patch) {');
+    const batchBlock = extractBetween(appSource,
+      'function folderBytesEqual(a, b) {',
+      'function folderReadAndValidateMap() {');
+
+    const factory = new Function(
+      'TextEncoder','TextDecoder','Uint8Array','Promise','Date',
+      'JSON','Math','Array','Object','String','Number','RegExp','Error','console',
+      resolveBlock + '\n' + batchBlock + '\nreturn { folderRunWriteBatch };');
+    const api = factory(
+      TextEncoder,TextDecoder,Uint8Array,Promise,Date,
+      JSON,Math,Array,Object,String,Number,RegExp,Error,console);
+
+    const aHandleReal = await realDir.getFileHandle('a.txt');
+    const bHandleReal = await realDir.getFileHandle('b.txt');
+    const aOriginal = new Uint8Array(await (await aHandleReal.getFile()).arrayBuffer());
+    const bOriginal = new Uint8Array(await (await bHandleReal.getFile()).arrayBuffer());
+
+    const aText = new TextDecoder().decode(aOriginal);
+    const bText = new TextDecoder().decode(bOriginal);
+    if (aText !== 'HELLO-A' || bText !== 'HELLO-B') {
+      throw new Error('محتوى الملفين تغيّر قبل التشغيل.');
+    }
+
+    // ============ طبقة التغليف — حقن تغيير خارجي على a.txt ============
+    const getFileCounts = { 'a.txt': 0, 'b.txt': 0 };
+    const injectionLog = {
+      aGetFileCalls: 0,
+      aModifiedOnCall: 0,
+      modificationTriggered: false
+    };
+
+    function wrapFileHandle(realFH, name) {
+      return {
+        kind: 'file',
+        name,
+        async getFile() {
+          getFileCounts[name]++;
+          if (name === 'a.txt') injectionLog.aGetFileCalls++;
+
+          // في القراءة الثانية لـ a.txt (= freshness_check_2) — غيّر الملف
+          if (name === 'a.txt' && getFileCounts[name] === 2) {
+            injectionLog.aModifiedOnCall = getFileCounts[name];
+            const w = await realFH.createWritable();
+            await w.write(new TextEncoder().encode('EXTERNAL-CHANGE'));
+            await w.close();
+            injectionLog.modificationTriggered = true;
+          }
+          return realFH.getFile();
+        },
+        async createWritable() { return realFH.createWritable(); }
+      };
+    }
+
+    const wrappedDir = {
+      kind: 'directory',
+      name: realDir.name,
+      async getDirectoryHandle(n) { return realDir.getDirectoryHandle(n); },
+      async getFileHandle(n) {
+        const real = await realDir.getFileHandle(n);
+        return wrapFileHandle(real, n);
+      }
+    };
+
+    const plan = {
+      dir: wrappedDir,
+      folderName: realDir.name,
+      items: [
+        { path: 'a.txt', changed: true, originalBytes: aOriginal,
+          expectedBytes: new TextEncoder().encode('HELLO-A-MOD'), patchedContent: 'HELLO-A-MOD' },
+        { path: 'b.txt', changed: true, originalBytes: bOriginal,
+          expectedBytes: new TextEncoder().encode('HELLO-B-MOD'), patchedContent: 'HELLO-B-MOD' }
+      ]
+    };
+
+    const log = await api.folderRunWriteBatch(wrappedDir, plan, () => true);
+
+    // ============ قراءة القرص بعد العملية ============
+    const aAfter = new TextDecoder().decode(
+      new Uint8Array(await (await (await realDir.getFileHandle('a.txt')).getFile()).arrayBuffer())
+    );
+    const bAfter = new TextDecoder().decode(
+      new Uint8Array(await (await (await realDir.getFileHandle('b.txt')).getFile()).arrayBuffer())
+    );
+
+    // ============ فحوص حاسمة ============
+    const entriesHasStale = (log.entries || []).some(
+      e => e.path === 'a.txt' && e.status === 'stale_preflight'
+    );
+
+    const requiredChecks = {
+      'التعديل الخارجي وقع فعلًا (modificationTriggered)': injectionLog.modificationTriggered === true,
+      'التعديل حدث في القراءة الثانية (freshness_check_2)': injectionLog.aModifiedOnCall === 2,
+      'status = stale_preflight': log.status === 'stale_preflight',
+      'writesAttempted = 0 (لم تُكتب أي بايتات)': log.writesAttempted === 0,
+      'verifiedWrites = 0': log.verifiedWrites === 0,
+      'rollbackAttempts = 0 (لا شيء لاستعادته)': log.rollbackAttempts === 0,
+      'log.entries يحتوي stale_preflight لـ a.txt': entriesHasStale,
+      'a.txt على القرص = EXTERNAL-CHANGE (التعديل الخارجي)': aAfter === 'EXTERNAL-CHANGE',
+      'b.txt على القرص = HELLO-B (لم يُمس)': bAfter === 'HELLO-B',
+      'freshness_check_2 اكتشف التغيير (رسالة «أثناء التأكيد»)': (log.error || '').includes('أثناء التأكيد'),
+      'freshness_check_1 لم يُخطئ (لا «منذ إنشاء»)': !(log.error || '').includes('منذ إنشاء النسخة الاحتياطية')
+    };
+
+    const observations = {
+      appHashAtTestTime: appHash,
+      hashMatchesOriginal: (appHash === ORIGINAL_HASH),
+      status: log.status,
+      writesAttempted: log.writesAttempted,
+      verifiedWrites: log.verifiedWrites,
+      rollbackAttempts: log.rollbackAttempts,
+      rollbackFailures: log.rollbackFailures,
+      entriesCount: (log.entries || []).length,
+      injection: injectionLog,
+      error: log.error || null
+    };
+
+    const passed = Object.values(requiredChecks).every(v => v === true);
+    const cls = passed ? 'pass' : 'fail';
+    const icon = passed ? '✅' : '❌';
+    const title = passed
+      ? 'R2 ناجح — freshness_check يكتشف التغيير الخارجي ويمنع الكتابة'
+      : 'R2 فشل — يحتاج مراجعة';
+
+    let html = '<div class="result ' + cls + '">' + icon + ' ' + title + '</div>';
+
+    if (!passed) {
+      html += '<div class="warn-box">⚠️ إذا غيّر الاختبار a.txt ولم يُستعد، اضغط الزر 1 مجددًا لإعادة تجهيز الملفين.</div>';
+    }
+
+    html += '<div class="section">الفحوص الحاسمة:</div><ul>';
+    for (const [n, ok] of Object.entries(requiredChecks))
+      html += '<li>' + (ok?'✅':'❌') + ' ' + n + '</li>';
+    html += '</ul>';
+
+    html += '<div class="section">رصد:</div>';
+    html += '<pre>' + esc(JSON.stringify(observations, null, 2)) + '</pre>';
+
+    html += '<div class="section">القرص بعد العملية (قبل الإصلاح):</div>';
+    html += '<pre>' + esc(JSON.stringify({ 'a.txt': aAfter, 'b.txt': bAfter }, null, 2)) + '</pre>';
+
+    // ============ إعادة التجهيز (a.txt فقط تغيّر) ============
+    statusEl.textContent = '⏳ إعادة تجهيز a.txt...';
+    try {
+      await ensureFile(realDir, 'a.txt', 'HELLO-A');
+      const aRestored = new TextDecoder().decode(
+        new Uint8Array(await (await (await realDir.getFileHandle('a.txt')).getFile()).arrayBuffer())
+      );
+      html += '<div class="section">القرص بعد الإصلاح:</div>';
+      html += '<pre>' + esc(JSON.stringify({ 'a.txt': aRestored }, null, 2)) + '</pre>';
+    } catch (e) {
+      html += '<div class="warn-box">⚠️ تعذّر إعادة تجهيز a.txt — اضغط الزر 1 يدويًا.</div>';
+    }
+
+    resultEl.innerHTML = html;
+    statusEl.textContent = passed ? '✅ R2 مكتمل — يمكنك إعادة التشغيل' : '⚠️ R2 فشل';
+    runBtn.disabled = false;
+  } catch (e) {
+    resultEl.innerHTML = '<div class="result fail">❌ ' + esc(e.message) + '</div><pre>' + esc(e.stack||'') + '</pre>';
+    runBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
