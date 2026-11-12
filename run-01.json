@@ -1,9 +1,21 @@
 {
+  "test_id": "DIRECT-RACE-01-04-RC3-DEV-CHROMIUM",
   "run": 1,
+  "browser": {
+    "name": "Chromium",
+    "version": "144.0.7559.96"
+  },
+  "source": {
+    "file": "raqee3-v8.0.0-rc3-dev.html",
+    "size_bytes": 483593,
+    "sha256_before": "ebdb9c9f34f09c094d394bda897555758efe7aad9f30e43b41f1bd5fb7b873ed",
+    "sha256_after": "ebdb9c9f34f09c094d394bda897555758efe7aad9f30e43b41f1bd5fb7b873ed",
+    "unchanged": true
+  },
   "cases": [
     {
-      "case_id": "DIRECT-RACE-01-UI",
-      "description": "UI picker switch attempt while A freshness-read bytes are pending.",
+      "case_id": "DIRECT-RACE-01",
+      "description": "Swap after A freshness getFile() begins, before the byte snapshot resolves.",
       "gate_stage": "freshness-buffer",
       "entered_stage": "freshness-buffer",
       "before": {
@@ -19,893 +31,19 @@
           "size": 51,
           "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
         },
+        "Asha": null,
+        "Bsha": null,
         "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadToken": 1,
-        "rawToken": 1
+        "selectedHandle": "A.txt"
       },
-      "during_transaction_switch_attempt": {
-        "busy": true,
-        "pickerDisabled": false,
-        "inputDisabled": true,
-        "clearDisabled": true,
-        "cleanDisabled": true,
-        "undoDisabled": true,
-        "guardMessages": [
-          "⚠️ لا يمكن تبديل الملف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن مسح الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن تعديل الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن التراجع عن الهدف أثناء معاملة الحفظ المباشر."
-        ],
-        "afterPicker": {
-          "selectedName": "A.txt",
-          "directName": "A.txt",
-          "handleName": "A.txt",
-          "pickerCalls": 0,
-          "queuedHandles": 1,
-          "method": "picker-event"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1,
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadTokenUnchanged": true,
-        "rawTokenUnchanged": true,
-        "htmlUnchanged": true,
-        "sameHandle": true,
-        "sameName": true
-      },
-      "transaction_outcome": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGNvbnN0IF9hZGRlZCA9IFtdOwogICAgZm9yIChsZXQgaSA9IDE7IGkgPD0gMzsgaSsrKSB7CiAgICAgIGNvbnN0IGVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2JyZWFrZG93blN0ZXAnICsgaSk7CiAgICAgIGlmICghZWwpIGNvbnRpbnVlOwogICAgICBjb25zdCB2YWwgPSBlbC52YWx1ZS50cmltKCk7CiAgICAgIGlmICh2YWwpIHsKICAgICAgICBjb25zdCBfdCA9IHsKICAgICAgICAgIGlkOiBnZXROZXh0VGFza0lkKCksIG5hbWU6IHZhbCwgdHlwZTogJ9mF2LnYsdmB2YrYqScsIHN0YXR1czogJ3BlbmRpbmcnLAogICAgICAgICAgZXhwZWN0ZWQ6IDE1LCBhY3R1YWw6IG51bGwsIHBsYW5uZWREYXRlOiB0b2RheVN0cigpLAogICAgICAgICAgcGxhbm5lZFRpbWU6ICcnLCBjb21wbGV0ZWRBdDogbnVsbCwgY3JlYXRlZEF0OiBEYXRlLm5vdygpCiAgICAgICAgfTsKICAgICAgICB0YXNrcy5wdXNoKF90KTsKICAgICAgICBfYWRkZWQucHVzaChfdCk7CiAgICAgICAgZWwudmFsdWUgPSAnJzsKICAgICAgfQogICAgfQogICAgY2xvc2VNb2RhbCgpOwogICAgaWYgKF9hZGRlZC5sZW5ndGggPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgICAgcmV0dXJuOwogICAgfQogICAgaWYgKHNhdmVEYXRhKCkpIHsKICAgICAgcmVuZGVyQWxsKCk7CiAgICAgIHNob3dUb2FzdCgn4pyFINij2LbZgdiqICcgKyBfYWRkZWQubGVuZ3RoICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSB7CiAgICAgIHRhc2tzID0gdGFza3MuZmlsdGVyKGZ1bmN0aW9uKHgpIHsgcmV0dXJuIF9hZGRlZC5pbmRleE9mKHgpID09PSAtMTsgfSk7CiAgICAgIHNob3dUb2FzdCgn4pqg77iPINiq2LnYsNixINin2YTYrdmB2Lgg4oCUINmE2YUg2KrZj9i22YEnKTsKICAgIH0KICB9Ow==",
-          "size": 1156,
-          "counts": {
-            "getFile": 4,
-            "createWritable": 1,
-            "write": 1,
-            "close": 1,
-            "abort": 0
-          },
-          "sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "counts": {
-            "getFile": 0,
-            "createWritable": 0,
-            "write": 0,
-            "close": 0,
-            "abort": 0
-          },
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "summary": "✅ تم التعديل مباشرة على: A.txt — تحقق كامل (الحجم + مقارنة جميع البايتات)",
-        "toast": "✅ تم حفظ التعديل على الملف الأصلي: A.txt",
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "pickerEnabled": true,
-        "fileInputEnabled": true,
-        "clearEnabled": true,
-        "evidence": {
-          "id": "ev-mw54bdc8-1",
-          "recordedAt": "2026-11-06T15:17:04.712Z",
-          "operation": "apply",
-          "engineVersion": "8.0.0",
-          "patchFormatVersion": "3",
-          "targetName": "A.txt",
-          "rawTargetToken": 1,
-          "rawTargetSize": 949,
-          "rawTargetSha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b",
-          "memorySize": 907,
-          "patchedMemorySize": 1093,
-          "ok": 1,
-          "applied": 0,
-          "skip": 0,
-          "fail": 0,
-          "verifyFailed": false,
-          "verificationPassed": true,
-          "verificationSkipped": 0,
-          "verificationStatus": "ok",
-          "aborted": false,
-          "outputAccepted": true,
-          "allDisabled": false,
-          "patches": [
-            {
-              "id": "breakdown-rollback",
-              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
-              "status": "ok"
-            }
-          ],
-          "verifyDetails": [
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
-          ],
-          "saveMode": "direct",
-          "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
-          "outputName": "A-patched.txt",
-          "outputSize": 1156,
-          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "actualFileSize": 1156,
-          "actualFileSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "notes": "الكتابة المباشرة انتهت على المقبض المثبّت A.txt؛ مستوى تحقق الأداة: full-byte-compare"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1
-      },
-      "post_release_B_selection": {
+      "state_after_B_selected": {
         "selectedName": "B.txt",
         "directName": "B.txt",
         "handleName": "B.txt",
-        "pickerEnabled": true,
-        "Bbytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-        "Bsize": 51,
-        "Bsha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
+        "targetMatches": true,
+        "directWriteBusy": true
       },
-      "expected_A_patched_size": 1156,
-      "expected_A_patched_sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-      "accepted_safe_behavior": "picker-locked; transaction completes on pinned A",
-      "safety_invariants": {
-        "B_byte_identical": true,
-        "A_either_patched_or_exactly_preserved": true,
-        "evidence_target_bound_to_A": true,
-        "secondary_target_mutations_blocked": true,
-        "switch_was_safely_blocked_or_transaction_bound": true,
-        "switching_available_after_transaction": true
-      },
-      "page_errors": [],
-      "safe_outcome": true,
-      "checks": [
-        {
-          "check": "no uncaught page errors",
-          "pass": true
-        },
-        {
-          "check": "intended asynchronous gate reached",
-          "pass": true
-        },
-        {
-          "check": "direct transaction marked busy during await",
-          "pass": true
-        },
-        {
-          "check": "switch attempt resolved to either locked A or selected B",
-          "pass": true
-        },
-        {
-          "check": "file input/clear/clean/undo cannot mutate target during transaction",
-          "pass": true
-        },
-        {
-          "check": "race resolved only through block, pre-write cancellation, or fully pinned A transaction",
-          "pass": true
-        },
-        {
-          "check": "B bytes remain identical to pre-transaction snapshot",
-          "pass": true
-        },
-        {
-          "check": "A is either fully patched or restored byte-for-byte",
-          "pass": true
-        },
-        {
-          "check": "evidence target identity remains A",
-          "pass": true
-        },
-        {
-          "check": "B can be selected after transaction and remains byte-identical",
-          "pass": true
-        },
-        {
-          "check": "target controls are restored after transaction",
-          "pass": true
-        },
-        {
-          "check": "selected target remains a valid explicit target after transaction",
-          "pass": true
-        }
-      ],
-      "pass_count": 12,
-      "check_count": 12
-    },
-    {
-      "case_id": "DIRECT-RACE-02-UI",
-      "description": "UI picker switch attempt while A rollback-backup bytes are pending.",
-      "gate_stage": "backup-buffer",
-      "entered_stage": "backup-buffer",
-      "before": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
-          "size": 949,
-          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadToken": 1,
-        "rawToken": 1
-      },
-      "during_transaction_switch_attempt": {
-        "busy": true,
-        "pickerDisabled": false,
-        "inputDisabled": true,
-        "clearDisabled": true,
-        "cleanDisabled": true,
-        "undoDisabled": true,
-        "guardMessages": [
-          "⚠️ لا يمكن تبديل الملف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن مسح الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن تعديل الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن التراجع عن الهدف أثناء معاملة الحفظ المباشر."
-        ],
-        "afterPicker": {
-          "selectedName": "A.txt",
-          "directName": "A.txt",
-          "handleName": "A.txt",
-          "pickerCalls": 0,
-          "queuedHandles": 1,
-          "method": "picker-event"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1,
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadTokenUnchanged": true,
-        "rawTokenUnchanged": true,
-        "htmlUnchanged": true,
-        "sameHandle": true,
-        "sameName": true
-      },
-      "transaction_outcome": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGNvbnN0IF9hZGRlZCA9IFtdOwogICAgZm9yIChsZXQgaSA9IDE7IGkgPD0gMzsgaSsrKSB7CiAgICAgIGNvbnN0IGVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2JyZWFrZG93blN0ZXAnICsgaSk7CiAgICAgIGlmICghZWwpIGNvbnRpbnVlOwogICAgICBjb25zdCB2YWwgPSBlbC52YWx1ZS50cmltKCk7CiAgICAgIGlmICh2YWwpIHsKICAgICAgICBjb25zdCBfdCA9IHsKICAgICAgICAgIGlkOiBnZXROZXh0VGFza0lkKCksIG5hbWU6IHZhbCwgdHlwZTogJ9mF2LnYsdmB2YrYqScsIHN0YXR1czogJ3BlbmRpbmcnLAogICAgICAgICAgZXhwZWN0ZWQ6IDE1LCBhY3R1YWw6IG51bGwsIHBsYW5uZWREYXRlOiB0b2RheVN0cigpLAogICAgICAgICAgcGxhbm5lZFRpbWU6ICcnLCBjb21wbGV0ZWRBdDogbnVsbCwgY3JlYXRlZEF0OiBEYXRlLm5vdygpCiAgICAgICAgfTsKICAgICAgICB0YXNrcy5wdXNoKF90KTsKICAgICAgICBfYWRkZWQucHVzaChfdCk7CiAgICAgICAgZWwudmFsdWUgPSAnJzsKICAgICAgfQogICAgfQogICAgY2xvc2VNb2RhbCgpOwogICAgaWYgKF9hZGRlZC5sZW5ndGggPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgICAgcmV0dXJuOwogICAgfQogICAgaWYgKHNhdmVEYXRhKCkpIHsKICAgICAgcmVuZGVyQWxsKCk7CiAgICAgIHNob3dUb2FzdCgn4pyFINij2LbZgdiqICcgKyBfYWRkZWQubGVuZ3RoICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSB7CiAgICAgIHRhc2tzID0gdGFza3MuZmlsdGVyKGZ1bmN0aW9uKHgpIHsgcmV0dXJuIF9hZGRlZC5pbmRleE9mKHgpID09PSAtMTsgfSk7CiAgICAgIHNob3dUb2FzdCgn4pqg77iPINiq2LnYsNixINin2YTYrdmB2Lgg4oCUINmE2YUg2KrZj9i22YEnKTsKICAgIH0KICB9Ow==",
-          "size": 1156,
-          "counts": {
-            "getFile": 4,
-            "createWritable": 1,
-            "write": 1,
-            "close": 1,
-            "abort": 0
-          },
-          "sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "counts": {
-            "getFile": 0,
-            "createWritable": 0,
-            "write": 0,
-            "close": 0,
-            "abort": 0
-          },
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "summary": "✅ تم التعديل مباشرة على: A.txt — تحقق كامل (الحجم + مقارنة جميع البايتات)",
-        "toast": "✅ تم حفظ التعديل على الملف الأصلي: A.txt",
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "pickerEnabled": true,
-        "fileInputEnabled": true,
-        "clearEnabled": true,
-        "evidence": {
-          "id": "ev-mw54bduh-1",
-          "recordedAt": "2026-11-06T15:17:05.369Z",
-          "operation": "apply",
-          "engineVersion": "8.0.0",
-          "patchFormatVersion": "3",
-          "targetName": "A.txt",
-          "rawTargetToken": 1,
-          "rawTargetSize": 949,
-          "rawTargetSha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b",
-          "memorySize": 907,
-          "patchedMemorySize": 1093,
-          "ok": 1,
-          "applied": 0,
-          "skip": 0,
-          "fail": 0,
-          "verifyFailed": false,
-          "verificationPassed": true,
-          "verificationSkipped": 0,
-          "verificationStatus": "ok",
-          "aborted": false,
-          "outputAccepted": true,
-          "allDisabled": false,
-          "patches": [
-            {
-              "id": "breakdown-rollback",
-              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
-              "status": "ok"
-            }
-          ],
-          "verifyDetails": [
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
-          ],
-          "saveMode": "direct",
-          "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
-          "outputName": "A-patched.txt",
-          "outputSize": 1156,
-          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "actualFileSize": 1156,
-          "actualFileSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "notes": "الكتابة المباشرة انتهت على المقبض المثبّت A.txt؛ مستوى تحقق الأداة: full-byte-compare"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1
-      },
-      "post_release_B_selection": {
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "Bbytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-        "Bsize": 51,
-        "Bsha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-      },
-      "expected_A_patched_size": 1156,
-      "expected_A_patched_sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-      "accepted_safe_behavior": "picker-locked; transaction completes on pinned A",
-      "safety_invariants": {
-        "B_byte_identical": true,
-        "A_either_patched_or_exactly_preserved": true,
-        "evidence_target_bound_to_A": true,
-        "secondary_target_mutations_blocked": true,
-        "switch_was_safely_blocked_or_transaction_bound": true,
-        "switching_available_after_transaction": true
-      },
-      "page_errors": [],
-      "safe_outcome": true,
-      "checks": [
-        {
-          "check": "no uncaught page errors",
-          "pass": true
-        },
-        {
-          "check": "intended asynchronous gate reached",
-          "pass": true
-        },
-        {
-          "check": "direct transaction marked busy during await",
-          "pass": true
-        },
-        {
-          "check": "switch attempt resolved to either locked A or selected B",
-          "pass": true
-        },
-        {
-          "check": "file input/clear/clean/undo cannot mutate target during transaction",
-          "pass": true
-        },
-        {
-          "check": "race resolved only through block, pre-write cancellation, or fully pinned A transaction",
-          "pass": true
-        },
-        {
-          "check": "B bytes remain identical to pre-transaction snapshot",
-          "pass": true
-        },
-        {
-          "check": "A is either fully patched or restored byte-for-byte",
-          "pass": true
-        },
-        {
-          "check": "evidence target identity remains A",
-          "pass": true
-        },
-        {
-          "check": "B can be selected after transaction and remains byte-identical",
-          "pass": true
-        },
-        {
-          "check": "target controls are restored after transaction",
-          "pass": true
-        },
-        {
-          "check": "selected target remains a valid explicit target after transaction",
-          "pass": true
-        }
-      ],
-      "pass_count": 12,
-      "check_count": 12
-    },
-    {
-      "case_id": "DIRECT-RACE-03-UI",
-      "description": "UI picker switch attempt while A.createWritable() is pending.",
-      "gate_stage": "createWritable",
-      "entered_stage": "createWritable",
-      "before": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
-          "size": 949,
-          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadToken": 1,
-        "rawToken": 1
-      },
-      "during_transaction_switch_attempt": {
-        "busy": true,
-        "pickerDisabled": false,
-        "inputDisabled": true,
-        "clearDisabled": true,
-        "cleanDisabled": true,
-        "undoDisabled": true,
-        "guardMessages": [
-          "⚠️ لا يمكن تبديل الملف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن مسح الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن تعديل الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن التراجع عن الهدف أثناء معاملة الحفظ المباشر."
-        ],
-        "afterPicker": {
-          "selectedName": "A.txt",
-          "directName": "A.txt",
-          "handleName": "A.txt",
-          "pickerCalls": 0,
-          "queuedHandles": 1,
-          "method": "picker-event"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1,
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadTokenUnchanged": true,
-        "rawTokenUnchanged": true,
-        "htmlUnchanged": true,
-        "sameHandle": true,
-        "sameName": true
-      },
-      "transaction_outcome": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGNvbnN0IF9hZGRlZCA9IFtdOwogICAgZm9yIChsZXQgaSA9IDE7IGkgPD0gMzsgaSsrKSB7CiAgICAgIGNvbnN0IGVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2JyZWFrZG93blN0ZXAnICsgaSk7CiAgICAgIGlmICghZWwpIGNvbnRpbnVlOwogICAgICBjb25zdCB2YWwgPSBlbC52YWx1ZS50cmltKCk7CiAgICAgIGlmICh2YWwpIHsKICAgICAgICBjb25zdCBfdCA9IHsKICAgICAgICAgIGlkOiBnZXROZXh0VGFza0lkKCksIG5hbWU6IHZhbCwgdHlwZTogJ9mF2LnYsdmB2YrYqScsIHN0YXR1czogJ3BlbmRpbmcnLAogICAgICAgICAgZXhwZWN0ZWQ6IDE1LCBhY3R1YWw6IG51bGwsIHBsYW5uZWREYXRlOiB0b2RheVN0cigpLAogICAgICAgICAgcGxhbm5lZFRpbWU6ICcnLCBjb21wbGV0ZWRBdDogbnVsbCwgY3JlYXRlZEF0OiBEYXRlLm5vdygpCiAgICAgICAgfTsKICAgICAgICB0YXNrcy5wdXNoKF90KTsKICAgICAgICBfYWRkZWQucHVzaChfdCk7CiAgICAgICAgZWwudmFsdWUgPSAnJzsKICAgICAgfQogICAgfQogICAgY2xvc2VNb2RhbCgpOwogICAgaWYgKF9hZGRlZC5sZW5ndGggPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgICAgcmV0dXJuOwogICAgfQogICAgaWYgKHNhdmVEYXRhKCkpIHsKICAgICAgcmVuZGVyQWxsKCk7CiAgICAgIHNob3dUb2FzdCgn4pyFINij2LbZgdiqICcgKyBfYWRkZWQubGVuZ3RoICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSB7CiAgICAgIHRhc2tzID0gdGFza3MuZmlsdGVyKGZ1bmN0aW9uKHgpIHsgcmV0dXJuIF9hZGRlZC5pbmRleE9mKHgpID09PSAtMTsgfSk7CiAgICAgIHNob3dUb2FzdCgn4pqg77iPINiq2LnYsNixINin2YTYrdmB2Lgg4oCUINmE2YUg2KrZj9i22YEnKTsKICAgIH0KICB9Ow==",
-          "size": 1156,
-          "counts": {
-            "getFile": 4,
-            "createWritable": 1,
-            "write": 1,
-            "close": 1,
-            "abort": 0
-          },
-          "sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "counts": {
-            "getFile": 0,
-            "createWritable": 0,
-            "write": 0,
-            "close": 0,
-            "abort": 0
-          },
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "summary": "✅ تم التعديل مباشرة على: A.txt — تحقق كامل (الحجم + مقارنة جميع البايتات)",
-        "toast": "✅ تم حفظ التعديل على الملف الأصلي: A.txt",
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "pickerEnabled": true,
-        "fileInputEnabled": true,
-        "clearEnabled": true,
-        "evidence": {
-          "id": "ev-mw54bedy-1",
-          "recordedAt": "2026-11-06T15:17:06.070Z",
-          "operation": "apply",
-          "engineVersion": "8.0.0",
-          "patchFormatVersion": "3",
-          "targetName": "A.txt",
-          "rawTargetToken": 1,
-          "rawTargetSize": 949,
-          "rawTargetSha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b",
-          "memorySize": 907,
-          "patchedMemorySize": 1093,
-          "ok": 1,
-          "applied": 0,
-          "skip": 0,
-          "fail": 0,
-          "verifyFailed": false,
-          "verificationPassed": true,
-          "verificationSkipped": 0,
-          "verificationStatus": "ok",
-          "aborted": false,
-          "outputAccepted": true,
-          "allDisabled": false,
-          "patches": [
-            {
-              "id": "breakdown-rollback",
-              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
-              "status": "ok"
-            }
-          ],
-          "verifyDetails": [
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
-          ],
-          "saveMode": "direct",
-          "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
-          "outputName": "A-patched.txt",
-          "outputSize": 1156,
-          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "actualFileSize": 1156,
-          "actualFileSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "notes": "الكتابة المباشرة انتهت على المقبض المثبّت A.txt؛ مستوى تحقق الأداة: full-byte-compare"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1
-      },
-      "post_release_B_selection": {
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "Bbytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-        "Bsize": 51,
-        "Bsha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-      },
-      "expected_A_patched_size": 1156,
-      "expected_A_patched_sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-      "accepted_safe_behavior": "picker-locked; transaction completes on pinned A",
-      "safety_invariants": {
-        "B_byte_identical": true,
-        "A_either_patched_or_exactly_preserved": true,
-        "evidence_target_bound_to_A": true,
-        "secondary_target_mutations_blocked": true,
-        "switch_was_safely_blocked_or_transaction_bound": true,
-        "switching_available_after_transaction": true
-      },
-      "page_errors": [],
-      "safe_outcome": true,
-      "checks": [
-        {
-          "check": "no uncaught page errors",
-          "pass": true
-        },
-        {
-          "check": "intended asynchronous gate reached",
-          "pass": true
-        },
-        {
-          "check": "direct transaction marked busy during await",
-          "pass": true
-        },
-        {
-          "check": "switch attempt resolved to either locked A or selected B",
-          "pass": true
-        },
-        {
-          "check": "file input/clear/clean/undo cannot mutate target during transaction",
-          "pass": true
-        },
-        {
-          "check": "race resolved only through block, pre-write cancellation, or fully pinned A transaction",
-          "pass": true
-        },
-        {
-          "check": "B bytes remain identical to pre-transaction snapshot",
-          "pass": true
-        },
-        {
-          "check": "A is either fully patched or restored byte-for-byte",
-          "pass": true
-        },
-        {
-          "check": "evidence target identity remains A",
-          "pass": true
-        },
-        {
-          "check": "B can be selected after transaction and remains byte-identical",
-          "pass": true
-        },
-        {
-          "check": "target controls are restored after transaction",
-          "pass": true
-        },
-        {
-          "check": "selected target remains a valid explicit target after transaction",
-          "pass": true
-        }
-      ],
-      "pass_count": 12,
-      "check_count": 12
-    },
-    {
-      "case_id": "DIRECT-RACE-04-UI",
-      "description": "UI picker switch attempt while A post-write readback is pending.",
-      "gate_stage": "postwrite-buffer",
-      "entered_stage": "postwrite-buffer",
-      "before": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
-          "size": 949,
-          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadToken": 1,
-        "rawToken": 1
-      },
-      "during_transaction_switch_attempt": {
-        "busy": true,
-        "pickerDisabled": false,
-        "inputDisabled": true,
-        "clearDisabled": true,
-        "cleanDisabled": true,
-        "undoDisabled": true,
-        "guardMessages": [
-          "⚠️ لا يمكن تبديل الملف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن مسح الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن تعديل الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن التراجع عن الهدف أثناء معاملة الحفظ المباشر."
-        ],
-        "afterPicker": {
-          "selectedName": "A.txt",
-          "directName": "A.txt",
-          "handleName": "A.txt",
-          "pickerCalls": 0,
-          "queuedHandles": 1,
-          "method": "picker-event"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1,
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadTokenUnchanged": true,
-        "rawTokenUnchanged": true,
-        "htmlUnchanged": true,
-        "sameHandle": true,
-        "sameName": true
-      },
-      "transaction_outcome": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGNvbnN0IF9hZGRlZCA9IFtdOwogICAgZm9yIChsZXQgaSA9IDE7IGkgPD0gMzsgaSsrKSB7CiAgICAgIGNvbnN0IGVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2JyZWFrZG93blN0ZXAnICsgaSk7CiAgICAgIGlmICghZWwpIGNvbnRpbnVlOwogICAgICBjb25zdCB2YWwgPSBlbC52YWx1ZS50cmltKCk7CiAgICAgIGlmICh2YWwpIHsKICAgICAgICBjb25zdCBfdCA9IHsKICAgICAgICAgIGlkOiBnZXROZXh0VGFza0lkKCksIG5hbWU6IHZhbCwgdHlwZTogJ9mF2LnYsdmB2YrYqScsIHN0YXR1czogJ3BlbmRpbmcnLAogICAgICAgICAgZXhwZWN0ZWQ6IDE1LCBhY3R1YWw6IG51bGwsIHBsYW5uZWREYXRlOiB0b2RheVN0cigpLAogICAgICAgICAgcGxhbm5lZFRpbWU6ICcnLCBjb21wbGV0ZWRBdDogbnVsbCwgY3JlYXRlZEF0OiBEYXRlLm5vdygpCiAgICAgICAgfTsKICAgICAgICB0YXNrcy5wdXNoKF90KTsKICAgICAgICBfYWRkZWQucHVzaChfdCk7CiAgICAgICAgZWwudmFsdWUgPSAnJzsKICAgICAgfQogICAgfQogICAgY2xvc2VNb2RhbCgpOwogICAgaWYgKF9hZGRlZC5sZW5ndGggPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgICAgcmV0dXJuOwogICAgfQogICAgaWYgKHNhdmVEYXRhKCkpIHsKICAgICAgcmVuZGVyQWxsKCk7CiAgICAgIHNob3dUb2FzdCgn4pyFINij2LbZgdiqICcgKyBfYWRkZWQubGVuZ3RoICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSB7CiAgICAgIHRhc2tzID0gdGFza3MuZmlsdGVyKGZ1bmN0aW9uKHgpIHsgcmV0dXJuIF9hZGRlZC5pbmRleE9mKHgpID09PSAtMTsgfSk7CiAgICAgIHNob3dUb2FzdCgn4pqg77iPINiq2LnYsNixINin2YTYrdmB2Lgg4oCUINmE2YUg2KrZj9i22YEnKTsKICAgIH0KICB9Ow==",
-          "size": 1156,
-          "counts": {
-            "getFile": 4,
-            "createWritable": 1,
-            "write": 1,
-            "close": 1,
-            "abort": 0
-          },
-          "sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "counts": {
-            "getFile": 0,
-            "createWritable": 0,
-            "write": 0,
-            "close": 0,
-            "abort": 0
-          },
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "summary": "✅ تم التعديل مباشرة على: A.txt — تحقق كامل (الحجم + مقارنة جميع البايتات)",
-        "toast": "✅ تم حفظ التعديل على الملف الأصلي: A.txt",
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "pickerEnabled": true,
-        "fileInputEnabled": true,
-        "clearEnabled": true,
-        "evidence": {
-          "id": "ev-mw54bewg-1",
-          "recordedAt": "2026-11-06T15:17:06.736Z",
-          "operation": "apply",
-          "engineVersion": "8.0.0",
-          "patchFormatVersion": "3",
-          "targetName": "A.txt",
-          "rawTargetToken": 1,
-          "rawTargetSize": 949,
-          "rawTargetSha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b",
-          "memorySize": 907,
-          "patchedMemorySize": 1093,
-          "ok": 1,
-          "applied": 0,
-          "skip": 0,
-          "fail": 0,
-          "verifyFailed": false,
-          "verificationPassed": true,
-          "verificationSkipped": 0,
-          "verificationStatus": "ok",
-          "aborted": false,
-          "outputAccepted": true,
-          "allDisabled": false,
-          "patches": [
-            {
-              "id": "breakdown-rollback",
-              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
-              "status": "ok"
-            }
-          ],
-          "verifyDetails": [
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
-          ],
-          "saveMode": "direct",
-          "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
-          "outputName": "A-patched.txt",
-          "outputSize": 1156,
-          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "actualFileSize": 1156,
-          "actualFileSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "notes": "الكتابة المباشرة انتهت على المقبض المثبّت A.txt؛ مستوى تحقق الأداة: full-byte-compare"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1
-      },
-      "post_release_B_selection": {
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "Bbytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-        "Bsize": 51,
-        "Bsha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-      },
-      "expected_A_patched_size": 1156,
-      "expected_A_patched_sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-      "accepted_safe_behavior": "picker-locked; transaction completes on pinned A",
-      "safety_invariants": {
-        "B_byte_identical": true,
-        "A_either_patched_or_exactly_preserved": true,
-        "evidence_target_bound_to_A": true,
-        "secondary_target_mutations_blocked": true,
-        "switch_was_safely_blocked_or_transaction_bound": true,
-        "switching_available_after_transaction": true
-      },
-      "page_errors": [],
-      "safe_outcome": true,
-      "checks": [
-        {
-          "check": "no uncaught page errors",
-          "pass": true
-        },
-        {
-          "check": "intended asynchronous gate reached",
-          "pass": true
-        },
-        {
-          "check": "direct transaction marked busy during await",
-          "pass": true
-        },
-        {
-          "check": "switch attempt resolved to either locked A or selected B",
-          "pass": true
-        },
-        {
-          "check": "file input/clear/clean/undo cannot mutate target during transaction",
-          "pass": true
-        },
-        {
-          "check": "race resolved only through block, pre-write cancellation, or fully pinned A transaction",
-          "pass": true
-        },
-        {
-          "check": "B bytes remain identical to pre-transaction snapshot",
-          "pass": true
-        },
-        {
-          "check": "A is either fully patched or restored byte-for-byte",
-          "pass": true
-        },
-        {
-          "check": "evidence target identity remains A",
-          "pass": true
-        },
-        {
-          "check": "B can be selected after transaction and remains byte-identical",
-          "pass": true
-        },
-        {
-          "check": "target controls are restored after transaction",
-          "pass": true
-        },
-        {
-          "check": "selected target remains a valid explicit target after transaction",
-          "pass": true
-        }
-      ],
-      "pass_count": 12,
-      "check_count": 12
-    },
-    {
-      "case_id": "DIRECT-RACE-01-FORCED",
-      "description": "Forced mutable-global replacement while A freshness-read bytes are pending.",
-      "gate_stage": "freshness-buffer",
-      "entered_stage": "freshness-buffer",
-      "before": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
-          "size": 949,
-          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadToken": 1,
-        "rawToken": 1
-      },
-      "during_transaction_switch_attempt": {
-        "busy": true,
-        "pickerDisabled": true,
-        "inputDisabled": true,
-        "clearDisabled": true,
-        "cleanDisabled": true,
-        "undoDisabled": true,
-        "guardMessages": [
-          "⚠️ لا يمكن تبديل الملف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن مسح الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن تعديل الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن التراجع عن الهدف أثناء معاملة الحفظ المباشر."
-        ],
-        "afterPicker": {
-          "selectedName": "B.txt",
-          "directName": "B.txt",
-          "handleName": "B.txt",
-          "pickerCalls": 0,
-          "queuedHandles": 1,
-          "method": "forced-global-replacement"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1,
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "loadTokenUnchanged": true,
-        "rawTokenUnchanged": true,
-        "htmlUnchanged": true,
-        "sameHandle": true,
-        "sameName": true
-      },
-      "transaction_outcome": {
+      "after": {
         "A": {
           "name": "A.txt",
           "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
@@ -921,629 +59,6 @@
         },
         "B": {
           "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "counts": {
-            "getFile": 0,
-            "createWritable": 0,
-            "write": 0,
-            "close": 0,
-            "abort": 0
-          },
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء المعاملة.",
-        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف.",
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "fileInputEnabled": true,
-        "clearEnabled": true,
-        "evidence": {
-          "id": "ev-mw54bfet-1",
-          "recordedAt": "2026-11-06T15:17:07.397Z",
-          "operation": "apply",
-          "engineVersion": "8.0.0",
-          "patchFormatVersion": "3",
-          "targetName": "A.txt",
-          "rawTargetToken": 1,
-          "rawTargetSize": 949,
-          "rawTargetSha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b",
-          "memorySize": 907,
-          "patchedMemorySize": 1093,
-          "ok": 1,
-          "applied": 0,
-          "skip": 0,
-          "fail": 0,
-          "verifyFailed": false,
-          "verificationPassed": true,
-          "verificationSkipped": 0,
-          "verificationStatus": "ok",
-          "aborted": false,
-          "outputAccepted": true,
-          "allDisabled": false,
-          "patches": [
-            {
-              "id": "breakdown-rollback",
-              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
-              "status": "ok"
-            }
-          ],
-          "verifyDetails": [
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
-          ],
-          "saveMode": "direct",
-          "saveStatus": "direct-write-cancelled: target identity changed before first write",
-          "outputName": "A-patched.txt",
-          "outputSize": 1156,
-          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "actualFileSize": null,
-          "actualFileSha256": null,
-          "notes": "لم تبدأ الكتابة؛ تغيّرت هوية الهدف قبل أول بايت، فأُلغيت المعاملة."
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1
-      },
-      "post_release_B_selection": {
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "Bbytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-        "Bsize": 51,
-        "Bsha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-      },
-      "expected_A_patched_size": 1156,
-      "expected_A_patched_sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-      "accepted_safe_behavior": "B selected; A transaction cancelled before the first write",
-      "safety_invariants": {
-        "B_byte_identical": true,
-        "A_either_patched_or_exactly_preserved": true,
-        "evidence_target_bound_to_A": true,
-        "secondary_target_mutations_blocked": true,
-        "switch_was_safely_blocked_or_transaction_bound": true,
-        "switching_available_after_transaction": true
-      },
-      "page_errors": [],
-      "safe_outcome": true,
-      "checks": [
-        {
-          "check": "no uncaught page errors",
-          "pass": true
-        },
-        {
-          "check": "intended asynchronous gate reached",
-          "pass": true
-        },
-        {
-          "check": "direct transaction marked busy during await",
-          "pass": true
-        },
-        {
-          "check": "switch attempt resolved to either locked A or selected B",
-          "pass": true
-        },
-        {
-          "check": "file input/clear/clean/undo cannot mutate target during transaction",
-          "pass": true
-        },
-        {
-          "check": "race resolved only through block, pre-write cancellation, or fully pinned A transaction",
-          "pass": true
-        },
-        {
-          "check": "B bytes remain identical to pre-transaction snapshot",
-          "pass": true
-        },
-        {
-          "check": "A is either fully patched or restored byte-for-byte",
-          "pass": true
-        },
-        {
-          "check": "evidence target identity remains A",
-          "pass": true
-        },
-        {
-          "check": "B can be selected after transaction and remains byte-identical",
-          "pass": true
-        },
-        {
-          "check": "target controls are restored after transaction",
-          "pass": true
-        },
-        {
-          "check": "selected target remains a valid explicit target after transaction",
-          "pass": true
-        }
-      ],
-      "pass_count": 12,
-      "check_count": 12
-    },
-    {
-      "case_id": "DIRECT-RACE-02-FORCED",
-      "description": "Forced mutable-global replacement while A rollback-backup bytes are pending.",
-      "gate_stage": "backup-buffer",
-      "entered_stage": "backup-buffer",
-      "before": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
-          "size": 949,
-          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadToken": 1,
-        "rawToken": 1
-      },
-      "during_transaction_switch_attempt": {
-        "busy": true,
-        "pickerDisabled": true,
-        "inputDisabled": true,
-        "clearDisabled": true,
-        "cleanDisabled": true,
-        "undoDisabled": true,
-        "guardMessages": [
-          "⚠️ لا يمكن تبديل الملف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن مسح الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن تعديل الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن التراجع عن الهدف أثناء معاملة الحفظ المباشر."
-        ],
-        "afterPicker": {
-          "selectedName": "B.txt",
-          "directName": "B.txt",
-          "handleName": "B.txt",
-          "pickerCalls": 0,
-          "queuedHandles": 1,
-          "method": "forced-global-replacement"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1,
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "loadTokenUnchanged": true,
-        "rawTokenUnchanged": true,
-        "htmlUnchanged": true,
-        "sameHandle": true,
-        "sameName": true
-      },
-      "transaction_outcome": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
-          "size": 949,
-          "counts": {
-            "getFile": 2,
-            "createWritable": 0,
-            "write": 0,
-            "close": 0,
-            "abort": 0
-          },
-          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "counts": {
-            "getFile": 0,
-            "createWritable": 0,
-            "write": 0,
-            "close": 0,
-            "abort": 0
-          },
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء تجهيز النسخة الاحتياطية.",
-        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف.",
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "fileInputEnabled": true,
-        "clearEnabled": true,
-        "evidence": {
-          "id": "ev-mw54bfui-1",
-          "recordedAt": "2026-11-06T15:17:07.962Z",
-          "operation": "apply",
-          "engineVersion": "8.0.0",
-          "patchFormatVersion": "3",
-          "targetName": "A.txt",
-          "rawTargetToken": 1,
-          "rawTargetSize": 949,
-          "rawTargetSha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b",
-          "memorySize": 907,
-          "patchedMemorySize": 1093,
-          "ok": 1,
-          "applied": 0,
-          "skip": 0,
-          "fail": 0,
-          "verifyFailed": false,
-          "verificationPassed": true,
-          "verificationSkipped": 0,
-          "verificationStatus": "ok",
-          "aborted": false,
-          "outputAccepted": true,
-          "allDisabled": false,
-          "patches": [
-            {
-              "id": "breakdown-rollback",
-              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
-              "status": "ok"
-            }
-          ],
-          "verifyDetails": [
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
-          ],
-          "saveMode": "direct",
-          "saveStatus": "direct-write-cancelled: target identity changed before first write",
-          "outputName": "A-patched.txt",
-          "outputSize": 1156,
-          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "actualFileSize": null,
-          "actualFileSha256": null,
-          "notes": "لم تبدأ الكتابة؛ تغيّرت هوية الهدف أثناء تجهيز النسخة الاحتياطية، فأُلغيت المعاملة."
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1
-      },
-      "post_release_B_selection": {
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "Bbytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-        "Bsize": 51,
-        "Bsha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-      },
-      "expected_A_patched_size": 1156,
-      "expected_A_patched_sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-      "accepted_safe_behavior": "B selected; A transaction cancelled before the first write",
-      "safety_invariants": {
-        "B_byte_identical": true,
-        "A_either_patched_or_exactly_preserved": true,
-        "evidence_target_bound_to_A": true,
-        "secondary_target_mutations_blocked": true,
-        "switch_was_safely_blocked_or_transaction_bound": true,
-        "switching_available_after_transaction": true
-      },
-      "page_errors": [],
-      "safe_outcome": true,
-      "checks": [
-        {
-          "check": "no uncaught page errors",
-          "pass": true
-        },
-        {
-          "check": "intended asynchronous gate reached",
-          "pass": true
-        },
-        {
-          "check": "direct transaction marked busy during await",
-          "pass": true
-        },
-        {
-          "check": "switch attempt resolved to either locked A or selected B",
-          "pass": true
-        },
-        {
-          "check": "file input/clear/clean/undo cannot mutate target during transaction",
-          "pass": true
-        },
-        {
-          "check": "race resolved only through block, pre-write cancellation, or fully pinned A transaction",
-          "pass": true
-        },
-        {
-          "check": "B bytes remain identical to pre-transaction snapshot",
-          "pass": true
-        },
-        {
-          "check": "A is either fully patched or restored byte-for-byte",
-          "pass": true
-        },
-        {
-          "check": "evidence target identity remains A",
-          "pass": true
-        },
-        {
-          "check": "B can be selected after transaction and remains byte-identical",
-          "pass": true
-        },
-        {
-          "check": "target controls are restored after transaction",
-          "pass": true
-        },
-        {
-          "check": "selected target remains a valid explicit target after transaction",
-          "pass": true
-        }
-      ],
-      "pass_count": 12,
-      "check_count": 12
-    },
-    {
-      "case_id": "DIRECT-RACE-03-FORCED",
-      "description": "Forced mutable-global replacement while A.createWritable() is pending.",
-      "gate_stage": "createWritable",
-      "entered_stage": "createWritable",
-      "before": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
-          "size": 949,
-          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadToken": 1,
-        "rawToken": 1
-      },
-      "during_transaction_switch_attempt": {
-        "busy": true,
-        "pickerDisabled": true,
-        "inputDisabled": true,
-        "clearDisabled": true,
-        "cleanDisabled": true,
-        "undoDisabled": true,
-        "guardMessages": [
-          "⚠️ لا يمكن تبديل الملف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن مسح الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن تعديل الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن التراجع عن الهدف أثناء معاملة الحفظ المباشر."
-        ],
-        "afterPicker": {
-          "selectedName": "B.txt",
-          "directName": "B.txt",
-          "handleName": "B.txt",
-          "pickerCalls": 0,
-          "queuedHandles": 1,
-          "method": "forced-global-replacement"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1,
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "loadTokenUnchanged": true,
-        "rawTokenUnchanged": true,
-        "htmlUnchanged": true,
-        "sameHandle": true,
-        "sameName": true
-      },
-      "transaction_outcome": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
-          "size": 949,
-          "counts": {
-            "getFile": 2,
-            "createWritable": 1,
-            "write": 0,
-            "close": 0,
-            "abort": 1
-          },
-          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "counts": {
-            "getFile": 0,
-            "createWritable": 0,
-            "write": 0,
-            "close": 0,
-            "abort": 0
-          },
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء المعاملة.",
-        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف.",
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "fileInputEnabled": true,
-        "clearEnabled": true,
-        "evidence": {
-          "id": "ev-mw54bgaj-1",
-          "recordedAt": "2026-11-06T15:17:08.539Z",
-          "operation": "apply",
-          "engineVersion": "8.0.0",
-          "patchFormatVersion": "3",
-          "targetName": "A.txt",
-          "rawTargetToken": 1,
-          "rawTargetSize": 949,
-          "rawTargetSha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b",
-          "memorySize": 907,
-          "patchedMemorySize": 1093,
-          "ok": 1,
-          "applied": 0,
-          "skip": 0,
-          "fail": 0,
-          "verifyFailed": false,
-          "verificationPassed": true,
-          "verificationSkipped": 0,
-          "verificationStatus": "ok",
-          "aborted": false,
-          "outputAccepted": true,
-          "allDisabled": false,
-          "patches": [
-            {
-              "id": "breakdown-rollback",
-              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
-              "status": "ok"
-            }
-          ],
-          "verifyDetails": [
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
-            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
-          ],
-          "saveMode": "direct",
-          "saveStatus": "direct-write-cancelled: target identity changed before first write",
-          "outputName": "A-patched.txt",
-          "outputSize": 1156,
-          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "actualFileSize": null,
-          "actualFileSha256": null,
-          "notes": "لم تبدأ الكتابة؛ تغيّرت هوية الهدف قبل أول بايت، فأُلغيت المعاملة."
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1
-      },
-      "post_release_B_selection": {
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "Bbytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-        "Bsize": 51,
-        "Bsha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-      },
-      "expected_A_patched_size": 1156,
-      "expected_A_patched_sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-      "accepted_safe_behavior": "B selected; A transaction cancelled before the first write",
-      "safety_invariants": {
-        "B_byte_identical": true,
-        "A_either_patched_or_exactly_preserved": true,
-        "evidence_target_bound_to_A": true,
-        "secondary_target_mutations_blocked": true,
-        "switch_was_safely_blocked_or_transaction_bound": true,
-        "switching_available_after_transaction": true
-      },
-      "page_errors": [],
-      "safe_outcome": true,
-      "checks": [
-        {
-          "check": "no uncaught page errors",
-          "pass": true
-        },
-        {
-          "check": "intended asynchronous gate reached",
-          "pass": true
-        },
-        {
-          "check": "direct transaction marked busy during await",
-          "pass": true
-        },
-        {
-          "check": "switch attempt resolved to either locked A or selected B",
-          "pass": true
-        },
-        {
-          "check": "file input/clear/clean/undo cannot mutate target during transaction",
-          "pass": true
-        },
-        {
-          "check": "race resolved only through block, pre-write cancellation, or fully pinned A transaction",
-          "pass": true
-        },
-        {
-          "check": "B bytes remain identical to pre-transaction snapshot",
-          "pass": true
-        },
-        {
-          "check": "A is either fully patched or restored byte-for-byte",
-          "pass": true
-        },
-        {
-          "check": "evidence target identity remains A",
-          "pass": true
-        },
-        {
-          "check": "B can be selected after transaction and remains byte-identical",
-          "pass": true
-        },
-        {
-          "check": "target controls are restored after transaction",
-          "pass": true
-        },
-        {
-          "check": "selected target remains a valid explicit target after transaction",
-          "pass": true
-        }
-      ],
-      "pass_count": 12,
-      "check_count": 12
-    },
-    {
-      "case_id": "DIRECT-RACE-04-FORCED",
-      "description": "Forced mutable-global replacement while A post-write readback is pending.",
-      "gate_stage": "postwrite-buffer",
-      "entered_stage": "postwrite-buffer",
-      "before": {
-        "A": {
-          "name": "A.txt",
-          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
-          "size": 949,
-          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
-        },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "selectedName": "A.txt",
-        "directName": "A.txt",
-        "handleName": "A.txt",
-        "loadToken": 1,
-        "rawToken": 1
-      },
-      "during_transaction_switch_attempt": {
-        "busy": true,
-        "pickerDisabled": true,
-        "inputDisabled": true,
-        "clearDisabled": true,
-        "cleanDisabled": true,
-        "undoDisabled": true,
-        "guardMessages": [
-          "⚠️ لا يمكن تبديل الملف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن مسح الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن تعديل الهدف أثناء معاملة الحفظ المباشر.",
-          "⚠️ لا يمكن التراجع عن الهدف أثناء معاملة الحفظ المباشر."
-        ],
-        "afterPicker": {
-          "selectedName": "B.txt",
-          "directName": "B.txt",
-          "handleName": "B.txt",
-          "pickerCalls": 0,
-          "queuedHandles": 1,
-          "method": "forced-global-replacement"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1,
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "loadTokenUnchanged": true,
-        "rawTokenUnchanged": true,
-        "htmlUnchanged": true,
-        "sameHandle": true,
-        "sameName": true
-      },
-      "transaction_outcome": {
-        "A": {
-          "name": "A.txt",
           "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGNvbnN0IF9hZGRlZCA9IFtdOwogICAgZm9yIChsZXQgaSA9IDE7IGkgPD0gMzsgaSsrKSB7CiAgICAgIGNvbnN0IGVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2JyZWFrZG93blN0ZXAnICsgaSk7CiAgICAgIGlmICghZWwpIGNvbnRpbnVlOwogICAgICBjb25zdCB2YWwgPSBlbC52YWx1ZS50cmltKCk7CiAgICAgIGlmICh2YWwpIHsKICAgICAgICBjb25zdCBfdCA9IHsKICAgICAgICAgIGlkOiBnZXROZXh0VGFza0lkKCksIG5hbWU6IHZhbCwgdHlwZTogJ9mF2LnYsdmB2YrYqScsIHN0YXR1czogJ3BlbmRpbmcnLAogICAgICAgICAgZXhwZWN0ZWQ6IDE1LCBhY3R1YWw6IG51bGwsIHBsYW5uZWREYXRlOiB0b2RheVN0cigpLAogICAgICAgICAgcGxhbm5lZFRpbWU6ICcnLCBjb21wbGV0ZWRBdDogbnVsbCwgY3JlYXRlZEF0OiBEYXRlLm5vdygpCiAgICAgICAgfTsKICAgICAgICB0YXNrcy5wdXNoKF90KTsKICAgICAgICBfYWRkZWQucHVzaChfdCk7CiAgICAgICAgZWwudmFsdWUgPSAnJzsKICAgICAgfQogICAgfQogICAgY2xvc2VNb2RhbCgpOwogICAgaWYgKF9hZGRlZC5sZW5ndGggPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgICAgcmV0dXJuOwogICAgfQogICAgaWYgKHNhdmVEYXRhKCkpIHsKICAgICAgcmVuZGVyQWxsKCk7CiAgICAgIHNob3dUb2FzdCgn4pyFINij2LbZgdiqICcgKyBfYWRkZWQubGVuZ3RoICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSB7CiAgICAgIHRhc2tzID0gdGFza3MuZmlsdGVyKGZ1bmN0aW9uKHgpIHsgcmV0dXJuIF9hZGRlZC5pbmRleE9mKHgpID09PSAtMTsgfSk7CiAgICAgIHNob3dUb2FzdCgn4pqg77iPINiq2LnYsNixINin2YTYrdmB2Lgg4oCUINmE2YUg2KrZj9i22YEnKTsKICAgIH0KICB9Ow==",
           "size": 1156,
           "counts": {
@@ -1555,38 +70,28 @@
           },
           "sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c"
         },
-        "B": {
-          "name": "B.txt",
-          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-          "size": 51,
-          "counts": {
-            "getFile": 0,
-            "createWritable": 0,
-            "write": 0,
-            "close": 0,
-            "abort": 0
-          },
-          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-        },
-        "summary": "✅ تم التعديل مباشرة على: A.txt — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت A.txt",
-        "toast": "✅ تم حفظ التعديل على الملف الأصلي: A.txt",
+        "summary": "✅ تم التعديل مباشرة على: B.txt — تحقق كامل (الحجم + مقارنة جميع البايتات)",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي",
+        "downloadVisible": false,
         "selectedName": "B.txt",
         "directName": "B.txt",
         "handleName": "B.txt",
-        "pickerEnabled": true,
-        "fileInputEnabled": true,
-        "clearEnabled": true,
+        "targetMatches": true,
+        "confirmPrompts": [
+          "⚠️ تغيّر الملف على القرص منذ فتحه.\n\nالكتابة الآن ستستبدل التعديلات الخارجية بلا رجعة.\n\nهل تريد المتابعة؟",
+          "تأكيد الكتابة المباشرة على:\nB.txt ؟"
+        ],
         "evidence": {
-          "id": "ev-mw54bgqh-1",
-          "recordedAt": "2026-11-06T15:17:09.113Z",
+          "id": "ev-mw52hmnl-1",
+          "recordedAt": "2026-11-06T14:25:57.489Z",
           "operation": "apply",
           "engineVersion": "8.0.0",
           "patchFormatVersion": "3",
-          "targetName": "A.txt",
-          "rawTargetToken": 1,
-          "rawTargetSize": 949,
-          "rawTargetSha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b",
-          "memorySize": 907,
+          "targetName": "B.txt",
+          "rawTargetToken": 2,
+          "rawTargetSize": 51,
+          "rawTargetSha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd",
+          "memorySize": 1093,
           "patchedMemorySize": 1093,
           "ok": 1,
           "applied": 0,
@@ -1617,86 +122,525 @@
           "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
           "actualFileSize": 1156,
           "actualFileSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-          "notes": "الكتابة المباشرة انتهت على المقبض المثبّت A.txt؛ مستوى تحقق الأداة: full-byte-compare"
-        },
-        "pickerCalls": 0,
-        "queuedHandles": 1
+          "notes": "الكتابة المباشرة انتهت؛ مستوى تحقق الأداة: full-byte-compare"
+        }
       },
-      "post_release_B_selection": {
-        "selectedName": "B.txt",
-        "directName": "B.txt",
-        "handleName": "B.txt",
-        "pickerEnabled": true,
-        "Bbytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
-        "Bsize": 51,
-        "Bsha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
-      },
-      "expected_A_patched_size": 1156,
-      "expected_A_patched_sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
-      "accepted_safe_behavior": "B selected; A transaction remains pinned or rolls back on A",
-      "safety_invariants": {
-        "B_byte_identical": true,
-        "A_either_patched_or_exactly_preserved": true,
-        "evidence_target_bound_to_A": true,
-        "secondary_target_mutations_blocked": true,
-        "switch_was_safely_blocked_or_transaction_bound": true,
-        "switching_available_after_transaction": true
+      "expected_patch_text_sha256_utf8": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
+      "byte_identity": {
+        "A_changed": false,
+        "B_changed": true,
+        "A_equals_expected_patch": false,
+        "B_equals_expected_patch": true,
+        "B_equals_A_original": false,
+        "B_preserved": false,
+        "A_preserved": true
       },
       "page_errors": [],
-      "safe_outcome": true,
+      "risk_reproduced": true,
+      "safety_invariants": {
+        "B_preserved": false,
+        "result_identity_consistent_with_A_transaction": false,
+        "no_cross_target_effect": false
+      },
       "checks": [
         {
           "check": "no uncaught page errors",
           "pass": true
         },
         {
-          "check": "intended asynchronous gate reached",
+          "check": "intended asynchronous race gate reached",
           "pass": true
         },
         {
-          "check": "direct transaction marked busy during await",
+          "check": "B selected in UI while A save awaited",
           "pass": true
         },
         {
-          "check": "switch attempt resolved to either locked A or selected B",
+          "check": "B remains selected after in-flight save",
           "pass": true
         },
         {
-          "check": "file input/clear/clean/undo cannot mutate target during transaction",
-          "pass": true
+          "check": "safety invariant: B bytes must remain unchanged",
+          "pass": false
         },
         {
-          "check": "race resolved only through block, pre-write cancellation, or fully pinned A transaction",
-          "pass": true
-        },
-        {
-          "check": "B bytes remain identical to pre-transaction snapshot",
-          "pass": true
-        },
-        {
-          "check": "A is either fully patched or restored byte-for-byte",
-          "pass": true
-        },
-        {
-          "check": "evidence target identity remains A",
-          "pass": true
-        },
-        {
-          "check": "B can be selected after transaction and remains byte-identical",
-          "pass": true
-        },
-        {
-          "check": "target controls are restored after transaction",
-          "pass": true
-        },
-        {
-          "check": "selected target remains a valid explicit target after transaction",
-          "pass": true
+          "check": "safety invariant: result and evidence must remain bound to original transaction target A or cancel",
+          "pass": false
         }
       ],
-      "pass_count": 12,
-      "check_count": 12
+      "pass_count": 4,
+      "check_count": 6
+    },
+    {
+      "case_id": "DIRECT-RACE-02",
+      "description": "Swap while A's rollback backup File.arrayBuffer() is pending.",
+      "gate_stage": "backup-buffer",
+      "entered_stage": "backup-buffer",
+      "before": {
+        "A": {
+          "name": "A.txt",
+          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
+          "size": 949,
+          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
+        },
+        "B": {
+          "name": "B.txt",
+          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
+          "size": 51,
+          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
+        },
+        "Asha": null,
+        "Bsha": null,
+        "selectedName": "A.txt",
+        "selectedHandle": "A.txt"
+      },
+      "state_after_B_selected": {
+        "selectedName": "B.txt",
+        "directName": "B.txt",
+        "handleName": "B.txt",
+        "targetMatches": true,
+        "directWriteBusy": true
+      },
+      "after": {
+        "A": {
+          "name": "A.txt",
+          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
+          "size": 949,
+          "counts": {
+            "getFile": 2,
+            "createWritable": 0,
+            "write": 0,
+            "close": 0,
+            "abort": 0
+          },
+          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
+        },
+        "B": {
+          "name": "B.txt",
+          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGNvbnN0IF9hZGRlZCA9IFtdOwogICAgZm9yIChsZXQgaSA9IDE7IGkgPD0gMzsgaSsrKSB7CiAgICAgIGNvbnN0IGVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2JyZWFrZG93blN0ZXAnICsgaSk7CiAgICAgIGlmICghZWwpIGNvbnRpbnVlOwogICAgICBjb25zdCB2YWwgPSBlbC52YWx1ZS50cmltKCk7CiAgICAgIGlmICh2YWwpIHsKICAgICAgICBjb25zdCBfdCA9IHsKICAgICAgICAgIGlkOiBnZXROZXh0VGFza0lkKCksIG5hbWU6IHZhbCwgdHlwZTogJ9mF2LnYsdmB2YrYqScsIHN0YXR1czogJ3BlbmRpbmcnLAogICAgICAgICAgZXhwZWN0ZWQ6IDE1LCBhY3R1YWw6IG51bGwsIHBsYW5uZWREYXRlOiB0b2RheVN0cigpLAogICAgICAgICAgcGxhbm5lZFRpbWU6ICcnLCBjb21wbGV0ZWRBdDogbnVsbCwgY3JlYXRlZEF0OiBEYXRlLm5vdygpCiAgICAgICAgfTsKICAgICAgICB0YXNrcy5wdXNoKF90KTsKICAgICAgICBfYWRkZWQucHVzaChfdCk7CiAgICAgICAgZWwudmFsdWUgPSAnJzsKICAgICAgfQogICAgfQogICAgY2xvc2VNb2RhbCgpOwogICAgaWYgKF9hZGRlZC5sZW5ndGggPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgICAgcmV0dXJuOwogICAgfQogICAgaWYgKHNhdmVEYXRhKCkpIHsKICAgICAgcmVuZGVyQWxsKCk7CiAgICAgIHNob3dUb2FzdCgn4pyFINij2LbZgdiqICcgKyBfYWRkZWQubGVuZ3RoICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSB7CiAgICAgIHRhc2tzID0gdGFza3MuZmlsdGVyKGZ1bmN0aW9uKHgpIHsgcmV0dXJuIF9hZGRlZC5pbmRleE9mKHgpID09PSAtMTsgfSk7CiAgICAgIHNob3dUb2FzdCgn4pqg77iPINiq2LnYsNixINin2YTYrdmB2Lgg4oCUINmE2YUg2KrZj9i22YEnKTsKICAgIH0KICB9Ow==",
+          "size": 1156,
+          "counts": {
+            "getFile": 3,
+            "createWritable": 1,
+            "write": 1,
+            "close": 1,
+            "abort": 0
+          },
+          "sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c"
+        },
+        "summary": "✅ تم التعديل مباشرة على: B.txt — تحقق كامل (الحجم + مقارنة جميع البايتات)",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي",
+        "downloadVisible": false,
+        "selectedName": "B.txt",
+        "directName": "B.txt",
+        "handleName": "B.txt",
+        "targetMatches": true,
+        "confirmPrompts": [
+          "تأكيد الكتابة المباشرة على:\nA.txt ؟"
+        ],
+        "evidence": {
+          "id": "ev-mw52hn4d-1",
+          "recordedAt": "2026-11-06T14:25:58.093Z",
+          "operation": "apply",
+          "engineVersion": "8.0.0",
+          "patchFormatVersion": "3",
+          "targetName": "B.txt",
+          "rawTargetToken": 2,
+          "rawTargetSize": 51,
+          "rawTargetSha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd",
+          "memorySize": 1093,
+          "patchedMemorySize": 1093,
+          "ok": 1,
+          "applied": 0,
+          "skip": 0,
+          "fail": 0,
+          "verifyFailed": false,
+          "verificationPassed": true,
+          "verificationSkipped": 0,
+          "verificationStatus": "ok",
+          "aborted": false,
+          "outputAccepted": true,
+          "allDisabled": false,
+          "patches": [
+            {
+              "id": "breakdown-rollback",
+              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
+              "status": "ok"
+            }
+          ],
+          "verifyDetails": [
+            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
+            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
+          ],
+          "saveMode": "direct",
+          "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+          "outputName": "A-patched.txt",
+          "outputSize": 1156,
+          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
+          "actualFileSize": 1156,
+          "actualFileSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
+          "notes": "الكتابة المباشرة انتهت؛ مستوى تحقق الأداة: full-byte-compare"
+        }
+      },
+      "expected_patch_text_sha256_utf8": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
+      "byte_identity": {
+        "A_changed": false,
+        "B_changed": true,
+        "A_equals_expected_patch": false,
+        "B_equals_expected_patch": true,
+        "B_equals_A_original": false,
+        "B_preserved": false,
+        "A_preserved": true
+      },
+      "page_errors": [],
+      "risk_reproduced": true,
+      "safety_invariants": {
+        "B_preserved": false,
+        "result_identity_consistent_with_A_transaction": false,
+        "no_cross_target_effect": false
+      },
+      "checks": [
+        {
+          "check": "no uncaught page errors",
+          "pass": true
+        },
+        {
+          "check": "intended asynchronous race gate reached",
+          "pass": true
+        },
+        {
+          "check": "B selected in UI while A save awaited",
+          "pass": true
+        },
+        {
+          "check": "B remains selected after in-flight save",
+          "pass": true
+        },
+        {
+          "check": "safety invariant: B bytes must remain unchanged",
+          "pass": false
+        },
+        {
+          "check": "safety invariant: result and evidence must remain bound to original transaction target A or cancel",
+          "pass": false
+        }
+      ],
+      "pass_count": 4,
+      "check_count": 6
+    },
+    {
+      "case_id": "DIRECT-RACE-03",
+      "description": "Swap while A.createWritable() is pending, before its writer resolves.",
+      "gate_stage": "createWritable",
+      "entered_stage": "createWritable",
+      "before": {
+        "A": {
+          "name": "A.txt",
+          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
+          "size": 949,
+          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
+        },
+        "B": {
+          "name": "B.txt",
+          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
+          "size": 51,
+          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
+        },
+        "Asha": null,
+        "Bsha": null,
+        "selectedName": "A.txt",
+        "selectedHandle": "A.txt"
+      },
+      "state_after_B_selected": {
+        "selectedName": "B.txt",
+        "directName": "B.txt",
+        "handleName": "B.txt",
+        "targetMatches": true,
+        "directWriteBusy": true
+      },
+      "after": {
+        "A": {
+          "name": "A.txt",
+          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGNvbnN0IF9hZGRlZCA9IFtdOwogICAgZm9yIChsZXQgaSA9IDE7IGkgPD0gMzsgaSsrKSB7CiAgICAgIGNvbnN0IGVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2JyZWFrZG93blN0ZXAnICsgaSk7CiAgICAgIGlmICghZWwpIGNvbnRpbnVlOwogICAgICBjb25zdCB2YWwgPSBlbC52YWx1ZS50cmltKCk7CiAgICAgIGlmICh2YWwpIHsKICAgICAgICBjb25zdCBfdCA9IHsKICAgICAgICAgIGlkOiBnZXROZXh0VGFza0lkKCksIG5hbWU6IHZhbCwgdHlwZTogJ9mF2LnYsdmB2YrYqScsIHN0YXR1czogJ3BlbmRpbmcnLAogICAgICAgICAgZXhwZWN0ZWQ6IDE1LCBhY3R1YWw6IG51bGwsIHBsYW5uZWREYXRlOiB0b2RheVN0cigpLAogICAgICAgICAgcGxhbm5lZFRpbWU6ICcnLCBjb21wbGV0ZWRBdDogbnVsbCwgY3JlYXRlZEF0OiBEYXRlLm5vdygpCiAgICAgICAgfTsKICAgICAgICB0YXNrcy5wdXNoKF90KTsKICAgICAgICBfYWRkZWQucHVzaChfdCk7CiAgICAgICAgZWwudmFsdWUgPSAnJzsKICAgICAgfQogICAgfQogICAgY2xvc2VNb2RhbCgpOwogICAgaWYgKF9hZGRlZC5sZW5ndGggPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgICAgcmV0dXJuOwogICAgfQogICAgaWYgKHNhdmVEYXRhKCkpIHsKICAgICAgcmVuZGVyQWxsKCk7CiAgICAgIHNob3dUb2FzdCgn4pyFINij2LbZgdiqICcgKyBfYWRkZWQubGVuZ3RoICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSB7CiAgICAgIHRhc2tzID0gdGFza3MuZmlsdGVyKGZ1bmN0aW9uKHgpIHsgcmV0dXJuIF9hZGRlZC5pbmRleE9mKHgpID09PSAtMTsgfSk7CiAgICAgIHNob3dUb2FzdCgn4pqg77iPINiq2LnYsNixINin2YTYrdmB2Lgg4oCUINmE2YUg2KrZj9i22YEnKTsKICAgIH0KICB9Ow==",
+          "size": 1156,
+          "counts": {
+            "getFile": 2,
+            "createWritable": 1,
+            "write": 1,
+            "close": 1,
+            "abort": 0
+          },
+          "sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c"
+        },
+        "B": {
+          "name": "B.txt",
+          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
+          "size": 949,
+          "counts": {
+            "getFile": 3,
+            "createWritable": 1,
+            "write": 1,
+            "close": 1,
+            "abort": 0
+          },
+          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
+        },
+        "summary": "⚠️ فشل الحفظ المباشر (فشل التحقق من الحجم (51/1156 بايت) — استُعيد الأصل وتم التحقق من بايتاته). استُعيد الأصل وتم التحقق من بايتاته؛ تم طلب تنزيل بديل.",
+        "toast": "⚠️ فشل الحفظ المباشر: فشل التحقق من الحجم (51/1156 بايت) — استُعيد الأصل وتم التحقق من بايتاته — تم طلب تنزيل بديل",
+        "downloadVisible": true,
+        "selectedName": "B.txt",
+        "directName": "B.txt",
+        "handleName": "B.txt",
+        "targetMatches": true,
+        "confirmPrompts": [
+          "تأكيد الكتابة المباشرة على:\nA.txt ؟"
+        ],
+        "evidence": {
+          "id": "ev-mw52hnkg-1",
+          "recordedAt": "2026-11-06T14:25:58.672Z",
+          "operation": "apply",
+          "engineVersion": "8.0.0",
+          "patchFormatVersion": "3",
+          "targetName": "B.txt",
+          "rawTargetToken": 2,
+          "rawTargetSize": 51,
+          "rawTargetSha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd",
+          "memorySize": 51,
+          "patchedMemorySize": 1093,
+          "ok": 1,
+          "applied": 0,
+          "skip": 0,
+          "fail": 0,
+          "verifyFailed": false,
+          "verificationPassed": true,
+          "verificationSkipped": 0,
+          "verificationStatus": "ok",
+          "aborted": false,
+          "outputAccepted": true,
+          "allDisabled": false,
+          "patches": [
+            {
+              "id": "breakdown-rollback",
+              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
+              "status": "ok"
+            }
+          ],
+          "verifyDetails": [
+            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
+            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
+          ],
+          "saveMode": "direct",
+          "saveStatus": "direct-write-failed; _verifyLevel=rollback-verified; fallback download link will be offered (download not confirmed)",
+          "outputName": "A-patched.txt",
+          "outputSize": 1156,
+          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
+          "actualFileSize": null,
+          "actualFileSha256": null,
+          "notes": null
+        }
+      },
+      "expected_patch_text_sha256_utf8": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
+      "byte_identity": {
+        "A_changed": true,
+        "B_changed": true,
+        "A_equals_expected_patch": true,
+        "B_equals_expected_patch": false,
+        "B_equals_A_original": true,
+        "B_preserved": false,
+        "A_preserved": false
+      },
+      "page_errors": [],
+      "risk_reproduced": true,
+      "safety_invariants": {
+        "B_preserved": false,
+        "result_identity_consistent_with_A_transaction": false,
+        "no_cross_target_effect": false
+      },
+      "checks": [
+        {
+          "check": "no uncaught page errors",
+          "pass": true
+        },
+        {
+          "check": "intended asynchronous race gate reached",
+          "pass": true
+        },
+        {
+          "check": "B selected in UI while A save awaited",
+          "pass": true
+        },
+        {
+          "check": "B remains selected after in-flight save",
+          "pass": true
+        },
+        {
+          "check": "safety invariant: B bytes must remain unchanged",
+          "pass": false
+        },
+        {
+          "check": "safety invariant: result and evidence must remain bound to original transaction target A or cancel",
+          "pass": false
+        }
+      ],
+      "pass_count": 4,
+      "check_count": 6
+    },
+    {
+      "case_id": "DIRECT-RACE-04",
+      "description": "Swap while A's post-write verification readback is pending.",
+      "gate_stage": "postwrite-buffer",
+      "entered_stage": "postwrite-buffer",
+      "before": {
+        "A": {
+          "name": "A.txt",
+          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGxldCBhZGRlZCA9IDA7CiAgICBmb3IgKGxldCBpID0gMTsgaSA8PSAzOyBpKyspIHsKICAgICAgY29uc3QgZWwgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYnJlYWtkb3duU3RlcCcgKyBpKTsKICAgICAgaWYgKCFlbCkgY29udGludWU7CiAgICAgIGNvbnN0IHZhbCA9IGVsLnZhbHVlLnRyaW0oKTsKICAgICAgaWYgKHZhbCkgewogICAgICAgIHRhc2tzLnB1c2goewogICAgICAgICAgaWQ6IGdldE5leHRUYXNrSWQoKSwgbmFtZTogdmFsLCB0eXBlOiAn2YXYudix2YHZitipJywgc3RhdHVzOiAncGVuZGluZycsCiAgICAgICAgICBleHBlY3RlZDogMTUsIGFjdHVhbDogbnVsbCwgcGxhbm5lZERhdGU6IHRvZGF5U3RyKCksCiAgICAgICAgICBwbGFubmVkVGltZTogJycsIGNvbXBsZXRlZEF0OiBudWxsLCBjcmVhdGVkQXQ6IERhdGUubm93KCkKICAgICAgICB9KTsKICAgICAgICBlbC52YWx1ZSA9ICcnOwogICAgICAgIGFkZGVkKys7CiAgICAgIH0KICAgIH0KICAgIGNsb3NlTW9kYWwoKTsKICAgIGlmIChhZGRlZCA+IDAgJiYgc2F2ZURhdGEoKSkgewogICAgICByZW5kZXJBbGwoKTsKICAgICAgc2hvd1RvYXN0KCfinIUg2KPYttmB2KogJyArIGFkZGVkICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSBpZiAoYWRkZWQgPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgIH0KICB9Ow==",
+          "size": 949,
+          "sha256": "1e32bcc37093e4248951245d92354805ed105172c8a1c50811981cbf6b5ac87b"
+        },
+        "B": {
+          "name": "B.txt",
+          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
+          "size": 51,
+          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
+        },
+        "Asha": null,
+        "Bsha": null,
+        "selectedName": "A.txt",
+        "selectedHandle": "A.txt"
+      },
+      "state_after_B_selected": {
+        "selectedName": "B.txt",
+        "directName": "B.txt",
+        "handleName": "B.txt",
+        "targetMatches": true,
+        "directWriteBusy": true
+      },
+      "after": {
+        "A": {
+          "name": "A.txt",
+          "bytes": "ICBjb25zdCBhZGRCdG4gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTsKICBhZGRCdG4uY2xhc3NOYW1lID0gJ2J0bi1wcmltYXJ5JzsKICBhZGRCdG4udGV4dENvbnRlbnQgPSAn2KPYttmBINmD2YXZh9in2YUnOwogIGFkZEJ0bi5vbmNsaWNrID0gZnVuY3Rpb24oKSB7CiAgICBpZiAoYWRkQnRuLmRpc2FibGVkKSByZXR1cm47CiAgICBhZGRCdG4uZGlzYWJsZWQgPSB0cnVlOwoKICAgIGNvbnN0IF9hZGRlZCA9IFtdOwogICAgZm9yIChsZXQgaSA9IDE7IGkgPD0gMzsgaSsrKSB7CiAgICAgIGNvbnN0IGVsID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2JyZWFrZG93blN0ZXAnICsgaSk7CiAgICAgIGlmICghZWwpIGNvbnRpbnVlOwogICAgICBjb25zdCB2YWwgPSBlbC52YWx1ZS50cmltKCk7CiAgICAgIGlmICh2YWwpIHsKICAgICAgICBjb25zdCBfdCA9IHsKICAgICAgICAgIGlkOiBnZXROZXh0VGFza0lkKCksIG5hbWU6IHZhbCwgdHlwZTogJ9mF2LnYsdmB2YrYqScsIHN0YXR1czogJ3BlbmRpbmcnLAogICAgICAgICAgZXhwZWN0ZWQ6IDE1LCBhY3R1YWw6IG51bGwsIHBsYW5uZWREYXRlOiB0b2RheVN0cigpLAogICAgICAgICAgcGxhbm5lZFRpbWU6ICcnLCBjb21wbGV0ZWRBdDogbnVsbCwgY3JlYXRlZEF0OiBEYXRlLm5vdygpCiAgICAgICAgfTsKICAgICAgICB0YXNrcy5wdXNoKF90KTsKICAgICAgICBfYWRkZWQucHVzaChfdCk7CiAgICAgICAgZWwudmFsdWUgPSAnJzsKICAgICAgfQogICAgfQogICAgY2xvc2VNb2RhbCgpOwogICAgaWYgKF9hZGRlZC5sZW5ndGggPT09IDApIHsKICAgICAgc2hvd1RvYXN0KCfZhNmFINiq2Y/YttmBINij2Yog2K7Yt9mI2KknKTsKICAgICAgcmV0dXJuOwogICAgfQogICAgaWYgKHNhdmVEYXRhKCkpIHsKICAgICAgcmVuZGVyQWxsKCk7CiAgICAgIHNob3dUb2FzdCgn4pyFINij2LbZgdiqICcgKyBfYWRkZWQubGVuZ3RoICsgJyDYrti32YjYp9iqINi12LrZitix2KknKTsKICAgIH0gZWxzZSB7CiAgICAgIHRhc2tzID0gdGFza3MuZmlsdGVyKGZ1bmN0aW9uKHgpIHsgcmV0dXJuIF9hZGRlZC5pbmRleE9mKHgpID09PSAtMTsgfSk7CiAgICAgIHNob3dUb2FzdCgn4pqg77iPINiq2LnYsNixINin2YTYrdmB2Lgg4oCUINmE2YUg2KrZj9i22YEnKTsKICAgIH0KICB9Ow==",
+          "size": 1156,
+          "counts": {
+            "getFile": 3,
+            "createWritable": 1,
+            "write": 1,
+            "close": 1,
+            "abort": 0
+          },
+          "sha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c"
+        },
+        "B": {
+          "name": "B.txt",
+          "bytes": "RklMRS1CLU9SSUdJTkFMOjpETy1OT1QtT1ZFUldSSVRFClVOSVFVRS1CLUNPTlRFTlQK",
+          "size": 51,
+          "counts": {
+            "getFile": 2,
+            "createWritable": 0,
+            "write": 0,
+            "close": 0,
+            "abort": 0
+          },
+          "sha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd"
+        },
+        "summary": "✅ تم التعديل مباشرة على: B.txt — تحقق كامل (الحجم + مقارنة جميع البايتات)",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي",
+        "downloadVisible": false,
+        "selectedName": "B.txt",
+        "directName": "B.txt",
+        "handleName": "B.txt",
+        "targetMatches": true,
+        "confirmPrompts": [
+          "تأكيد الكتابة المباشرة على:\nA.txt ؟"
+        ],
+        "evidence": {
+          "id": "ev-mw52ho09-1",
+          "recordedAt": "2026-11-06T14:25:59.241Z",
+          "operation": "apply",
+          "engineVersion": "8.0.0",
+          "patchFormatVersion": "3",
+          "targetName": "B.txt",
+          "rawTargetToken": 2,
+          "rawTargetSize": 51,
+          "rawTargetSha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd",
+          "memorySize": 1093,
+          "patchedMemorySize": 1093,
+          "ok": 1,
+          "applied": 0,
+          "skip": 0,
+          "fail": 0,
+          "verifyFailed": false,
+          "verificationPassed": true,
+          "verificationSkipped": 0,
+          "verificationStatus": "ok",
+          "aborted": false,
+          "outputAccepted": true,
+          "allDisabled": false,
+          "patches": [
+            {
+              "id": "breakdown-rollback",
+              "name": "زر «أضف كمهام» — rollback عند فشل الحفظ",
+              "status": "ok"
+            }
+          ],
+          "verifyDetails": [
+            "الرقعة 1 (breakdown-rollback): — ✔️ verify 1: count (متوقع 1 — وجد 1)",
+            "الرقعة 1 (breakdown-rollback): — ✔️ verify 2: exists (متوقع 1 — وجد 1)"
+          ],
+          "saveMode": "direct",
+          "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+          "outputName": "A-patched.txt",
+          "outputSize": 1156,
+          "outputSha256": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
+          "actualFileSize": 51,
+          "actualFileSha256": "7402f922922028f2963ed0ed380a7fd65b82529d9b67a67413bd2403cf4800dd",
+          "notes": "الكتابة المباشرة انتهت؛ مستوى تحقق الأداة: full-byte-compare"
+        }
+      },
+      "expected_patch_text_sha256_utf8": "17b5deb059dbe0a73cc7828b106113242c91aeda4879a14305c63cfc9bacc83c",
+      "byte_identity": {
+        "A_changed": true,
+        "B_changed": false,
+        "A_equals_expected_patch": true,
+        "B_equals_expected_patch": false,
+        "B_equals_A_original": false,
+        "B_preserved": true,
+        "A_preserved": false
+      },
+      "page_errors": [],
+      "risk_reproduced": true,
+      "safety_invariants": {
+        "B_preserved": true,
+        "result_identity_consistent_with_A_transaction": false,
+        "no_cross_target_effect": false
+      },
+      "checks": [
+        {
+          "check": "no uncaught page errors",
+          "pass": true
+        },
+        {
+          "check": "intended asynchronous race gate reached",
+          "pass": true
+        },
+        {
+          "check": "B selected in UI while A save awaited",
+          "pass": true
+        },
+        {
+          "check": "B remains selected after in-flight save",
+          "pass": true
+        },
+        {
+          "check": "safety invariant: B bytes must remain unchanged",
+          "pass": true
+        },
+        {
+          "check": "safety invariant: result and evidence must remain bound to original transaction target A or cancel",
+          "pass": false
+        }
+      ],
+      "pass_count": 5,
+      "check_count": 6
     }
-  ],
-  "browser_version": "144.0.7559.96"
+  ]
 }
