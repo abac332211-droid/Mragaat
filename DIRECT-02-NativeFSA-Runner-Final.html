@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>DIRECT-02 Native FSA Runner — Final</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#0b1220;color:#e5edf8;margin:0;padding:14px;line-height:1.65}
+.container{max-width:1180px;margin:0 auto}
+h1{font-size:21px;color:#6ee7b7;margin:4px 0 10px}
+h2{font-size:15px;color:#cbd5e1;margin:0 0 10px}
+p{margin:6px 0}
+.panel{background:#172235;border:1px solid #2d3d55;border-radius:12px;padding:14px;margin:12px 0}
+.notice{border:1px solid #8b5b18;background:#3a2b12;color:#fde68a;border-radius:9px;padding:12px;margin:10px 0;font-size:13px}
+.notice.danger{border-color:#923d48;background:#3b1820;color:#fecaca}
+.notice.info{border-color:#315d85;background:#142c43;color:#bfdbfe}
+.row{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:7px 0}
+button,select{font:inherit;border-radius:8px;border:1px solid #38516e;padding:8px 12px;background:#24364e;color:#f8fafc;font-size:13px}
+button{background:#087f5b;border-color:#0a9b70;font-weight:650;cursor:pointer}
+button:hover:not(:disabled){background:#07956a}
+button:disabled{opacity:.36;cursor:not-allowed}
+button.alt{background:#8a5b12;border-color:#a46d16}
+button.red{background:#922f3b;border-color:#aa3947}
+button.blue{background:#245b8b;border-color:#2d74ad}
+select{min-width:210px}
+.status{font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;direction:ltr;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;background:#07101d;color:#a8b8cc;border:1px solid #26364b;border-radius:8px;padding:9px 10px;margin-top:8px}
+.status.ok{color:#86efac}.status.fail{color:#fca5a5}.status.warn{color:#fde68a}.status.info{color:#93c5fd}
+.hint{color:#93a4ba;font-size:11px}
+#targetFrame{display:block;width:100%;height:720px;background:#fff;border:1px solid #52647d;border-radius:9px}
+pre{background:#050b14;color:#dbeafe;direction:ltr;text-align:left;white-space:pre;overflow:auto;max-height:48vh;padding:12px;border:1px solid #29384c;border-radius:9px;font:12px/1.5 ui-monospace,Consolas,monospace}
+.pill{display:inline-block;padding:1px 7px;border-radius:20px;background:#263a52;color:#cbd5e1;font-size:11px}
+hr{border:0;border-top:1px solid #304158;margin:12px 0}
+@media(max-width:650px){body{padding:9px}#targetFrame{height:620px}.row button{flex:1 1 145px}select{width:100%}}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>DIRECT-02 — Native File System Access Runner</h1>
+  <div class="notice danger">
+    <b>تنبيه سلامة:</b> هذه أداة اختبار لملفات تجريبية فقط. استخدم نسخة احتياطية مستقلة من <code>index.html</code> و<code>B.txt</code>. قد تكتب حالات الاختبار على A ثم تستعيده؛ لا تختر ملفًا إنتاجيًا مطلقًا. الأداة لا تعدّل RC2 ولا <code>main</code> ولا المستودع.
+  </div>
+  <div class="notice info">
+    <b>التجهيز:</b> ضع هذه الأداة وملف <code>raqee3-v8.0.0-rc3-dev-racefix2.html</code> وملفي الاختبار <code>index.html</code> (A) و<code>B.txt</code> (B) في مجلد واحد داخل خادم HTTP محلي. افتح هذه الصفحة من عنوان <code>http://localhost</code> أو <code>http://127.0.0.1</code> الذي يقدمه خادمك المحلي، لا من <code>file://</code> أو <code>content://</code>. لا تحتاج إلى تحميل ملف JavaScript منفصل؛ المشغّل مدمج في هذه الصفحة.
+  </div>
+
+  <section class="panel">
+    <h2>حالة البيئة والتوافق</h2>
+    <div id="environmentStatus" class="status">جارٍ فحص البيئة…</div>
+  </section>
+
+  <section class="panel">
+    <h2>المرحلة ١ — تعريف الملفين</h2>
+    <div class="row">
+      <button id="btnOpenA">١. افتح A — index.html</button>
+      <button id="btnCaptureA" class="blue">٢. التقط A</button>
+      <button id="btnOpenB">٣. افتح B — B.txt</button>
+      <button id="btnCaptureB" class="blue">٤. التقط B</button>
+      <button id="btnReselectA" class="alt">٥. أعد اختيار A</button>
+    </div>
+    <div class="hint">بعد كل زر «افتح»، انقر يدويًا زر «📂 افتح ملفًا للتعديل المباشر» المميّز داخل التطبيق، ثم اختر الملف المطلوب من منتقي النظام. لا تستخدم اختيارًا برمجيًا.</div>
+    <div id="setupStatus" class="status">لم يبدأ الإعداد.</div>
+    <div class="row">
+      <button id="btnRestoreReloadA" class="alt">استعادة A الأصلي ثم إعادة تحميله</button>
+      <span class="hint">استخدمه بعد كل حالة وقبل الحالة التالية، وكذلك بعد آخر حالة.</span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>التطبيق المستهدف — RC3-DEV-RACEFIX2</h2>
+    <iframe id="targetFrame" title="Raqee3 RC3-DEV test target" src="raqee3-v8.0.0-rc3-dev-racefix2.html"></iframe>
+    <div class="hint">داخل الإطار: اختر وضع «تعديل الملف الأصلي مباشرةً»، وحمّل رقعة اختبار صالحة ومفعّلة تجعل زر «⚡ طبّق الرقعات» متاحًا. عند التسليح، انقر زر التطبيق بنفسك ووافق على رسائل التأكيد.</div>
+  </section>
+
+  <section class="panel">
+    <h2>المرحلة ٢ — تشغيل حالة واحدة</h2>
+    <div class="row">
+      <select id="caseSelect" aria-label="حالة الاختبار">
+        <option value="freshness-buffer">DIRECT-RACE-01 — freshness-buffer</option>
+        <option value="backup-buffer">DIRECT-RACE-02 — backup-buffer</option>
+        <option value="createWritable">DIRECT-RACE-03 — createWritable</option>
+        <option value="postwrite-buffer">DIRECT-RACE-04 — postwrite-buffer</option>
+        <option value="write-pending">DIRECT-RACE-05 — write-pending</option>
+        <option value="close-pending">DIRECT-RACE-06 — close-pending</option>
+        <option value="write-fail">DIRECT-RACE-07 — write-fail</option>
+        <option value="close-after-commit-fail">DIRECT-RACE-08 — close-after-commit-fail</option>
+      </select>
+      <select id="swapMode" aria-label="وضع التبديل">
+        <option value="forced">FORCED — تبديل اصطناعي للمتغيرات</option>
+        <option value="ui">UI — محاولة يدوية حقيقية من واجهة التطبيق</option>
+      </select>
+    </div>
+    <div class="row">
+      <button id="btnArm">تسليح البوابة</button>
+      <button id="btnSwapAction" class="alt" disabled>تنفيذ إجراء التبديل</button>
+      <button id="btnCheckUI" class="blue" disabled>تحقق من محاولة UI</button>
+      <button id="btnRelease" class="alt" disabled>تحرير المعاملة</button>
+      <button id="btnInspect" class="blue" disabled>فحص A وB وتقرير التطبيق</button>
+    </div>
+    <div id="caseStatus" class="status">جاهز — التقط A وB ثم أعد اختيار A.</div>
+  </section>
+
+  <section class="panel">
+    <h2>المرحلة ٣ — النتائج والتقرير</h2>
+    <div class="row">
+      <button id="btnExport" class="alt">تصدير تقرير JSON</button>
+      <button id="btnReset" class="red">إعادة ضبط نتائج المشغّل</button>
+    </div>
+    <pre id="results">لا توجد نتائج بعد.</pre>
+  </section>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+const $ = id => document.getElementById(id);
+const S = {
+  win:null, doc:null, realPicker:null, pickerCalls:0,
+  A:null, B:null,
+  currentGate:null, gateFired:false, gateReached:false,
+  gateReleasePromise:null, gateReleaseFn:null,
+  armedCaseId:null, armedSwapMode:null, failMode:null,
+  lastSwapResult:null, lastInspect:null, results:[],
+  reselectTimer:null, watchTimer:null, gateWatchdog:null,
+  applyClickListener:null, applyClicked:false, applyClickedAt:null, caseStartedAt:null,
+  evidenceIdsBefore:new Set(),
+  uiClickHandler:null, uiToastWrapper:null, uiOriginalToast:null,
+  uiClickTrusted:false, uiOriginalButtonDisabled:null, uiStarted:false,
+  releaseCalled:false
+};
+
+const CASE_TO_GATE = {
+  'freshness-buffer':'freshness-buffer',
+  'backup-buffer':'backup-buffer',
+  'createWritable':'createWritable',
+  'postwrite-buffer':'postwrite-buffer',
+  'write-pending':'write-pending',
+  'close-pending':'close-pending',
+  'write-fail':'write-pending',
+  'close-after-commit-fail':'close-pending'
+};
+const CASE_TO_FAIL = {'write-fail':'write','close-after-commit-fail':'close'};
+const FAILURE_CASES = new Set(['write-fail','close-after-commit-fail']);
+const FORCED_PREWRITE_CASES = new Set(['freshness-buffer','backup-buffer','createWritable']);
+
+function status(id,msg,kind){
+  const el=$(id); if(!el)return;
+  el.textContent=String(msg);
+  el.className='status'+(kind?' '+kind:'');
+}
+function bytesHex(bytes){return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');}
+async function sha256(bytes){
+  if(!crypto || !crypto.subtle) throw new Error('crypto.subtle غير متاح؛ افتح الصفحة من localhost/HTTPS.');
+  return bytesHex(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)));
+}
+async function readHandle(realHandle){
+  const file=await realHandle.getFile();
+  const bytes=new Uint8Array(await file.arrayBuffer());
+  return {file,bytes,hash:await sha256(bytes)};
+}
+function decodeFileBytes(bytes){
+  let encoding='utf-8',hasBOM=false;
+  if(bytes.length>=3 && bytes[0]===0xEF && bytes[1]===0xBB && bytes[2]===0xBF){encoding='utf-8';hasBOM=true;}
+  else if(bytes.length>=2 && bytes[0]===0xFF && bytes[1]===0xFE){encoding='utf-16le';hasBOM=true;}
+  else if(bytes.length>=2 && bytes[0]===0xFE && bytes[1]===0xFF){encoding='utf-16be';hasBOM=true;}
+  return {encoding,hasBOM,text:new TextDecoder(encoding).decode(bytes)};
+}
+function setDirectMode(){
+  const radio=S.doc && S.doc.querySelector('input[name="saveMode"][value="direct"]');
+  if(!radio) throw new Error('خيار وضع الحفظ المباشر غير موجود في التطبيق المستهدف.');
+  if(!radio.checked){radio.checked=true;radio.dispatchEvent(new S.win.Event('change',{bubbles:true}));}
+  const info=S.doc.getElementById('directSaveInfo');
+  if(info) info.style.display='block';
+}
+
+// ---------- Instrumented File System Access handles ----------
+async function enterGate(stage){
+  if(S.gateFired || stage!==S.currentGate) return;
+  S.gateFired=true;
+  S.gateReached=true;
+  if(S.gateWatchdog){clearTimeout(S.gateWatchdog);S.gateWatchdog=null;}
+  status('caseStatus','⏸️ وصلت المعاملة إلى البوابة: '+stage+'\nنفّذ إجراء التبديل، ثم حرّر المعاملة.','ok');
+  $('btnSwapAction').disabled=false;
+  $('btnRelease').disabled=true;
+  await S.gateReleasePromise;
+}
+
+function asBytes(value){
+  if(value instanceof Uint8Array) return value.slice();
+  if(value instanceof ArrayBuffer) return new Uint8Array(value.slice(0));
+  if(ArrayBuffer.isView(value)) return new Uint8Array(value.buffer.slice(value.byteOffset,value.byteOffset+value.byteLength));
+  if(value instanceof Blob) return null;
+  if(typeof value==='string') return new TextEncoder().encode(value);
+  if(value && typeof value==='object' && value.type==='write' && 'data' in value) return asBytes(value.data);
+  return new TextEncoder().encode(String(value));
+}
+function wrapHandle(realHandle){
+  const counts={getFile:0,createWritable:0,write:0,close:0,abort:0};
+  const wrapped={
+    name:realHandle.name, kind:realHandle.kind||'file', counts, _real:realHandle,
+    async getFile(){
+      counts.getFile++;
+      const call=counts.getFile;
+      const stage=call===1?'freshness-buffer':call===2?'backup-buffer':call===3?'postwrite-buffer':null;
+      const file=await realHandle.getFile();
+      const original=file.arrayBuffer.bind(file);
+      const intercepted=async function(){
+        if(stage) await enterGate(stage);
+        return original();
+      };
+      try{
+        Object.defineProperty(file,'arrayBuffer',{configurable:true,writable:true,value:intercepted});
+      }catch(e){
+        throw new Error('تعذّر اعتراض File.arrayBuffer؛ أُوقف الاختبار بدل تجاوز بوابة القياس: '+(e&&e.message||e));
+      }
+      if(file.arrayBuffer!==intercepted) throw new Error('فشل تثبيت اعتراض File.arrayBuffer؛ لا يمكن قياس هذه المرحلة بأمان.');
+      return file;
+    },
+    async createWritable(options){
+      counts.createWritable++;
+      if(counts.createWritable===1) await enterGate('createWritable');
+      const realWriter=await realHandle.createWritable(options);
+      let closed=false;
+      return {
+        async write(value){
+          counts.write++;
+          if(counts.write===1) await enterGate('write-pending');
+          if(S.failMode==='write' && counts.write===1){
+            let bytes=asBytes(value);
+            if(value instanceof Blob) bytes=new Uint8Array(await value.arrayBuffer());
+            if(!bytes) throw new Error('تعذّر تحويل حمولة الكتابة لحقن فشل مضبوط.');
+            const half=Math.max(1,Math.floor(bytes.length/2));
+            await realWriter.write(bytes.slice(0,half));
+            throw new Error('INJECTED_WRITE_FAILURE_AFTER_PARTIAL_STREAM_WRITE');
+          }
+          return realWriter.write(value);
+        },
+        async close(){
+          counts.close++;
+          if(counts.close===1) await enterGate('close-pending');
+          await realWriter.close();
+          closed=true;
+          if(S.failMode==='close' && counts.close===1) throw new Error('INJECTED_CLOSE_FAILURE_AFTER_COMMIT');
+        },
+        async abort(){
+          counts.abort++;
+          if(!closed && typeof realWriter.abort==='function'){
+            try{await realWriter.abort();}catch(_e){}
+          }
+        }
+      };
+    },
+    async queryPermission(...args){return typeof realHandle.queryPermission==='function'?realHandle.queryPermission(...args):'prompt';},
+    async requestPermission(...args){return typeof realHandle.requestPermission==='function'?realHandle.requestPermission(...args):'prompt';},
+    async isSameEntry(other){return typeof realHandle.isSameEntry==='function'?realHandle.isSameEntry(other&&other._real?other._real:other):false;}
+  };
+  return wrapped;
+}
+
+function checkTargetContract(){
+  const requiredElements=['openForDirectBtn','applyBtn','summary','toast','directSaveInfo'];
+  const missingElements=requiredElements.filter(id=>!S.doc.getElementById(id));
+  const requiredFunctions=['norm','detectLineEnding','extractLineEndings','evidenceGetQueue'];
+  const missingFunctions=requiredFunctions.filter(k=>typeof S.win[k]!=='function');
+  const requiredGlobals=['directFileHandle','directFileName','directTargetMatches','directOpenedSnapshot','directWriteBusy','currentFileName','currentHtml','currentLineEnding','currentLineEndings','currentEncoding','currentHasBOM','currentTargetRawEvidence','currentTargetRawToken','currentTargetLoadToken','currentTargetRawHashPromise'];
+  const missingGlobals=requiredGlobals.filter(k=>!(k in S.win));
+  if(missingElements.length||missingFunctions.length||missingGlobals.length){
+    throw new Error('نسخة التطبيق لا تطابق عقد المشغّل. عناصر ناقصة: '+(missingElements.join(', ')||'لا يوجد')+'؛ وظائف ناقصة: '+(missingFunctions.join(', ')||'لا يوجد')+'؛ متغيرات ناقصة: '+(missingGlobals.join(', ')||'لا يوجد'));
+  }
+  if(typeof S.win.showOpenFilePicker!=='function') throw new Error('showOpenFilePicker غير متاح داخل الإطار.');
+  if(!S.win.isSecureContext) throw new Error('الإطار ليس Secure Context؛ استخدم localhost أو HTTPS.');
+}
+
+async function patchIframe(){
+  const frame=$('targetFrame');
+  await new Promise((resolve,reject)=>{
+    if(frame.contentDocument && frame.contentDocument.readyState==='complete') return resolve();
+    frame.addEventListener('load',resolve,{once:true});
+    setTimeout(()=>reject(new Error('انتهت مهلة تحميل صفحة RC3 داخل الإطار. تحقق من اسم الملف ومجلد الخادم المحلي.')),18000);
+  });
+  try{S.win=frame.contentWindow;S.doc=frame.contentDocument;void S.doc.documentElement;}catch(e){throw new Error('تعذّر الوصول إلى الإطار؛ يجب أن تكون صفحة المشغّل والتطبيق على الأصل نفسه.');}
+  if(S.win.location.origin!==location.origin) throw new Error('صفحة التطبيق ليست على الأصل نفسه؛ انقل الملفين إلى مجلد الخادم نفسه.');
+  checkTargetContract();
+  S.realPicker=S.win.showOpenFilePicker;
+  const patchedPicker=async function(...args){
+    S.pickerCalls++;
+    const handles=await S.realPicker.apply(S.win,args);
+    if(!handles || !handles.length) return handles;
+    return Array.from(handles,h=>wrapHandle(h));
+  };
+  try{Object.defineProperty(S.win,'showOpenFilePicker',{configurable:true,writable:true,value:patchedPicker});}
+  catch(_e){S.win.showOpenFilePicker=patchedPicker;}
+  if(S.win.showOpenFilePicker!==patchedPicker) throw new Error('تعذّر تثبيت اعتراض منتقي الملفات داخل الإطار.');
+  setDirectMode();
+  const info={origin:location.origin,secureContext:S.win.isSecureContext,picker:typeof S.win.showOpenFilePicker,iframeSameOrigin:true,targetFile:frame.getAttribute('src'),contract:'PASS'};
+  status('environmentStatus','✅ توافق الواجهة: PASS\n'+JSON.stringify(info,null,2),'ok');
+  status('setupStatus','✅ التطبيق جاهز. ابدأ بفتح A من داخل الإطار.','ok');
+}
+
+// ---------- File setup ----------
+function highlightPicker(message){
+  if(!S.doc) throw new Error('صفحة التطبيق لم تجهز بعد.');
+  setDirectMode();
+  const button=S.doc.getElementById('openForDirectBtn');
+  if(!button) throw new Error('زر فتح الملف المباشر غير موجود.');
+  button.scrollIntoView({behavior:'smooth',block:'center'});
+  button.style.outline='4px solid #34d399';
+  button.style.outlineOffset='3px';
+  status('setupStatus','👉 '+message+'\nانقر الآن الزر المحدد داخل الإطار واختر الملف من منتقي النظام.','warn');
+}
+async function captureFile(which){
+  if(!S.win || S.win.directWriteBusy) throw new Error('لا يمكن التقاط الملف أثناء معاملة كتابة.');
+  const wrapped=S.win.directFileHandle;
+  if(!wrapped || !wrapped._real) throw new Error('لم يُفتح ملف عبر زر التعديل المباشر داخل التطبيق.');
+  const expected=which==='A'?'index.html':'B.txt';
+  if(wrapped.name!==expected) throw new Error('الملف الحالي هو '+wrapped.name+'؛ المطلوب '+expected+'.');
+  const data=await readHandle(wrapped._real);
+  const entry={handle:wrapped,realHandle:wrapped._real,name:wrapped.name,originalBytes:data.bytes,originalHash:data.hash,originalSize:data.bytes.length};
+  if(which==='A') S.A=entry; else {
+    if(!S.A) throw new Error('التقط A قبل B.');
+    if(wrapped._real===S.A.realHandle) throw new Error('A وB يشيران إلى المقبض نفسه.');
+    S.B=entry;
+  }
+  status('setupStatus','✅ '+which+': '+entry.name+'\nsize='+entry.originalSize+' bytes\nsha256='+entry.originalHash,'ok');
+  renderResults();
+}
+
+function startReselectA(message){
+  if(!S.A) throw new Error('التقط A أولًا.');
+  if(S.win.directWriteBusy) throw new Error('المعاملة لا تزال قيد التنفيذ.');
+  if(S.reselectTimer) clearInterval(S.reselectTimer);
+  const previous=S.win.directFileHandle;
+  const pickerCount=S.pickerCalls;
+  let done=false;
+  const started=Date.now();
+  highlightPicker(message||'أعد اختيار index.html (A)');
+  status('setupStatus','بانتظار اختيار A جديد من المنتقي… لا يكفي بقاء الاسم نفسه؛ يجب أن يتغير المقبض.','warn');
+  S.reselectTimer=setInterval(async()=>{
+    if(done)return;
+    if(Date.now()-started>90000){done=true;clearInterval(S.reselectTimer);S.reselectTimer=null;status('setupStatus','❌ انتهت مهلة إعادة اختيار A؛ لم يُعتمد المقبض الجديد.','fail');return;}
+    const current=S.win && S.win.directFileHandle;
+    if(S.pickerCalls<=pickerCount || !current || current===previous || current.name!=='index.html' || !current._real) return;
+    done=true;clearInterval(S.reselectTimer);S.reselectTimer=null;
+    try{
+      const data=await readHandle(current._real);
+      if(data.hash!==S.A.originalHash) throw new Error('بصمة A بعد إعادة الاختيار لا تطابق النسخة الأصلية؛ لم يتم اعتماد المقبض.');
+      if(S.win.directFileName!=='index.html' || S.win.currentFileName!=='index.html' || S.win.directTargetMatches!==true || S.win.directFileHandle!==current){
+        throw new Error('المقبض تغير لكن حالة الهدف داخل التطبيق لا تشير إلى A بصورة متسقة.');
+      }
+      S.A.handle=current;S.A.realHandle=current._real;
+      status('setupStatus','✅ أُعيد اختيار A بمقبض جديد وتطابقت البصمة الأصلية.\nA='+S.A.name+'\nsha256='+data.hash,'ok');
+      renderResults();
+    }catch(e){status('setupStatus','❌ '+e.message,'fail');}
+  },200);
+}
+
+async function restoreA(){
+  if(!S.A) throw new Error('A غير ملتقط.');
+  if(S.win.directWriteBusy) throw new Error('لا تستعد A قبل انتهاء المعاملة.');
+  const writer=await S.A.realHandle.createWritable();
+  await writer.write(S.A.originalBytes);
+  await writer.close();
+  const verify=await readHandle(S.A.realHandle);
+  if(verify.hash!==S.A.originalHash || verify.bytes.length!==S.A.originalSize) throw new Error('فشل التحقق البايتي من استعادة A.');
+  return verify;
+}
+async function restoreAndReloadA(){
+  try{
+    const verify=await restoreA();
+    status('setupStatus','✅ استُعيد A إلى بايتاته الأصلية. أعد اختياره من التطبيق لتحديث حالته الداخلية.','ok');
+    startReselectA('اختر index.html مجددًا بعد الاستعادة');
+  }catch(e){status('setupStatus','❌ '+e.message,'fail');}
+}
+
+// ---------- Case preparation and transaction watcher ----------
+async function armGate(){
+  if(!S.A || !S.B) throw new Error('التقط A وB أولًا.');
+  if(S.win.directWriteBusy) throw new Error('توجد معاملة سابقة قيد التنفيذ.');
+  if(S.win.directFileHandle!==S.A.handle || S.win.directFileName!=='index.html' || S.win.currentFileName!=='index.html' || S.win.directTargetMatches!==true){
+    throw new Error('التطبيق لا يستهدف A حاليًا. استخدم «أعد اختيار A» أولًا.');
+  }
+  const applyButton=S.doc.getElementById('applyBtn');
+  if(!applyButton || applyButton.disabled) throw new Error('زر «طبّق الرقعات» غير متاح. حمّل رقعة صالحة ومفعّلة وتأكد من نجاح الفحص.');
+  const selectedMode=S.doc.querySelector('input[name="saveMode"]:checked');
+  if(!selectedMode || selectedMode.value!=='direct') throw new Error('وضع الحفظ المباشر غير محدد.');
+  const [aNow,bNow]=await Promise.all([readHandle(S.A.realHandle),readHandle(S.B.realHandle)]);
+  if(aNow.hash!==S.A.originalHash) throw new Error('A ليس في حالته الأصلية. استعده ثم أعد اختياره.');
+  if(bNow.hash!==S.B.originalHash) throw new Error('B تغير قبل بدء الحالة. لا يمكن اعتماد خط الأساس.');
+
+  S.armedCaseId=$('caseSelect').value;
+  S.armedSwapMode=$('swapMode').value;
+  S.currentGate=CASE_TO_GATE[S.armedCaseId];
+  S.failMode=CASE_TO_FAIL[S.armedCaseId]||null;
+  S.gateFired=false;S.gateReached=false;S.releaseCalled=false;
+  S.lastSwapResult=null;S.lastInspect=null;S.applyClicked=false;S.caseStartedAt=new Date().toISOString();
+  S.pickerCalls=0;
+  const unique=new Set();
+  for(const h of [S.A.handle,S.B.handle,S.win.directFileHandle]){
+    if(h && h.counts && !unique.has(h)){unique.add(h);Object.keys(h.counts).forEach(k=>h.counts[k]=0);}
+  }
+  S.evidenceIdsBefore=new Set();
+  try{S.win.evidenceGetQueue().forEach(x=>{if(x&&x.id)S.evidenceIdsBefore.add(x.id);});}catch(_e){}
+  S.gateReleasePromise=new Promise(resolve=>{S.gateReleaseFn=resolve;});
+
+  const applyButtonClick=e=>{
+    if(e.isTrusted){S.applyClicked=true;S.applyClickedAt=Date.now();status('caseStatus','تم رصد نقرة حقيقية على «طبّق الرقعات». وافق على رسائل التطبيق حتى تصل المعاملة إلى البوابة المطلوبة.','info');}
+  };
+  S.applyClickListener=applyButtonClick;
+  applyButton.addEventListener('click',applyButtonClick,true);
+
+  S.watchTimer=setInterval(()=>{
+    if(!S.applyClicked || S.gateReached) return;
+    if(S.win.directWriteBusy && !S.gateWatchdog){
+      S.gateWatchdog=setTimeout(()=>{
+        if(!S.gateReached){
+          status('caseStatus','❌ لم تصل المعاملة إلى البوابة '+S.currentGate+' خلال المهلة. لا تسجل الحالة؛ تحقق من توافق نسخة RC3 أو من أن عملية الحفظ المباشر بدأت.','fail');
+          $('btnSwapAction').disabled=true;$('btnRelease').disabled=true;
+        }
+      },60000);
+    }
+    if(!S.win.directWriteBusy && !S.gateReached && Date.now()-S.applyClickedAt>12000){
+      status('caseStatus','❌ انتهى التطبيق دون بلوغ بوابة الاختبار. الحالة غير صالحة ولا تُسجل. افحص A ثم استخدم «استعادة A الأصلي ثم إعادة تحميله» قبل إعادة المحاولة.','fail');
+      $('btnSwapAction').disabled=true;$('btnCheckUI').disabled=true;$('btnRelease').disabled=true;$('btnInspect').disabled=true;
+      stopWatcher();
+      S.currentGate=null;S.failMode=null;S.armedCaseId=null;S.armedSwapMode=null;
+      if(S.gateReleaseFn){S.gateReleaseFn();S.gateReleaseFn=null;}
+      $('caseSelect').disabled=false;$('swapMode').disabled=false;$('btnArm').disabled=false;
+    }
+  },200);
+
+  $('caseSelect').disabled=true;$('swapMode').disabled=true;$('btnArm').disabled=true;
+  $('btnSwapAction').disabled=true;$('btnCheckUI').disabled=true;$('btnRelease').disabled=true;$('btnInspect').disabled=true;
+  const expected=expectedState(S.armedCaseId,S.armedSwapMode);
+  status('caseStatus','🎯 تم تسليح '+S.armedCaseId+'\nGate: '+S.currentGate+'\nMode: '+S.armedSwapMode+'\nExpected A: '+expected.a+'; B: unchanged\nانقر الآن «⚡ طبّق الرقعات» داخل الإطار، ثم وافق على التأكيدات.','ok');
+}
+function stopWatcher(){
+  if(S.watchTimer){clearInterval(S.watchTimer);S.watchTimer=null;}
+  if(S.gateWatchdog){clearTimeout(S.gateWatchdog);S.gateWatchdog=null;}
+  if(S.applyClickListener && S.doc){const b=S.doc.getElementById('applyBtn');if(b)b.removeEventListener('click',S.applyClickListener,true);}
+  S.applyClickListener=null;
+}
+
+function expectedState(caseId,mode){
+  if(FAILURE_CASES.has(caseId)) return {a:'original (rollback verified)',b:'original'};
+  if(mode==='forced' && FORCED_PREWRITE_CASES.has(caseId)) return {a:'original (cancel before first byte)',b:'original'};
+  return {a:'patched A',b:'original'};
+}
+
+// ---------- Swap modes ----------
+async function forceB(){
+  if(!S.gateReached) throw new Error('المعاملة ليست معلقة عند البوابة.');
+  if(S.lastSwapResult) throw new Error('تم تنفيذ إجراء التبديل لهذه الحالة مسبقًا.');
+  const b=await readHandle(S.B.realHandle);
+  if(b.hash!==S.B.originalHash) throw new Error('تغير B قبل التبديل؛ أوقف الاختبار.');
+  const decoded=decodeFileBytes(b.bytes);
+  const text=decoded.text;
+  const win=S.win;
+  if(typeof win.norm!=='function'||typeof win.detectLineEnding!=='function'||typeof win.extractLineEndings!=='function') throw new Error('وظائف تحويل الهدف غير متاحة.');
+  win.directFileHandle=S.B.handle;
+  win.directFileName=S.B.name;
+  win.directTargetMatches=true;
+  win.currentFileName=S.B.name;
+  win.currentHtml=win.norm(text);
+  win.directOpenedSnapshot=text;
+  win.currentLineEnding=win.detectLineEnding(text);
+  win.currentLineEndings=win.extractLineEndings(text);
+  win.currentEncoding=decoded.encoding;
+  win.currentHasBOM=decoded.hasBOM;
+  win.currentTargetLoadToken=Number(win.currentTargetLoadToken)+1;
+  win.currentTargetRawToken=Number(win.currentTargetRawToken)+1;
+  win.currentTargetRawEvidence={name:S.B.name,size:b.bytes.length,sha256:b.hash,token:win.currentTargetRawToken,targetEngineVersion:null};
+  win.currentTargetRawHashPromise=Promise.resolve(b.hash);
+  S.lastSwapResult={mode:'forced',from:'A',to:'B',pickerCalls:S.pickerCalls,verdict:'globals-replaced-with-B',method:'synthetic-global-state-mutation; no native picker interaction'};
+  $('btnSwapAction').disabled=true;
+  $('btnRelease').disabled=false;
+  status('caseStatus','✅ نُفّذ التبديل الاصطناعي إلى B أثناء تعليق المعاملة.\nهذه ليست نقرة UI ولا اختيارًا أصليًا من المنتقي. حرّر المعاملة الآن.','ok');
+}
+
+function beginUITest(){
+  if(!S.gateReached) throw new Error('المعاملة ليست معلقة عند البوابة.');
+  if(S.lastSwapResult) throw new Error('تم تنفيذ إجراء التبديل لهذه الحالة مسبقًا.');
+  if(S.uiStarted) throw new Error('اختبار UI بدأ بالفعل.');
+  if(!S.win.directWriteBusy) throw new Error('التطبيق لا يعرض معاملة معلّقة حاليًا.');
+  const picker=S.doc.getElementById('openForDirectBtn');
+  if(!picker) throw new Error('زر منتقي الملفات غير موجود.');
+  S.uiStarted=true;
+  S.uiClickTrusted=false;
+  S.uiOriginalButtonDisabled=picker.disabled;
+  const before={handle:S.win.directFileHandle,directName:S.win.directFileName,currentName:S.win.currentFileName,pickerCalls:S.pickerCalls,busy:S.win.directWriteBusy};
+  S.uiBefore=before;
+  S.uiClickHandler=e=>{if(e.isTrusted && (e.target===picker || picker.contains(e.target))) S.uiClickTrusted=true;};
+  picker.addEventListener('click',S.uiClickHandler,true);
+  S.uiToasts=[];
+  S.uiOriginalToast=S.win.toast;
+  if(typeof S.uiOriginalToast==='function'){
+    S.uiToastWrapper=function(...args){S.uiToasts.push(String(args[0]??''));return S.uiOriginalToast.apply(this,args);};
+    S.win.toast=S.uiToastWrapper;
+  }
+  // The app disables this button while busy. Temporarily re-enable it only to test
+  // its in-handler guard with a real human click, never a synthetic dispatchEvent.
+  picker.disabled=false;
+  picker.scrollIntoView({behavior:'smooth',block:'center'});
+  picker.style.outline='4px solid #60a5fa';picker.style.outlineOffset='3px';
+  $('btnSwapAction').disabled=true;
+  $('btnCheckUI').disabled=false;
+  status('caseStatus','اختبار UI مهيأ. انقر بيدك الآن زر «📂 افتح ملفًا للتعديل المباشر» داخل الإطار.\nلا تنقر زرًا برمجيًا ولا تختَر ملفًا من خارج الإطار. بعد النقرة اضغط «تحقق من محاولة UI».','warn');
+}
+function finishUITest(){
+  if(!S.uiStarted) throw new Error('لم يبدأ اختبار UI.');
+  const picker=S.doc.getElementById('openForDirectBtn');
+  if(S.uiClickHandler){picker.removeEventListener('click',S.uiClickHandler,true);S.uiClickHandler=null;}
+  picker.disabled=S.uiOriginalButtonDisabled;
+  picker.style.outline='';picker.style.outlineOffset='';
+  if(S.uiToastWrapper && S.win.toast===S.uiToastWrapper) S.win.toast=S.uiOriginalToast;
+  const b=S.uiBefore;
+  const guardToast=S.uiToasts.some(t=>t.includes('اختيار ملف آخر غير متاح أثناء معاملة الحفظ المباشر'));
+  const sameHandle=S.win.directFileHandle===b.handle;
+  const sameDirectName=S.win.directFileName===b.directName;
+  const sameCurrentName=S.win.currentFileName===b.currentName;
+  const samePickerCount=S.pickerCalls===b.pickerCalls;
+  const stillBusy=S.win.directWriteBusy===true;
+  const passed=S.uiClickTrusted && guardToast && sameHandle && sameDirectName && sameCurrentName && samePickerCount && stillBusy;
+  const attempt={mode:'ui',trustedHumanClick:S.uiClickTrusted,guardToastSeen:guardToast,guardToasts:S.uiToasts.slice(),pickerCallsAtGate:b.pickerCalls,pickerCallsAfter:S.pickerCalls,handleUnchanged:sameHandle,directNameUnchanged:sameDirectName,currentNameUnchanged:sameCurrentName,transactionStillBusy:stillBusy,verdict:passed?'blocked-as-expected':'UI_ATTEMPT_NOT_PROVEN'};
+  S.lastUIAttempt=attempt;
+  S.lastSwapResult=passed?attempt:null;
+  S.uiStarted=false;
+  $('btnCheckUI').disabled=true;
+  $('btnSwapAction').disabled=passed;
+  $('btnRelease').disabled=!passed;
+  status('caseStatus',passed?'✅ UI guard PASS: النقرة البشرية وصلت إلى حارس التطبيق، ولم يُفتح منتقي النظام ولم يتغير الهدف. حرّر المعاملة.':'⚠️ لم يثبت اختبار UI. يمكنك إعادة المحاولة؛ لم تُسجل نتيجة تبديل لهذه الحالة. الأدلة: '+JSON.stringify(attempt),passed?'ok':'warn');
+}
+
+function release(){
+  if(!S.gateReached || !S.gateReleaseFn) throw new Error('لا توجد بوابة معلّقة للتحرير.');
+  if(!S.lastSwapResult) throw new Error('نفّذ إجراء التبديل أو اختبار UI وأثبت نتيجته قبل التحرير.');
+  const resolve=S.gateReleaseFn;
+  S.gateReleaseFn=null;
+  S.releaseCalled=true;
+  S.currentGate=null;
+  resolve();
+  $('btnSwapAction').disabled=true;$('btnCheckUI').disabled=true;$('btnRelease').disabled=true;
+  $('btnInspect').disabled=false;
+  status('caseStatus','▶️ حُررت البوابة. انتظر حتى تنتهي المعاملة ويصبح directWriteBusy=false، ثم نفّذ الفحص.','warn');
+}
+
+// ---------- Inspect and classify ----------
+async function waitForIdle(){
+  const start=Date.now();
+  while(S.win.directWriteBusy && Date.now()-start<45000) await new Promise(r=>setTimeout(r,150));
+  if(S.win.directWriteBusy) throw new Error('المعاملة لا تزال قيد التنفيذ بعد 45 ثانية.');
+  await new Promise(r=>setTimeout(r,400));
+}
+function findNewApplyEvidence(){
+  let queue=[];
+  try{queue=S.win.evidenceGetQueue()||[];}catch(_e){}
+  const start=Date.parse(S.caseStartedAt||'')-1500;
+  return queue.filter(x=>x && x.operation==='apply' && x.targetName==='index.html' && Date.parse(x.recordedAt||'')>=start && !S.evidenceIdsBefore.has(x.id)).sort((a,b)=>String(a.recordedAt).localeCompare(String(b.recordedAt))).pop()||null;
+}
+async function inspect(){
+  if(!S.gateReached || !S.releaseCalled) throw new Error('لا يمكن الفحص قبل بلوغ البوابة وتحريرها.');
+  if(!S.lastSwapResult) throw new Error('إجراء التبديل غير موثق.');
+  stopWatcher();
+  await waitForIdle();
+  const [a,b]=await Promise.all([readHandle(S.A.realHandle),readHandle(S.B.realHandle)]);
+  const evidence=findNewApplyEvidence();
+  const summary=(S.doc.getElementById('summary')?.innerText||'').trim();
+  const toast=(S.doc.getElementById('toast')?.innerText||'').trim();
+  const expected=expectedState(S.armedCaseId,S.armedSwapMode);
+  const bPreserved=b.hash===S.B.originalHash;
+  const aOriginal=a.hash===S.A.originalHash;
+  const aPatched=!aOriginal;
+  const expectedA=expected.a.startsWith('original')?'original':'patched';
+  const aMatchesExpected=expectedA==='original'?aOriginal:aPatched;
+  const forcedOk=S.armedSwapMode==='forced' ? S.lastSwapResult.verdict==='globals-replaced-with-B' : S.lastSwapResult.verdict==='blocked-as-expected';
+  let transactionEvidenceOk=false, outcomeEvidence='';
+  if(FAILURE_CASES.has(S.armedCaseId)){
+    const injected=S.armedCaseId==='write-fail'?'INJECTED_WRITE_FAILURE_AFTER_PARTIAL_STREAM_WRITE':'INJECTED_CLOSE_FAILURE_AFTER_COMMIT';
+    const injectedSeen=summary.includes(injected) || toast.includes(injected);
+    const rollbackVerified=summary.includes('استُعيد الأصل وتم التحقق من بايتاته') || summary.includes('rollback-verified');
+    transactionEvidenceOk=injectedSeen && rollbackVerified;
+    outcomeEvidence='failure-injection-seen='+injectedSeen+'; rollback-verified='+rollbackVerified;
+  }else if(S.armedSwapMode==='forced' && FORCED_PREWRITE_CASES.has(S.armedCaseId)){
+    const cancelled=!!(evidence && String(evidence.saveStatus||'').startsWith('direct-write-cancelled'));
+    const message=summary.includes('أُلغيت الكتابة المباشرة قبل أول بايت') || summary.includes('تغيّرت هوية الهدف قبل أول بايت');
+    transactionEvidenceOk=cancelled && message;
+    outcomeEvidence='prewrite-cancel-evidence='+cancelled+'; target-summary-confirms-cancel='+message;
+  }else{
+    const success=!!(evidence && String(evidence.saveStatus||'').includes('direct-write-success'));
+    const fullCompare=!!(evidence && String(evidence.saveStatus||'').includes('full-byte-compare'));
+    const actualMatches=!!(evidence && evidence.actualFileSha256===a.hash && evidence.outputSha256===a.hash);
+    transactionEvidenceOk=success && fullCompare && actualMatches;
+    outcomeEvidence='direct-write-success='+success+'; full-byte-compare='+fullCompare+'; evidence-hash-matches-disk='+actualMatches;
+  }
+  const pass=forcedOk && bPreserved && aMatchesExpected && transactionEvidenceOk;
+  S.lastInspect={
+    case_id:S.armedCaseId,gate:CASE_TO_GATE[S.armedCaseId],swap_mode:S.armedSwapMode,
+    expected:{A:expected.a,B:expected.b},
+    A_after:{name:S.A.name,size:a.bytes.length,sha256:a.hash,state:aOriginal?'original':(aPatched?'changed':'unknown')},
+    B_after:{name:S.B.name,size:b.bytes.length,sha256:b.hash,preserved:bPreserved},
+    application:{summary,toast,directWriteBusy:S.win.directWriteBusy,selectedFileName:S.win.currentFileName},
+    evidence:evidence?{id:evidence.id,saveMode:evidence.saveMode,saveStatus:evidence.saveStatus,outputSha256:evidence.outputSha256,actualFileSha256:evidence.actualFileSha256,recordedAt:evidence.recordedAt}:null,
+    checks:{swapActionProven:forcedOk,A_matches_expected:aMatchesExpected,B_unchanged:bPreserved,transactionOutcomeProven:transactionEvidenceOk,details:outcomeEvidence},
+    verdict:pass?'PASS':'FAIL_OR_INCOMPLETE', inspectedAt:new Date().toISOString()
+  };
+  S.results.push(S.lastInspect);
+  renderResults();
+  const label=pass?'✅ PASS — الأدلة المطلوبة مكتملة.':'❌ FAIL / INCOMPLETE — لا تعتمد هذه الحالة.';
+  status('caseStatus',label+'\n'+JSON.stringify(S.lastInspect.checks,null,2)+'\n\nملاحظة: PASS هنا نتيجة لهذه الحالة وحدها، ولا يغلق DIRECT-02 قبل استكمال كل الحالات ومراجعة التقرير. ',pass?'ok':'fail');
+  $('btnInspect').disabled=true;
+  $('caseSelect').disabled=false;$('swapMode').disabled=false;$('btnArm').disabled=false;
+  S.gateFired=false;S.gateReached=false;S.releaseCalled=false;S.currentGate=null;
+  S.gateReleasePromise=null;S.gateReleaseFn=null;
+  S.uiStarted=false;S.uiToastWrapper=null;S.uiOriginalToast=null;
+}
+
+// ---------- Reporting ----------
+function renderResults(){
+  const report={
+    test_id:'DIRECT-02-NATIVE-FSA-FINAL-RUNNER',
+    browser:navigator.userAgent,
+    origin:location.origin,
+    secureContext:!!(S.win&&S.win.isSecureContext),
+    A_before:S.A?{name:S.A.name,size:S.A.originalSize,sha256:S.A.originalHash}:null,
+    B_before:S.B?{name:S.B.name,size:S.B.originalSize,sha256:S.B.originalHash}:null,
+    results:S.results
+  };
+  $('results').textContent=JSON.stringify(report,null,2);
+}
+function exportReport(){
+  const report={
+    test_id:'DIRECT-02-NATIVE-FSA-FINAL-RUNNER',
+    browser:navigator.userAgent,
+    origin:location.origin,
+    secureContext:!!(S.win&&S.win.isSecureContext),
+    exportedAt:new Date().toISOString(),
+    A_before:S.A?{name:S.A.name,size:S.A.originalSize,sha256:S.A.originalHash}:null,
+    B_before:S.B?{name:S.B.name,size:S.B.originalSize,sha256:S.B.originalHash}:null,
+    results:S.results
+  };
+  const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='DIRECT-02-native-fsa-final-'+Date.now()+'.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function resetRunner(){
+  if(!confirm('إعادة ضبط نتائج المشغّل؟ لن تُستعاد ملفات A أو B تلقائيًا.')) return;
+  if(S.win && S.win.directWriteBusy){status('caseStatus','لا يمكن إعادة الضبط أثناء معاملة نشطة.','fail');return;}
+  stopWatcher();
+  if(S.reselectTimer)clearInterval(S.reselectTimer);
+  S.A=null;S.B=null;S.results=[];S.lastInspect=null;S.lastSwapResult=null;
+  S.currentGate=null;S.gateFired=false;S.gateReached=false;S.releaseCalled=false;
+  $('caseSelect').disabled=false;$('swapMode').disabled=false;$('btnArm').disabled=false;
+  $('btnSwapAction').disabled=true;$('btnCheckUI').disabled=true;$('btnRelease').disabled=true;$('btnInspect').disabled=true;
+  status('setupStatus','أُعيد ضبط المشغّل. ابدأ بتحديد A ثم B.','warn');
+  status('caseStatus','جاهز — التقط A وB ثم أعد اختيار A.','info');
+  renderResults();
+}
+
+// ---------- Event wiring ----------
+$('btnOpenA').onclick=()=>{try{highlightPicker('افتح index.html (A)');}catch(e){status('setupStatus','❌ '+e.message,'fail');}};
+$('btnCaptureA').onclick=()=>captureFile('A').catch(e=>status('setupStatus','❌ '+e.message,'fail'));
+$('btnOpenB').onclick=()=>{try{highlightPicker('افتح B.txt (B)');}catch(e){status('setupStatus','❌ '+e.message,'fail');}};
+$('btnCaptureB').onclick=()=>captureFile('B').catch(e=>status('setupStatus','❌ '+e.message,'fail'));
+$('btnReselectA').onclick=()=>{try{startReselectA('اختر index.html (A) مرة أخرى');}catch(e){status('setupStatus','❌ '+e.message,'fail');}};
+$('btnRestoreReloadA').onclick=restoreAndReloadA;
+$('btnArm').onclick=()=>armGate().catch(e=>status('caseStatus','❌ '+e.message,'fail'));
+$('btnSwapAction').onclick=()=>{
+  if(S.armedSwapMode==='forced') forceB().catch(e=>status('caseStatus','❌ '+e.message,'fail'));
+  else {try{beginUITest();}catch(e){status('caseStatus','❌ '+e.message,'fail');}}
+};
+$('btnCheckUI').onclick=()=>{try{finishUITest();}catch(e){status('caseStatus','❌ '+e.message,'fail');}};
+$('btnRelease').onclick=()=>{try{release();}catch(e){status('caseStatus','❌ '+e.message,'fail');}};
+$('btnInspect').onclick=()=>inspect().catch(e=>status('caseStatus','❌ '+e.message,'fail'));
+$('btnExport').onclick=exportReport;
+$('btnReset').onclick=resetRunner;
+$('swapMode').addEventListener('change',()=>{$('btnSwapAction').textContent=$('swapMode').value==='ui'?'تهيئة اختبار UI اليدوي':'فرض B اصطناعيًا';});
+
+window.addEventListener('DOMContentLoaded',()=>{
+  $('btnSwapAction').textContent='فرض B اصطناعيًا';
+  patchIframe().catch(e=>{
+    status('environmentStatus','❌ فشل التهيئة أو التوافق:\n'+e.message,'fail');
+    status('setupStatus','لم يبدأ الإعداد بسبب فشل فحص التوافق.','fail');
+  });
+});
+})();
+</script>
+</body>
+</html>

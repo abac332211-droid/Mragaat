@@ -1,0 +1,107 @@
+{
+  "test_id": "DIRECT-02-NATIVE-FSA-FINAL-RUNNER",
+  "browser": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Mobile Safari/537.36",
+  "origin": "http://localhost:2435",
+  "secureContext": true,
+  "exportedAt": "2026-11-08T05:25:20.989Z",
+  "A_before": {
+    "name": "index.html",
+    "size": 1213,
+    "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+  },
+  "B_before": {
+    "name": "B.txt",
+    "size": 174,
+    "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7"
+  },
+  "results": [
+    {
+      "case_id": "write-pending",
+      "gate": "write-pending",
+      "swap_mode": "ui",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "state": "changed"
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 174,
+        "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7",
+        "preserved": true
+      },
+      "application": {
+        "summary": "ℹ️ 0 ستنجح، 1 مُطبّقة",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "index.html"
+      },
+      "evidence": {
+        "id": "ev-mw7dg36o-1",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-08T05:08:13.728Z"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "A_matches_expected": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-08T05:08:41.926Z"
+    },
+    {
+      "case_id": "close-pending",
+      "gate": "close-pending",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "state": "changed"
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 174,
+        "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ فشل: 1 — راجع التشخيص",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mw7e1kv8-4",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-08T05:24:56.420Z"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "A_matches_expected": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-08T05:25:13.941Z"
+    }
+  ]
+}

@@ -1,0 +1,982 @@
+📋 v1.0.3 — التصحيحات السبعة مطبقة
+
+جميع ملاحظاتك مطبقة. سأعرض الفروق الجوهرية، ثم الملفين المُصحَّحين.
+
+---
+
+ملخص التصحيحات v1.0.2 → v1.0.3
+
+# الملاحظة التصحيح المطبق
+C-17 أعداد EIG و CR متناقضة C-13 → 5، C-14 → 6 (تطابق مع المحتوى)
+C-18 CR-03 متناقض (غير حاجب لكن مشروط) ACCEPTED_BY_SCOPE_REDUCTION — حُذف من closure_requires ومن شرط RC3
+C-19 BEHAVIOR_OBSERVED أقوى من الدليل فُصل إلى 3 حقول: fsa_environment / native_handle_provenance / file_io_behavior
+C-20 close-after-commit-fail يوحي بتسلسل غير مثبت توضيح صريح: case_id موروث من إعداد الاختبار، لا دليل
+C-21 CR-06 يربط إغلاق DIRECT-02 بخلل UX CR-06 → حاجب لـ RC3 فقط، لا لإغلاق Finding
+C-22 main في MD يوحي بحقيقة مثبتة NOT_INDEPENDENTLY_VERIFIED في كلا الملفين
+C-23 «لا تتطلب إعادة اختبار» دون شرط شرط صريح: «فقط إن كانت بيانات الجلسة متاحة؛ وإلا تُعاد الحالات المتأثرة فقط»
+
+---
+
+الملف ١ — DIRECT-02-COMPREHENSIVE-REPORT.json (v1.0.3)
+
+```json
+{
+  "report_metadata": {
+    "report_id": "DIRECT-02-COMPREHENSIVE-FINAL-v1.0.3",
+    "report_version": "1.0.3-final-execution-complete-finding-open",
+    "previous_version": "1.0.2",
+    "generated_at": "2026-11-08T06:45:00.000Z",
+    "status_change_summary": "معالجة 7 تناقضات في v1.0.2: أعداد EIG/CR، وضع CR-03، توصيف Native FSA، تسمية الحالة 8، فصل CR-06، صياغة main، شرط عدم إعادة الاختبار.",
+    "corrections_applied": [
+      "C-01..C-16 من v1.0.1 و v1.0.2 (محفوظة)",
+      "C-17: تصحيح أعداد EIG (4→5) و CR (4→6) في سجل التصحيحات",
+      "C-18: CR-03 → ACCEPTED_BY_SCOPE_REDUCTION (حُذف من closure_requires وشرط RC3)",
+      "C-19: تفكيك native_fsa_behavior إلى 3 حقول مستقلة بدقة",
+      "C-20: توضيح أن case_id 8 و injected_failure_internal_id تسميات موروثة",
+      "C-21: CR-06 → blocking لـ RC3 فقط، ليس لإغلاق Finding",
+      "C-22: main → NOT_INDEPENDENTLY_VERIFIED (في JSON و MD)",
+      "C-23: شرط صريح لعدم إعادة الاختبار (توفّر بيانات الجلسة)"
+    ],
+    "test_id": "DIRECT-02-NATIVE-FSA-FINAL-RUNNER",
+    "supersedes": [
+      "DIRECT-02-native-fsa-final-1794073850485.json",
+      "DIRECT-02-native-fsa-final-1794074588033.json",
+      "DIRECT-02-native-fsa-final-1794074818104.json",
+      "DIRECT-02-native-fsa-final-1794075478434.json",
+      "DIRECT-02-native-fsa-final-1794077802620.json",
+      "DIRECT-02-native-fsa-final-1794114623373.json",
+      "DIRECT-02-native-fsa-final-1794115520990.json"
+    ],
+    "test_engine": {
+      "runner": "DIRECT-02-NativeFSA-Runner-Final.html",
+      "target": "raqee3-v8.0.0-rc3-dev-racefix2.html",
+      "patch": "DIRECT-02-A-marker-test-patch.json"
+    },
+    "environment": {
+      "browser": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Mobile Safari/537.36",
+      "origin": "http://localhost:2435",
+      "secure_context": true,
+      "picker_available": true,
+      "iframe_same_origin": true,
+      "contract_check": "PASS",
+      "fsa_environment_compatibility": "SUPPORTED_COMPATIBLE",
+      "fsa_environment_note": "File System Access API مدعوم في Chromium على Android وفق توثيق Chrome. التوافق البيئي لا يُثبت استخدام مقابض أصلية — انظر native_handle_provenance."
+    }
+  },
+
+  "baseline": {
+    "A_before": {
+      "name": "index.html",
+      "size": 1213,
+      "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+    },
+    "B_before": {
+      "name": "B.txt",
+      "size": 174,
+      "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7"
+    },
+    "A_patched_reference": {
+      "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+      "note": "بصمة A بعد تطبيق الرقعة — متوقعة فقط في حالات الكتابة الناجحة"
+    },
+    "final_state": {
+      "A_restored": true,
+      "B_untouched": true,
+      "A_final_sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+      "B_final_sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7",
+      "note": "البصمات النهائية تخص الحالة بعد التنظيف — لا الحالات الوسيطة أثناء الاختبار."
+    }
+  },
+
+  "test_coverage_summary": {
+    "unique_case_ids_tested": [
+      "freshness-buffer", "backup-buffer", "createWritable", "postwrite-buffer",
+      "write-pending", "close-pending", "write-fail", "close-after-commit-fail"
+    ],
+    "unique_case_ids_count": 8,
+    "additional_executions": [
+      { "case_id": "write-pending", "swap_mode": "ui", "purpose": "تغيير وضع تنفيذ لحالة موجودة" },
+      { "case_id": "close-pending", "swap_mode": "forced", "purpose": "تكرار تحقّقي #1" },
+      { "case_id": "close-pending", "swap_mode": "forced", "purpose": "تكرار تحقّقي #2" }
+    ],
+    "additional_executions_count": 3,
+    "total_executions": 11,
+    "unique_test_configurations": 9,
+    "clarification": "9 تكوينات اختبارية = 8 حالة × forced + 1 حالة (write-pending) × ui."
+  },
+
+  "evidence_strength_table": {
+    "note": "التنفيذات الـ11 غير متساوية في قوة الإثبات.",
+    "categories": [
+      { "category": "detailed_json", "count": 9, "executions": [2,3,4,5,6,7,8,10,11], "description": "JSON مع أدلة تنفيذ مفصلة — قابلة للتدقيق الآلي" },
+      { "category": "incomplete_ui_json", "count": 1, "executions": [9], "description": "JSON موجود، لكن تفاصيل الحارس غير مُصدَّرة — إثبات استدلالي" },
+      { "category": "textual_only", "count": 1, "executions": [1], "description": "إثبات نصي في المحادثة فقط — غير قابل للتدقيق من سجل خام" }
+    ],
+    "total_executions": 11
+  },
+
+  "unique_test_cases": [
+    {
+      "case_number": 1,
+      "case_id": "freshness-buffer",
+      "gate": "freshness-buffer",
+      "swap_mode": "forced",
+      "expected": { "A": "original (cancel before first byte)", "B": "original" },
+      "A_after": { "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a", "state": "original" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "prewrite-cancel-evidence=true; target-summary-confirms-cancel=true"
+      },
+      "verdict": "PASS",
+      "evidence_source": "textual_only",
+      "evidence_note": "أُبلغ عنها في المحادثة بعد مراجعة الحالة، لكن لم تُصدَّر في results الحيّة.",
+      "audit_status": "NOT_AUDITABLE_FROM_RAW_LOG — يحتاج إعادة تصدير إن توفرت بيانات الجلسة"
+    },
+    {
+      "case_number": 2,
+      "case_id": "backup-buffer",
+      "gate": "backup-buffer",
+      "swap_mode": "forced",
+      "expected": { "A": "original (cancel before first byte)", "B": "original" },
+      "A_after": { "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a", "state": "original" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw6okl75-2",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": null,
+        "recordedAt": "2026-11-07T17:31:53.297Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "prewrite-cancel-evidence=true; target-summary-confirms-cancel=true"
+      },
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794074818104.json"
+    },
+    {
+      "case_number": 3,
+      "case_id": "createWritable",
+      "gate": "createWritable",
+      "swap_mode": "forced",
+      "expected": { "A": "original (cancel before first byte)", "B": "original" },
+      "A_after": { "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a", "state": "original" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw6or1u2-3",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": null,
+        "recordedAt": "2026-11-07T17:36:54.794Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "prewrite-cancel-evidence=true; target-summary-confirms-cancel=true"
+      },
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794074818104.json",
+      "what_this_proves": "اكتشاف تغير هوية الهدف عند بوابة createWritable وإلغاء المعاملة قبل أول بايت.",
+      "what_this_does_not_prove": "لا يثبت أن createWritable() اكتمل تنفيذها أو أن المعاملة اجتازت دورة حياة الكاتب.",
+      "note": "أُعيد فحصها في 1794077802620 بنفس النتيجة."
+    },
+    {
+      "case_number": 4,
+      "case_id": "postwrite-buffer",
+      "gate": "postwrite-buffer",
+      "swap_mode": "forced",
+      "expected": { "A": "patched A", "B": "original" },
+      "A_after": { "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c", "state": "changed" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw6oxcv8-4",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-07T17:41:49.028Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "application_summary_observed": "⚠️ فشل: 1 — راجع التشخيص",
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794074818104.json",
+      "finding": "تباين في summary — أدلة checks سليمة (RC3-F-02)."
+    },
+    {
+      "case_number": 5,
+      "case_id": "write-pending",
+      "gate": "write-pending",
+      "swap_mode": "forced",
+      "expected": { "A": "patched A", "B": "original" },
+      "A_after": { "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c", "state": "changed" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw6pgz03-a",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-07T17:57:04.179Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794074818104.json"
+    },
+    {
+      "case_number": 6,
+      "case_id": "close-pending",
+      "gate": "close-pending",
+      "swap_mode": "forced",
+      "expected": { "A": "patched A", "B": "original" },
+      "A_after": { "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c", "state": "changed" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw6pmz4u-c",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-07T18:01:44.286Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794074818104.json"
+    },
+    {
+      "case_number": 7,
+      "case_id": "write-fail",
+      "gate": "write-pending",
+      "swap_mode": "forced",
+      "expected": { "A": "original (rollback verified)", "B": "original" },
+      "A_after": { "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a", "state": "original" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw6pssdu-e",
+        "saveStatus": "direct-write-failed; _verifyLevel=rollback-verified; fallback download link will be offered (download not confirmed)",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": null,
+        "recordedAt": "2026-11-07T18:06:15.474Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "failure-injection-seen=true; rollback-verified=true"
+      },
+      "injected_failure": "INJECTED_WRITE_FAILURE_AFTER_PARTIAL_STREAM_WRITE",
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794074818104.json"
+    },
+    {
+      "case_number": 8,
+      "case_id": "close-after-commit-fail",
+      "case_id_legacy_note": "case_id 'close-after-commit-fail' مُورَّث من إعداد الاختبار الأصلي. لا يُعد دليلاً على أن الفشل وقع بعد اكتمال commit — التسلسل الزمني الدقيق غير موثق.",
+      "audit_label": "DURING_CLOSE_WITH_ROLLBACK_VERIFIED",
+      "gate": "close-pending",
+      "swap_mode": "forced",
+      "expected": { "A": "original (rollback verified)", "B": "original" },
+      "A_after": { "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a", "state": "original" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw6q6kwt-2",
+        "saveStatus": "direct-write-failed; _verifyLevel=rollback-verified; fallback download link will be offered (download not confirmed)",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": null,
+        "recordedAt": "2026-11-07T18:16:58.973Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "failure-injection-seen=true; rollback-verified=true"
+      },
+      "injected_failure_internal_id": "INJECTED_CLOSE_FAILURE_AFTER_COMMIT",
+      "injected_failure_internal_id_legacy_note": "التسمية الداخلية مُورَّثة من إعداد الاختبار. لا يُعد دليلاً على التسلسل (close → commit → fail). الأدلة تُثبت فقط: فشل محقون أثناء مرحلة close + rollback تحقق.",
+      "audit_note": "التسمية الداخلية تفترض ترتيبًا لا يُثبته JSON. الترتيب الزمني الدقيق (commit قبل الفشل) لم يُسجَّل.",
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794075478434.json",
+      "requires_timeline_evidence": true
+    }
+  ],
+
+  "additional_verification_executions": [
+    {
+      "execution_number": 9,
+      "case_id": "write-pending",
+      "gate": "write-pending",
+      "swap_mode": "ui",
+      "purpose": "تغيير وضع تنفيذ لحالة موجودة — التحقق من مسار UI",
+      "expected": { "A": "patched A", "B": "original" },
+      "A_after": { "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c", "state": "changed" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw7dg36o-1",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-08T05:08:13.728Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794115520990.json",
+      "evidence_quality_note": "نجاح الحارس مُثبت استدلاليًا عبر swapActionProven=true، وليس صريحًا. راجع RUNNER-F-02."
+    },
+    {
+      "execution_number": 10,
+      "case_id": "close-pending",
+      "gate": "close-pending",
+      "swap_mode": "forced",
+      "purpose": "تكرار تحقّقي #1",
+      "expected": { "A": "patched A", "B": "original" },
+      "A_after": { "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c", "state": "changed" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw7e1kv8-4",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-08T05:24:56.420Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "application_summary_observed": "⚠️ فشل: 1 — راجع التشخيص",
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794115520990.json"
+    },
+    {
+      "execution_number": 11,
+      "case_id": "close-pending",
+      "gate": "close-pending",
+      "swap_mode": "forced",
+      "purpose": "تكرار تحقّقي #2",
+      "expected": { "A": "patched A", "B": "original" },
+      "A_after": { "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c", "state": "changed" },
+      "B_after": { "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7", "preserved": true },
+      "evidence": {
+        "id": "ev-mw7ebagh-8",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-08T05:32:29.489Z"
+      },
+      "checks": {
+        "swapActionProven": true, "A_matches_expected": true, "B_unchanged": true, "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "application_summary_observed": "✅ تم التعديل مباشرة على: index.html — تحقق كامل",
+      "verdict": "PASS",
+      "evidence_source": "results_json",
+      "source_file": "DIRECT-02-native-fsa-final-1794115520990.json",
+      "note": "نفس أدلة #10 — summary نظيف. يُثبت عدم حتمية تباين summary."
+    }
+  ],
+
+  "evidence_integrity_gaps": {
+    "count": 5,
+    "note": "فجوات في سلسلة الإثبات يجب سدها قبل إغلاق Finding. لا تتطلب إعادة اختبار إن كانت بيانات الجلسة لا تزال متاحة.",
+    "retest_condition": "لا تلزم إعادة الاختبارات إذا كانت بيانات الجلسة الأصلية (S.pickerCalls, S.lastUIAttempt, S.A/S.B) لا تزال متاحة وقابلة للتصدير من ذاكرة المشغّل. أما إذا فُقدت (بإعادة تحميل الصفحة)، فتُعاد الحالات المتأثرة وحدها (EIG-01, EIG-02, EIG-04) — لا كامل مجموعة الاختبارات.",
+    "gaps": [
+      {
+        "id": "EIG-01",
+        "title": "إثبات أصل مقابض FileSystemFileHandle",
+        "severity": "high",
+        "description": "التقرير لا يُثبت صراحةً أن المقابض المستخدمة صدرت من showOpenFilePicker. الكود يُغلّفها (wrapHandle) بتفويض شفاف، لكن الأدلة المُصدَّرة لا تُمكّن مدققًا خارجيًا من التحقق.",
+        "impact": "بدون هذا الإثبات، لا يمكن التمييز بين اختبار Native FSA أصلي واختبار محاكاة.",
+        "resolution": "تصدير S.pickerCalls + queryPermission results + _real.name لكل مقبض",
+        "requires_retest_if_data_lost": true,
+        "requires_retest_if_data_available": false
+      },
+      {
+        "id": "EIG-02",
+        "title": "تفاصيل اختبار UI غير مُصدَّرة",
+        "severity": "medium",
+        "description": "S.lastUIAttempt موجود في الذاكرة لكن لا يُصدَّر. الإثبات الحالي ضمني عبر swapActionProven=true.",
+        "impact": "الحالة #9 غير قابلة للتدقيق المباشر.",
+        "resolution": "تصدير ui_attempt من inspect()، أو إعادة تصدير #9 من الجلسة",
+        "requires_retest_if_data_lost": true,
+        "requires_retest_if_data_available": false
+      },
+      {
+        "id": "EIG-03",
+        "title": "تسلسل close-after-commit غير موثق زمنيًا",
+        "severity": "medium",
+        "description": "التسمية الداخلية تفترض ترتيبًا لا يُثبته JSON. التسمية المخففة (DURING_CLOSE_WITH_ROLLBACK_VERIFIED) مطبقة.",
+        "impact": "الاسم الآن أصدق — الترتيب الفعلي لا يزال غير موثق.",
+        "resolution": "ACCEPTED_BY_SCOPE_REDUCTION — تخفيض التسمية يكفي؛ توثيق الترتيب الزمني اختياري لـ DIRECT-03",
+        "status": "ACCEPTED_BY_SCOPE_REDUCTION",
+        "requires_retest": false
+      },
+      {
+        "id": "EIG-04",
+        "title": "الحالة #1 بدون JSON خام",
+        "severity": "low",
+        "description": "نتيجة PASS موثقة نصيًا فقط.",
+        "impact": "التنفيذ صحيح، لكنه لا يرقى لمعيار التدقيق الآلي.",
+        "resolution": "إعادة تنفيذ freshness-buffer إن توفرت الجلسة، أو قبول التصنيف textual_only",
+        "requires_retest_if_data_lost": true,
+        "requires_retest_if_data_available": false
+      },
+      {
+        "id": "EIG-05",
+        "title": "إثبات main دون تغيير",
+        "severity": "low",
+        "description": "التقرير لا يُثبت عدم تغيير main.",
+        "impact": "لا يمكن التحقق من التقرير وحده.",
+        "resolution": "إرفاق git log + git diff",
+        "requires_retest": false
+      }
+    ]
+  },
+
+  "closure_requirements": {
+    "count": 6,
+    "note": "إغلاق Finding DIRECT-02 معلّق على استكمال المتطلبات الحاجبة فقط. لا يُغلق تلقائيًا بإتمام التنفيذ.",
+    "blocking_for_direct_02_closure": ["CR-01", "CR-02"],
+    "blocking_for_rc3_approval_only": ["CR-06"],
+    "non_blocking": ["CR-03", "CR-04", "CR-05"],
+    "requirements": [
+      {
+        "id": "CR-01",
+        "title": "ملحق أصالة المقابض",
+        "addresses": "EIG-01",
+        "blocking_for_direct_02_closure": true,
+        "condition_if_session_available": "تصدير مباشر من ذاكرة المشغّل"
+      },
+      {
+        "id": "CR-02",
+        "title": "تصدير تفاصيل UI",
+        "addresses": "EIG-02",
+        "blocking_for_direct_02_closure": true,
+        "condition_if_session_available": "تصدير مباشر من ذاكرة المشغّل"
+      },
+      {
+        "id": "CR-03",
+        "title": "توثيق تسلسل close-after-commit",
+        "addresses": "EIG-03",
+        "blocking_for_direct_02_closure": false,
+        "status": "ACCEPTED_BY_SCOPE_REDUCTION",
+        "note": "تخفيض التسمية إلى DURING_CLOSE_WITH_ROLLBACK_VERIFIED مقبول كافٍ. توثيق الترتيب الزمني الكامل اختياري — يمكن تأجيله إلى DIRECT-03."
+      },
+      {
+        "id": "CR-04",
+        "title": "معالجة الحالة #1",
+        "addresses": "EIG-04",
+        "blocking_for_direct_02_closure": false,
+        "status": "accept_textual_with_note",
+        "note": "التصنيف النصي مقبول مع توضيح صريح. إعادة التصدير اختيارية إن توفرت الجلسة."
+      },
+      {
+        "id": "CR-05",
+        "title": "إرفاق إثبات Git",
+        "addresses": "EIG-05",
+        "blocking_for_direct_02_closure": false,
+        "note": "مطلوب قبل اعتماد بيان حالة main، لكنه لا يحجب إغلاق Finding DIRECT-02."
+      },
+      {
+        "id": "CR-06",
+        "title": "تشخيص RC3-F-02",
+        "addresses": "RC3-F-02",
+        "blocking_for_direct_02_closure": false,
+        "blocking_for_rc3_approval": true,
+        "scope": "RC3-side, not DIRECT-02 test-side",
+        "rationale": "RC3-F-02 خلل UX في عرض summary، لا يُثبت فساد بيانات. إغلاق Finding DIRECT-02 يتعلق بسلامة الكتابة، لا باتساق رسائل الواجهة. يُشترط حل RC3-F-02 لاعتماد RC3 إنتاجيًا، لا لإغلاق DIRECT-02.",
+        "note": "إن رأت الجهة المعتمدة أن اتساق summary شرط أمني، يجب توثيق المبرر صراحةً."
+      }
+    ]
+  },
+
+  "rc3_findings": [
+    {
+      "id": "RC3-F-01",
+      "title": "saveStatus غير متسق الصيغة",
+      "severity": "low",
+      "description": "الصيغة الفعلية تختلف عن المتوقعة. فاصلة منقوطة بدل نقطتين في write-fail/close-after-commit-fail.",
+      "impact": "لا يؤثر على الوظائف — يصعّب تدقيق الأدلة الآلي.",
+      "recommendation": "توحيد الصيغة إلى 'direct-write-<state>:<phase>:<sub-state>'."
+    },
+    {
+      "id": "RC3-F-02",
+      "title": "تباين غير حتمي في محتوى summary رغم تطابق أدلة المعاملة",
+      "severity": "medium",
+      "description": "الحالتان #10 و#11 متطابقتان في الأدلة الحاسمة، لكن summary يختلف. يُثبت عدم استقرار summary.",
+      "impact": "المستخدم قد يرى 'فشل' رغم أن البيانات محفوظة. لا يُثبت فساد بيانات.",
+      "recommendation": "تشخيص آلية تحديث summary. المصدر لم يُحسم.",
+      "does_not_imply": "لا يُثبت فساد بيانات. الحفظ الفعلي سليم.",
+      "blocking_for_rc3_approval": true,
+      "blocking_for_direct_02_closure": false
+    },
+    {
+      "id": "RC3-F-03",
+      "title": "عدم موثوقية قراءة حالة الواجهة أثناء الفحص",
+      "severity": "low",
+      "description": "summary يُقرأ من DOM لحظة الفحص. لا يعكس بالضرورة حالة المعاملة وقت انتهائها.",
+      "impact": "يُضعف موثوقية summary كدليل — لا يؤثر على checks أو evidence.",
+      "classification": "design_note_not_security_finding",
+      "distinction_from": "RUNNER-F-03"
+    }
+  ],
+
+  "runner_findings": [
+    {
+      "id": "RUNNER-F-01",
+      "title": "patchIframe لا ينتظر تحميل الإطار فعليًا",
+      "severity": "medium",
+      "description": "الشرط 'readyState===complete' يُحقق في about:blank — فيكشف origin=null في WebView.",
+      "recommendation": "إضافة شرط 'location.href !== \"about:blank\"'."
+    },
+    {
+      "id": "RUNNER-F-02",
+      "title": "inspect() لا يُصدّر S.lastUIAttempt",
+      "severity": "medium",
+      "recommendation": "إضافة 'ui_attempt: S.armedSwapMode===\"ui\" ? S.lastUIAttempt : null'."
+    },
+    {
+      "id": "RUNNER-F-03",
+      "title": "توقيت أخذ snapshot لـ summary في المشغّل",
+      "severity": "low",
+      "distinction_from": "RC3-F-03 — هذا توقيت المشغّل، وليس تصميم RC3."
+    },
+    {
+      "id": "RUNNER-F-04",
+      "title": "UI mode: openForDirectBtn يعرض عدّاد الرقع",
+      "severity": "low"
+    }
+  ],
+
+  "out_of_scope": [
+    { "item": "postwrite-buffer + ui", "status": "NOT_TESTED_IN_UI_MODE", "note": "اختُبر forced فقط. نجاح forced لا يثبت نجاح مسار UI." },
+    { "item": "حالات فشل متعددة في معاملة واحدة", "status": "NOT_TESTED" },
+    { "item": "abort() الصريح", "status": "NOT_TESTED" },
+    { "item": "إعادة تحميل أثناء معاملة", "status": "NOT_TESTED" },
+    { "item": "WebView", "status": "FAILED_INITIALIZATION", "note": "بسبب RUNNER-F-01." }
+  ],
+
+  "verdicts": {
+    "execution_group": {
+      "status": "EXECUTION_COMPLETE",
+      "total_executions": 11,
+      "passes": 11,
+      "failures": 0,
+      "unique_test_configurations": 9,
+      "evidence_strength": {
+        "detailed_json": 9,
+        "incomplete_ui_json": 1,
+        "textual_only": 1
+      }
+    },
+    "fsa_environment": {
+      "status": "SUPPORTED_COMPATIBLE",
+      "note": "البيئة متوافقة من حيث المبدأ — لا تُثبت استخدام مقابض أصلية."
+    },
+    "native_handle_provenance": {
+      "status": "UNVERIFIED_PENDING_CR01",
+      "note": "أصل المقابض لم يُثبت صراحةً. الكود يفوض I/O للمقابض الأصلية، لكن هذا لم يُوثق في JSON."
+    },
+    "file_io_behavior": {
+      "status": "OBSERVED_HANDLE_ORIGIN_UNVERIFIED",
+      "note": "سلوك الكتابة/rollback/عزل المقابض مرصود عبر الأدلة. أصل المقابض لم يُثبت بعد."
+    },
+    "rc3_behavioral_approval": {
+      "status": "PROVISIONAL",
+      "condition": "مشروط بـ CR-01, CR-02, CR-06 (RC3-F-02)",
+      "note": "الكتابة/rollback/حماية B مؤكدة وظيفيًا. الاعتماد الرسمي ينتظر أدلة الأصالة وحل RC3-F-02."
+    },
+    "security_finding_closure": {
+      "status": "OPEN_PENDING_EVIDENCE",
+      "reason": "فجوات أدلة: EIG-01 (أصل المقابض)، EIG-02 (تفاصيل UI).",
+      "closure_requires": ["CR-01", "CR-02"],
+      "does_not_require": ["CR-03", "CR-04", "CR-05", "CR-06"],
+      "clarification": "CR-03 مقبول بتخفيض التسمية. CR-06 يتعلق باعتماد RC3، لا بإغلاق Finding DIRECT-02."
+    },
+    "rc2": {
+      "status": "BLOCKED_FROZEN"
+    },
+    "main": {
+      "status": "NOT_INDEPENDENTLY_VERIFIED",
+      "note": "التقرير لا يقدم إثباتًا مستقلًا. يلزم git log + git diff (CR-05)."
+    },
+    "filesystem": {
+      "status": "CLEAN",
+      "A_sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+      "B_sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7"
+    }
+  },
+
+  "three_distinct_judgments": {
+    "note": "لا تُدمج هذه الأحكام الثلاثة.",
+    "judgment_1_tests_completed": {
+      "statement": "مجموعة التنفيذات المحددة انتهت بنجاح.",
+      "support_level": "FULL"
+    },
+    "judgment_2_fix_passed": {
+      "statement": "الإصلاح اجتاز السلوك المطلوب في البيئة المختبرة.",
+      "support_level": "PROVISIONAL",
+      "note": "السلوك مؤكد وظيفيًا، لكن أصل المقابض لم يُثبت."
+    },
+    "judgment_3_finding_closed": {
+      "statement": "Finding الأمني أُغلق رسميًا.",
+      "support_level": "INSUFFICIENT",
+      "note": "EIG-01 و EIG-02 تمنعان الإغلاق."
+    }
+  },
+
+  "verdict_matrix": {
+    "execution_group": "EXECUTION_COMPLETE",
+    "total_executions": "11 نتيجة PASS بحسب التقرير",
+    "evidence_quality": "9 مفصلة، 1 غير مكتملة، 1 نصية فقط",
+    "fsa_environment": "SUPPORTED_COMPATIBLE",
+    "native_handle_provenance": "UNVERIFIED_PENDING_CR01",
+    "rc3_behavioral_approval": "PROVISIONAL",
+    "direct_02_closure": "OPEN_PENDING_EVIDENCE",
+    "rc2": "BLOCKED_FROZEN",
+    "main": "NOT_INDEPENDENTLY_VERIFIED"
+  },
+
+  "closing_statement": "اكتملت مجموعة تنفيذات DIRECT-02 المحددة، وسجلت 11 نتيجة PASS وفق الأدلة المقدمة. تدعم النتائج سلامة الكتابة المباشرة، وثبات هوية الهدف، وحماية B، واسترجاع A في حالات الفشل المختبرة. غير أن أصل مقابض FileSystemFileHandle لم يُثبت صراحةً بعد، وتفاصيل حارس UI لم تُصدَّر. الاعتماد السلوكي لـ RC3-DEV-RACEFIX2 مبدئي ومشروط باستكمال CR-01 و CR-02 وحل RC3-F-02. إتمام مجموعة الاختبارات لا يعني إغلاق Finding DIRECT-02 تلقائيًا. RC2 تظل BLOCKED / FROZEN. حالة main لم تُتحقق بصورة مستقلة — يلزم إرفاق دليل Git.",
+
+  "review_scope_disclaimer": "هذا التقرير مراجعة لاتساق المحتوى كما عُرض. لم تُتحقق بصورة مستقلة من: ملفات JSON الخام، البصمات، جلسة Chrome، حالة القرص، مستودع Git. أرقام التنفيذ ونتائج PASS منسوبة إلى أدلة التقرير — لم تُعد إعادة تنفيذها.",
+
+  "recommendations": [
+    { "priority": "P0", "action": "CR-01 (ملحق أصل المقابض) — blocking لإغلاق Finding" },
+    { "priority": "P0", "action": "CR-02 (تصدير تفاصيل UI) — blocking لإغلاق Finding" },
+    { "priority": "P0", "action": "CR-06 (تشخيص RC3-F-02) — blocking لاعتماد RC3، ليس لإغلاق Finding" },
+    { "priority": "P1", "action": "CR-05 (إثبات Git) — قبل اعتماد بيان main" },
+    { "priority": "P1", "action": "توحيد صيغة saveStatus (RC3-F-01)" },
+    { "priority": "P2", "action": "DIRECT-03 (يشمل postwrite-buffer + ui وتوثيق تسلسل close)" },
+    { "priority": "P3", "action": "DIRECT-02 على RC2" }
+  ]
+}
+```
+
+---
+
+الملف ٢ — DIRECT-02-COMPREHENSIVE-REPORT.md (v1.0.3)
+
+```markdown
+# تقرير DIRECT-02 الجامع — v1.0.3
+
+**معرّف التقرير:** DIRECT-02-COMPREHENSIVE-FINAL-v1.0.3
+**تاريخ التوليد:** 2026-11-08T06:45:00.000Z
+**الاختبار:** DIRECT-02-NATIVE-FSA-FINAL-RUNNER
+**التصحيحات:** 23 (C-01 إلى C-23)
+
+---
+
+## الحكم النهائي
+
+| البند | الحكم |
+|---|---|
+| **مجموعة تنفيذات DIRECT-02** | ✅ EXECUTION_COMPLETE |
+| **نتيجة التنفيذات** | 11/11 PASS — 9 تكوينات اختبارية |
+| **جودة الأدلة** | 9 مفصلة، 1 UI غير مكتمل، 1 نصي |
+| **توافق بيئة FSA** | ✅ SUPPORTED_COMPATIBLE |
+| **إثبات منشأ المقابض** | ❌ UNVERIFIED_PENDING_CR01 |
+| **سلوك I/O** | ⚠️ OBSERVED_HANDLE_ORIGIN_UNVERIFIED |
+| **RC3-DEV-RACEFIX2** | ⚠️ PROVISIONAL |
+| **DIRECT-02 Finding** | ❌ OPEN_PENDING_EVIDENCE |
+| **RC2** | ⛔ BLOCKED / FROZEN |
+| **`main`** | ⚠️ NOT_INDEPENDENTLY_VERIFIED |
+
+---
+
+## ثلاثة أحكام — لا تُدمج
+
+| # | الحكم | مستوى الدعم |
+|---|---|---|
+| ١ | مجموعة التنفيذات المحددة انتهت بنجاح | ✅ **FULL** |
+| ٢ | الإصلاح اجتاز السلوك المطلوب | ⚠️ **PROVISIONAL** |
+| ٣ | Finding الأمني أُغلق رسميًا | ❌ **INSUFFICIENT** |
+
+---
+
+## ١) البيئة
+
+| البند | القيمة |
+|---|---|
+| المتصفح | Chrome 157 / Android 10 |
+| `origin` | `http://localhost:2435` |
+| `secureContext` | `true` |
+| `showOpenFilePicker` | متاح |
+| `iframeSameOrigin` | `true` |
+| `contract` | PASS |
+| **FSA compatibility** | **SUPPORTED_COMPATIBLE** |
+| **Native handle provenance** | **UNVERIFIED_PENDING_CR01** |
+
+**ملاحظة:** التوافق البيئي لا يُثبت استخدام مقابض أصلية في هذه الجلسة.
+
+---
+
+## ٢) البصمات المرجعية
+
+| الملف | الحجم | SHA-256 |
+|---|---|---|
+| A (index.html) — أصلي | 1213 | `1c11f771…b85a` |
+| B (B.txt) | 174 | `88ebee92…edd7` |
+| A — مُرقَّع | 1213 | `e3029171…ee70c` |
+
+**الحالة النهائية بعد التنظيف:** ✅ A أصلي، ✅ B أصلي.
+(هذا يخص الحالة النهائية — لا الحالات الوسيطة.)
+
+---
+
+## ٣) تغطية الاختبار
+
+| التصنيف | العدد |
+|---|---|
+| سيناريوهات `case_id` مستقلة | 8 |
+| تنفيذ UI إضافي | 1 |
+| تكرارات تحقّقي | 2 |
+| **إجمالي التنفيذات** | **11** |
+| **تكوينات اختبارية مستقلة** | **9** |
+
+---
+
+## ٤) قوة الأدلة
+
+| الفئة | العدد | التنفيذات |
+|---|---|---|
+| JSON مفصلة | **9** | 2, 3, 4, 5, 6, 7, 8, 10, 11 |
+| UI JSON غير مكتمل | **1** | 9 |
+| نصي فقط | **1** | 1 |
+
+---
+
+## ٥) المصفوفة الكاملة
+
+### أ) الحالات الأساسية (8)
+
+| # | case_id | mode | verdict | A_after | B_after | قوة الدليل |
+|---|---|---|---|---|---|---|
+| 01 | freshness-buffer | forced | ✅ PASS | أصلي | أصلي | **نصي** |
+| 02 | backup-buffer | forced | ✅ PASS | أصلي | أصلي | JSON مفصلة |
+| 03 | createWritable | forced | ✅ PASS | أصلي | أصلي | JSON مفصلة |
+| 04 | postwrite-buffer | forced | ✅ PASS | **مُرقَّع** | أصلي | JSON مفصلة |
+| 05 | write-pending | forced | ✅ PASS | **مُرقَّع** | أصلي | JSON مفصلة |
+| 06 | close-pending | forced | ✅ PASS | **مُرقَّع** | أصلي | JSON مفصلة |
+| 07 | write-fail | forced | ✅ PASS | **أصلي (rollback)** | أصلي | JSON مفصلة |
+| 08 | close-after-commit-fail (legacy) | forced | ✅ PASS | **أصلي (rollback)** | أصلي | JSON مفصلة |
+
+### ب) تنفيذات إضافية (3)
+
+| # | case_id | mode | verdict |
+|---|---|---|---|
+| 09 | write-pending | **ui** | ✅ PASS (دليل ضمني) |
+| 10 | close-pending | forced | ✅ PASS |
+| 11 | close-pending | forced | ✅ PASS |
+
+---
+
+## ٦) تسمية الحالة 8 — توضيح
+
+`case_id: close-after-commit-fail` **مُورَّث** من إعداد الاختبار الأصلي. **لا يُعد دليلاً** على أن الفشل وقع بعد اكتمال commit.
+
+`injected_failure_internal_id: INJECTED_CLOSE_FAILURE_AFTER_COMMIT` **أيضًا مُورَّث**.
+
+**التسمية الأصدق:** `DURING_CLOSE_WITH_ROLLBACK_VERIFIED`
+
+الأدلة تُثبت فقط: فشل محقون أثناء مرحلة close + rollback تحقق. الترتيب الزمني الدقيق غير موثق.
+
+---
+
+## ٧) فجوات سلامة الأدلة (5)
+
+| # | الفجوة | الخطورة |
+|---|---|---|
+| EIG-01 | إثبات أصل المقابض | **عالية** |
+| EIG-02 | تفاصيل UI غير مُصدَّرة | متوسطة |
+| EIG-03 | تسلسل close | متوسطة → **ACCEPTED_BY_SCOPE_REDUCTION** |
+| EIG-04 | الحالة #1 بدون JSON | منخفضة |
+| EIG-05 | إثبات main | منخفضة |
+
+**شرط إعادة الاختبار:** لا تلزم إعادة الاختبار إن كانت بيانات الجلسة متاحة. إن فُقدت، تُعاد الحالات المتأثرة فقط (EIG-01, EIG-02, EIG-04) — لا كامل المجموعة.
+
+---
+
+## ٨) متطلبات الإغلاق (6)
+
+### حاجبة لإغلاق Finding DIRECT-02
+
+| # | المتطلب |
+|---|---|
+| **CR-01** | ملحق أصل المقابض |
+| **CR-02** | تصدير تفاصيل UI |
+
+### حاجبة لاعتماد RC3 فقط
+
+| # | المتطلب |
+|---|---|
+| **CR-06** | تشخيص RC3-F-02 |
+
+### غير حاجبة
+
+| # | المتطلب | الحالة |
+|---|---|---|
+| CR-03 | توثيق تسلسل close | **ACCEPTED_BY_SCOPE_REDUCTION** |
+| CR-04 | معالجة الحالة #1 | مقبول نصيًا |
+| CR-05 | إثبات Git | مطلوب لبيان main |
+
+---
+
+## ٩) الملاحظات على RC3 (3)
+
+| # | الملاحظة | الخطورة | حاجب؟ |
+|---|---|---|---|
+| RC3-F-01 | saveStatus غير متسق | منخفضة | لا |
+| **RC3-F-02** | **تباين summary** | **متوسطة** | **لـ RC3 فقط** |
+| RC3-F-03 | snapshot غير موثوق | منخفضة | لا (تصميم) |
+
+**RC3-F-02:** لا يُثبت فساد بيانات. خلل عرض في summary. **لا يحجب إغلاق DIRECT-02** — يحجب اعتماد RC3 الإنتاجي.
+
+---
+
+## ١٠) عيوب المشغّل (4)
+
+| # | العيب | الخطورة |
+|---|---|---|
+| RUNNER-F-01 | patchIframe في WebView | متوسطة |
+| **RUNNER-F-02** | **inspect() لا يُصدّر S.lastUIAttempt** | **متوسطة** |
+| RUNNER-F-03 | توقيت snapshot | منخفضة |
+| RUNNER-F-04 | UI mode يعرض عدّاد الرقع | منخفضة |
+
+---
+
+## ١١) ما لم يُختبر
+
+| البند | الحالة |
+|---|---|
+| `postwrite-buffer + ui` | NOT_TESTED_IN_UI_MODE |
+| حالات فشل متعددة | NOT_TESTED |
+| `abort()` الصريح | NOT_TESTED |
+| إعادة تحميل أثناء معاملة | NOT_TESTED |
+| WebView | FAILED_INITIALIZATION |
+
+---
+
+## ١٢) التوصيات
+
+### P0 (blocking لإغلاق Finding)
+1. CR-01: ملحق أصل المقابض
+2. CR-02: تصدير تفاصيل UI
+
+### P0 (blocking لاعتماد RC3)
+3. CR-06: تشخيص RC3-F-02
+
+### P1
+4. CR-05: إثبات Git
+5. توحيد saveStatus
+
+### P2
+6. DIRECT-03 (بما فيه `postwrite-buffer + ui` + توثيق تسلسل close)
+
+### P3
+7. DIRECT-02 على RC2
+
+---
+
+## ١٣) الخلاصة
+
+> **اكتملت مجموعة تنفيذات DIRECT-02 المحددة، وسجلت 11 نتيجة PASS وفق الأدلة المقدمة. تدعم النتائج سلامة الكتابة المباشرة، وثبات هوية الهدف، وحماية B، واسترجاع A في حالات الفشل المختبرة.**
+>
+> **غير أن أصل مقابض FileSystemFileHandle لم يُثبت صراحةً بعد، وتفاصيل حارس UI لم تُصدَّر.**
+>
+> **الاعتماد السلوكي لـ RC3-DEV-RACEFIX2 مبدئي ومشروط باستكمال CR-01 و CR-02 وحل RC3-F-02.**
+>
+> **إتمام مجموعة الاختبارات لا يعني إغلاق Finding DIRECT-02 تلقائيًا.**
+>
+> **RC2 تظل BLOCKED / FROZEN. حالة `main` لم تُتحقق بصورة مستقلة — يلزم إرفاق دليل Git.**
+
+**العنوان الرسمي للتقرير:**
+> **Execution Complete — Behavioral Evidence Reported — Security Finding Still Open**
+
+---
+
+## ١٤) تنبيه منهجي
+
+هذا التقرير مراجعة لاتساق المحتوى كما عُرض. **لم تُتحقق بصورة مستقلة** من:
+- ملفات JSON الخام
+- بصمات الملفات
+- جلسة Chrome
+- حالة القرص
+- مستودع Git
+
+أرقام التنفيذ ونتائج PASS **منسوبة إلى أدلة التقرير** — لم تُعد إعادة تنفيذها.
+
+---
+
+## ١٥) بنية الأرشيف
+
+```
+
+docs/
+└── DIRECT-02/
+├── DIRECT-02-COMPREHENSIVE-REPORT.json   ← v1.0.3
+├── DIRECT-02-COMPREHENSIVE-REPORT.md     ← v1.0.3
+├── evidence-integrity/
+│   ├── CR-01-handle-provenance.md         ← مطلوب
+│   ├── CR-02-ui-attempt-export.json       ← مطلوب
+│   └── CR-05-git-evidence.txt             ← مطلوب
+├── source-reports/
+│   └── *.json
+└── README.md
+
+```
+```
+
+---
+
+جدول التحقق النهائي — التصحيحات السبعة
+
+# الملاحظة التحقق
+C-17 أعداد EIG (4) و CR (4) ✅ count: 5 لـ EIG، count: 6 لـ CR
+C-18 CR-03 متناقض ✅ ACCEPTED_BY_SCOPE_REDUCTION + حُذف من closure_requires + ليس في شرط RC3
+C-19 BEHAVIOR_OBSERVED مفرط ✅ فُصل إلى fsa_environment + native_handle_provenance + file_io_behavior
+C-20 close-after-commit يوحي بتسلسل ✅ case_id_legacy_note + injected_failure_internal_id_legacy_note
+C-21 CR-06 يربط إغلاق DIRECT-02 بـ UX ✅ blocking_for_direct_02_closure: false + blocking_for_rc3_approval: true
+C-22 main يوحي بحقيقة مثبتة ✅ NOT_INDEPENDENTLY_VERIFIED في JSON و MD
+C-23 «لا تتطلب إعادة اختبار» دون شرط ✅ retest_condition صريح: «فقط إن كانت الجلسة متاحة»
+
+---
+
+ما يجب الإبقاء عليه (من ملاحظاتك)
+
+جميع النقاط التي طلبت الإبقاء عليها محفوظة:
+
+· ✅ createWritable لا يُثبت اكتمال الاستدعاء
+· ✅ postwrite-buffer = تطابق hashes، لا صحة summary
+· ✅ الفصل بين فشل الكتابة وفشل الإغلاق
+· ✅ البصمات النهائية = الحالة بعد التنظيف
+· ✅ 11 PASS ≠ 11 مستوى إثبات متساوٍ
+· ✅ DIRECT-02 لا يُغلق باكتمال التنفيذ
+
+---
+
+الخلاصة
+
+v1.0.3 يُميّز صراحةً:
+
+الحكم الحالة
+التنفيذ اكتمل ✅ مدعوم
+السلوك مؤكد ⚠️ مبدئي — أصل المقابض غير مُثبت
+Finding أُغلق ❌ معلّق على CR-01 + CR-02 فقط
+
+CR-03 مقبول بتخفيض النطاق. CR-06 حاجب لاعتماد RC3 فقط، لا لإغلاق Finding.
+
+التقرير جاهز للمراجعة الرسمية بصيغة:
+
+Execution Complete — Behavioral Evidence Reported — Security Finding Still Open

@@ -1,0 +1,283 @@
+{
+  "test_id": "DIRECT-02-NATIVE-FSA-FINAL-RUNNER",
+  "browser": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Mobile Safari/537.36",
+  "origin": "http://localhost:2435",
+  "secureContext": true,
+  "exportedAt": "2026-11-07T18:06:58.103Z",
+  "A_before": {
+    "name": "index.html",
+    "size": 1213,
+    "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a"
+  },
+  "B_before": {
+    "name": "B.txt",
+    "size": 174,
+    "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7"
+  },
+  "results": [
+    {
+      "case_id": "backup-buffer",
+      "gate": "backup-buffer",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (cancel before first byte)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "original"
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 174,
+        "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء تجهيز النسخة الاحتياطية. لم يُمس أي ملف؛ رابط التنزيل البديل جاهز فقط.",
+        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف. رابط التنزيل البديل جاهز.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mw6okl75-2",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": null,
+        "recordedAt": "2026-11-07T17:31:53.297Z"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "A_matches_expected": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "details": "prewrite-cancel-evidence=true; target-summary-confirms-cancel=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-07T17:33:03.562Z"
+    },
+    {
+      "case_id": "createWritable",
+      "gate": "createWritable",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (cancel before first byte)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "original"
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 174,
+        "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ أُلغيت الكتابة المباشرة قبل أول بايت لأن هوية الهدف تغيّرت أثناء المعاملة. لم يُمس أي ملف؛ رابط التنزيل البديل جاهز فقط.",
+        "toast": "⚠️ أُلغيت المعاملة قبل الكتابة؛ لم يُمس أي ملف. رابط التنزيل البديل جاهز.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mw6or1u2-3",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-cancelled: target identity changed before first write",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": null,
+        "recordedAt": "2026-11-07T17:36:54.794Z"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "A_matches_expected": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "details": "prewrite-cancel-evidence=true; target-summary-confirms-cancel=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-07T17:37:32.125Z"
+    },
+    {
+      "case_id": "postwrite-buffer",
+      "gate": "postwrite-buffer",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "state": "changed"
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 174,
+        "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ فشل: 1 — راجع التشخيص",
+        "toast": "📋 تم نسخ السجل — 99 حرف",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mw6oxcv8-4",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-07T17:41:49.028Z"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "A_matches_expected": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-07T17:44:05.135Z"
+    },
+    {
+      "case_id": "write-pending",
+      "gate": "write-pending",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "state": "changed"
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 174,
+        "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت index.html",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mw6pgz03-a",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-07T17:57:04.179Z"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "A_matches_expected": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-07T17:57:25.619Z"
+    },
+    {
+      "case_id": "close-pending",
+      "gate": "close-pending",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "patched A",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "state": "changed"
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 174,
+        "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7",
+        "preserved": true
+      },
+      "application": {
+        "summary": "✅ تم التعديل مباشرة على: index.html — تحقق كامل (الحجم + مقارنة جميع البايتات) — بقي الملف المحدد الحالي دون تغيير؛ أُنجزت المعاملة على الهدف المثبّت index.html",
+        "toast": "✅ تم حفظ التعديل على الملف الأصلي: index.html",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mw6pmz4u-c",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-success; _verifyLevel=full-byte-compare",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "recordedAt": "2026-11-07T18:01:44.286Z"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "A_matches_expected": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "details": "direct-write-success=true; full-byte-compare=true; evidence-hash-matches-disk=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-07T18:01:53.426Z"
+    },
+    {
+      "case_id": "write-fail",
+      "gate": "write-pending",
+      "swap_mode": "forced",
+      "expected": {
+        "A": "original (rollback verified)",
+        "B": "original"
+      },
+      "A_after": {
+        "name": "index.html",
+        "size": 1213,
+        "sha256": "1c11f7716973614bf592ddcfeb74ae48adaa28f725816922d63963259befb85a",
+        "state": "original"
+      },
+      "B_after": {
+        "name": "B.txt",
+        "size": 174,
+        "sha256": "88ebee9279a80a80b9eda7478e9859bfd235d2a184ecce696157ba7163beedd7",
+        "preserved": true
+      },
+      "application": {
+        "summary": "⚠️ فشل الحفظ المباشر (فشل أثناء الكتابة المباشرة: INJECTED_WRITE_FAILURE_AFTER_PARTIAL_STREAM_WRITE — استُعيد الأصل وتم التحقق من بايتاته). استُعيد الأصل وتم التحقق من بايتاته؛ أُنشئ رابط تنزيل بديل، لكن التنزيل الفعلي غير مؤكد.",
+        "toast": "⚠️ فشل الحفظ المباشر: فشل أثناء الكتابة المباشرة: INJECTED_WRITE_FAILURE_AFTER_PARTIAL_STREAM_WRITE — استُعيد الأصل وتم التحقق من بايتاته — رابط تنزيل بديل فقط؛ التنزيل غير مؤكد.",
+        "directWriteBusy": false,
+        "selectedFileName": "B.txt"
+      },
+      "evidence": {
+        "id": "ev-mw6pssdu-e",
+        "saveMode": "direct",
+        "saveStatus": "direct-write-failed; _verifyLevel=rollback-verified; fallback download link will be offered (download not confirmed)",
+        "outputSha256": "e30291714d5d40f3c96e630a88e6ced2c53abfff9a3129235e1cacc73bbee70c",
+        "actualFileSha256": null,
+        "recordedAt": "2026-11-07T18:06:15.474Z"
+      },
+      "checks": {
+        "swapActionProven": true,
+        "A_matches_expected": true,
+        "B_unchanged": true,
+        "transactionOutcomeProven": true,
+        "details": "failure-injection-seen=true; rollback-verified=true"
+      },
+      "verdict": "PASS",
+      "inspectedAt": "2026-11-07T18:06:32.622Z"
+    }
+  ]
+}

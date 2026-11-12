@@ -1,0 +1,4 @@
+Test file B for DIRECT-02.
+Marker: B-ORIGINAL-CONTENT-9f3a6e1c.
+This file should remain unchanged throughout all DIRECT-02 test cases.
+Do not edit manually during testing.
