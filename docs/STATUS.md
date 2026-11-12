@@ -1,74 +1,52 @@
 # رقيع — الحالة التنفيذية للمشروع
 
-> هذه لوحة الحالة الحية، وليست خطة تطوير ثانية. ترتيب المراحل ومعايير قبولها في `docs/MASTER-DEVELOPMENT-PLAN.md`. تعليمات الخبراء في `AGENTS.md`.
+> لقطة الحالة بعد تدقيق HEAD في 2026-11-12. المرجع التنفيذي هو `docs/MASTER-DEVELOPMENT-PLAN.md`.
 
-## لقطة التحقق المعتمدة لهذه الحزمة
-
-<!-- P0_DYNAMIC_BEGIN -->
-- وقت التحقق: 2026-11-11 09:56 Asia/Aden (UTC+03:00)
+## لقطة التحقق
 - المستودع: `abac332211-droid/Mragaat`
-- فرع العمل: `review/direct-racefix2-native-fsa`
-- HEAD: `724f7dac97d6f824909f1243d3b3cbb35857acf3`
-- Tree SHA: `bb19b38bcc0979ee3a6b8aa1722061e47895eced`
-- `main` عند التحقق: `06f3848a487cf106b72b3af5e20dd53ac636cd20`
-- Merge base: `6b8b0e7446894f53bba84baac0cfeb8bb296ba79`
-- مقارنة الفرعين: `DIVERGED` — فرع العمل متقدم 2 commits ومتأخر 1 commit عن `main`.
-- عدد الملفات في شجرة فرع العمل: 24 ملفًا.
-- عدد أرشيفات ZIP الظاهرة: 5.
-- `AGENTS.md`: موجود في فرع العمل؛ Git Blob SHA `3d388a4c6733d4fd4a9f2ee296de8eef55e991f5`، وهو مطابق لنسخة `main`.
-- الملفات المرجعية الثلاثة تحت `docs/`: لم تكن موجودة في HEAD أعلاه قبل هذه الحزمة.
-- `README.md` و`README-RACEFIX2.md` و`SHA256SUMS.txt`: غير موجودة في شجرة HEAD أعلاه.
-<!-- P0_DYNAMIC_END -->
+- الفرع: `review/direct-racefix2-native-fsa`
+- HEAD المدقق: `c4a4eabdebd3062df14fb5d88a0b8c1c2588139d`
+- Parent: `22e49049f9114b812a491e774099961b06a99425`
+- Tree SHA: `ac1c80a11e6683174710848019dd77b0031a6a1e`
+- ملفات Blob: 60
+- Tree entries مع مجلد docs: 61
+- إجمالي أحجام الملفات: 5,129,851 bytes
+- ZIP في HEAD: صفر
+- لم يتغير كود التطبيق في تدقيق P0، ولم يتغير فرع `main`.
 
 ## الحالة العامة
+**`P0_TECHNICAL_AUDIT_COMPLETE_REPOSITORY_CLOSURE_PENDING`**
 
-**`IN_PROGRESS` — P0 مفتوحة ولم تُقبل بعد.** اكتمل حساب SHA-256 الفعلي للملفات الـ24 الموجودة في HEAD المسجل، مع مطابقة أحجام البايتات مع Git Tree وفصل Git Blob SHA. ما زال فحص محتويات ZIP والمقارنة التاريخية للأرشيف وبعض التناقضات ونسخة الخطة التشغيلية تحت docs مفتوحًا.
+اكتمل التدقيق الفني وتجهيز مستندات الجرد. لا تُعد P0 مغلقة بعد: يجب رفع هذه الوثائق، إنشاء commit، والتحقق من commit ومراجعة قبول مستقلة. لم يبدأ P1.
 
-## حالة البوابات
-
-| البوابة | الحالة | المبرر |
+## البوابات
+| البوابة | الحالة | الملاحظة |
 |---|---|---|
-| P0 — Repository Baseline | `IN_PROGRESS` | جرد 24 ملفًا وSHA-256 مكتمل؛ فحص محتويات الأرشيف ومقارنته التاريخية وبقية التناقضات ما زالت مفتوحة. |
-| P1 — Evidence & Runner Unification | `NOT_STARTED` | لا تبدأ قبل قبول P0. |
-| P2 — RaceFix2 Source Review | `NOT_STARTED` | مراجعة المصدر غير مشمولة في P0. |
-| P3 — DIRECT-02 / Native FSA | `OPEN` | تقارير v1.1.9 لا تمنح اعتمادًا أو إغلاقًا. |
-| P4 — Folder Mode | `OPEN` | توجد تقارير وملاحظات عن FOLDER-LOG-01؛ الإصلاح ومعايير الاسترجاع والتحقق لم تُقبل. |
-| P5 — PR-2 / Unicode | `OPEN` | نتائج جزئية مذكورة (27/27 لدوال NFC و4/4 لاختبارات سجل الأدلة)؛ لا تثبت تكامل الواجهة أو Android أو اعتماد المرشح الكامل. |
-| P6 — F3/F6/F8/F9 | `OPEN` | توجد نتائج جزئية في تقارير الدفعة الأولى؛ لا يُعد أي بند مغلقًا دون قبول مستقل ودليل مرتبط بالبصمة. |
-| P7 — V3 | `BLOCKED` | مراجعة V3 المتاحة ساكنة؛ سجلها يقول إن تشغيل الاختبار لم يُنفذ. |
+| P0 — Repository Baseline | `CLOSURE_PENDING` | تدقيق فني جاهز؛ إدراج الوثائق والقبول النهائي لم يكتمل. |
+| P1 — Evidence & Runner Unification | `NOT_STARTED` | لا يبدأ قبل قبول P0. |
+| P2 — RaceFix2 Source Review | `NOT_STARTED` | لم يبدأ. |
+| P3 — DIRECT-02 / Native FSA | `OPEN` | Runner v1.1.9 غير معتمد؛ Native FSA غير موثق attestation. |
+| P4 — Folder Mode | `OPEN` | اختبارات Node mock لا تثبت Native FSA أو كتابة فعلية. |
+| P5 — PR-2 / Unicode | `OPEN` | candidate referenced in report is absent from current HEAD. |
+| P6 — F3/F6/F8/F9 | `OPEN` | لا يوجد قرار قبول نهائي. |
+| P7 — V3 | `BLOCKED` | مراجعة ساكنة فقط؛ Runner غير منفذ. |
 | P8 — Security & Release | `NOT_STARTED` | لا يوجد قرار إصدار. |
 
-## النتائج التي يجب ألا تضيع
+## حقائق ثابتة
+- Manifest الحالي يغطي 60 ملفًا بإجمالي 5,129,851 bytes؛ Git Blob SHA-1 منفصل عن SHA-256.
+- ستة ZIPs تاريخية غائبة عن HEAD ومحفوظة في Git history؛ راجع `ARCHIVE-INVENTORY.md`.
+- `SHA256SUMS.txt` الحالي يخص تسعة ملفات FOLDER-LOG، وليس Manifest شاملًا.
+- أسماء `A-B-byte-ledger.csv` و`SHA256SUMS.txt` و`run-01/02/03.json` تكررت عبر حزم بمحتويات مختلفة؛ المرجع هو البصمة والحجم ومصدر الحزمة.
+- لا تستبدل `index.html` الحالي بالنسخة التاريخية.
+- لا تعتبر تقارير mock إثباتًا لـ Native FSA.
 
-### DIRECT-02 Runner v1.1.9
+## الملفات المطلوبة في هذا التحديث
+- `docs/BASELINE-MANIFEST.json`
+- `docs/ARCHIVE-INVENTORY.md`
+- `docs/P0-BASELINE-REPORT-2026-11-12.md`
+- `docs/STATUS.md` (هذا الملف)
+- أضف محتوى `EXECUTION-LOG-APPEND.md` إلى نهاية `docs/EXECUTION-LOG.md` دون حذف أو تعديل السجل السابق.
+- حافظ على `docs/MASTER-DEVELOPMENT-PLAN.md` دون تغيير.
 
-| التقرير | Forced | UI | النتيجة المسجلة | قرار الاعتماد |
-|---|---:|---:|---|---|
-| `DIRECT-02-native-fsa-runner-v1.1.9-1794317937567.json` | 8 | 2 | 9 PASS و1 FAIL_OR_INCOMPLETE؛ حالة `close-pending` فشلت/غير مكتملة في هذه المحاولة. | `UNVALIDATED_HARNESS`, `NOT_AUTHORIZED`, `NOT_EXECUTED`, `NOT_ATTESTED`, `OPEN`, `closure_authorized=false`. |
-| `DIRECT-02-native-fsa-runner-v1.1.9-1794320481463.json` | 8 | 1 | 9 PASS؛ بما فيها ثماني الحالات Forced. | نفس حالات عدم الاعتماد أعلاه؛ لا إغلاق. |
-
-قيود مشتركة يجب أن تبقى واضحة:
-
-- في `write-pending` و`close-pending` يذكر التقرير أن Native Promise كان قد انتهى عند لحظة تبديل الهدف (`nativePromiseSettledAtSwap=true`). هذا لا يثبت أن Promise الأصلي ظل معلقًا وقت التبديل.
-- تبديل الهدف في الحالات Forced موصوف بأنه `synthetic-global-state-mutation; no native picker interaction`.
-- اختبار UI يثبت بقاء سبعة عناصر تحكم معطلة، لكنه يسجل `trustedHumanClick=false` و`guardToastSeen=false`؛ فلا يثبت ضغطة بشرية فعلية على منتقي الملفات.
-- التقرير الأقدم يحتوي حالة `close-pending` غير ناجحة، بينما اللاحق PASS. يجب الاحتفاظ بالمحاولتين وشرح اختلاف النتيجة، لا حذف الأقدم.
-- `reference_run_status=NOT_EXECUTED` و`native_fsa_status=NOT_ATTESTED` و`closure_authorized=false` يمنع اعتبار DIRECT-02 مغلقًا.
-
-## المهمة التالية المعتمدة
-
-**استكمال P0 فقط:**
-
-1. فك الأرشيفات إلى قائمة محتويات للقراءة والفهرسة دون تعديلها أو استعادة محتوياتها إلى المشروع.
-2. **مكتمل:** حساب SHA-256 الفعلي للملفات الـ24 في HEAD المسجل ومطابقة أحجامها مع Git Tree؛ Git Blob SHA محفوظ في حقل منفصل.
-3. مقارنة `DIRECT-RACE-01-04-RACEFIX-artifacts.zip` مع النسخة التاريخية التي أُشير إلى حذفها في سجل Git.
-4. حسم التناقضات الستة في القسم 6.1 من الخطة الرئيسية بالأدلة.
-5. مراجعة `SHA256SUMS.txt`؛ الملف غير موجود في اللقطة الحالية، فلا تنشئه قبل اكتمال الجرد.
-6. إنشاء `docs/MASTER-DEVELOPMENT-PLAN.md` بنسخة مطابقة من ملف الخطة الموجود في الجذر.
-7. تحديث `docs/BASELINE-MANIFEST.json` بنتائج SHA-256 الفعلية المحسوبة من بايتات الملفات المسترجعة من GitHub؛ يبقى توليد Manifest بعد أي Commit لاحق مطلوبًا لإضافة وثائق P0 الجديدة إلى لقطة أحدث.
-
-لا تعدّل ملفات التطبيق أو `main`، ولا تحذف أو تستبدل أي سجل تاريخي. لا تبدأ P1 قبل قبول مخرجات P0.
-
-## تحديث الحالة عند كل تسليم
-
-غيّر هذه اللوحة فقط عندما يوجد دليل جديد. أضف التاريخ والـHEAD، وميّز بوضوح بين `PASS` لحالة اختبار و`ACCEPTED` للبوابة. أبقِ التقارير الخام في مساراتها الأصلية واربطها هنا.
+## شرط الانتقال
+لا تبدأ P1 قبل رفع الملفات وإنشاء commit والتحقق منه وتسجيل قبول P0 صراحة.
